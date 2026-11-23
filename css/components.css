@@ -257,3 +257,65 @@
     animation: none;
   }
 }
+
+/* ---- ナビの項目（構成はアプリ。項目の見た目だけ） ---- */
+
+/* タブバー: アイコンの下に名前 */
+:where(.ui-tab-item) {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-0_5);
+  padding: var(--space-1_5) var(--space-0_5);
+  border: none;
+  border-radius: var(--radius-full);
+  background: none;
+  color: var(--fg-muted);
+  font-size: 0.625rem; /* ui-allow: タブバーの名前（11px にすると 390px の幅で 6 文字の名前が切れる） */
+  line-height: 1.2;
+}
+
+:where(.ui-tab-item[aria-current]:not([aria-current="false"])) {
+  background: var(--bg-hover);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* タブバーの中のバッジ: アイコンの右上に小さく */
+:where(.ui-tab-item .ui-badge) {
+  position: absolute;
+  top: 2px;
+  left: calc(50% + 4px);
+  min-width: 1.1rem;
+  padding: 0 var(--space-1);
+  font-size: var(--text-2xs);
+  line-height: 1.1rem;
+}
+
+/* サイドナビ: アイコンの右に名前 */
+:where(.ui-side-item) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2_5);
+  min-height: 40px;
+  padding: 0 var(--space-2_5);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  font-size: var(--text-base);
+  text-align: left;
+}
+
+@media (hover: hover) {
+  :where(.ui-side-item:hover) {
+    background: var(--bg-hover);
+  }
+}
+
+:where(.ui-side-item[aria-current]:not([aria-current="false"])) {
+  color: var(--accent);
+  font-weight: 600;
+}
