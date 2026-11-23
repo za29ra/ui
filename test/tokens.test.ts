@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { contrast } from "../src/contrast.ts";
-import { readThemes } from "../src/css-themes.ts";
+import { readThemes, topLevelRules } from "../src/css-themes.ts";
 
 const css = readFileSync(new URL("../css/tokens.css", import.meta.url), "utf8");
 const themes = readThemes(css);
@@ -53,7 +53,7 @@ test("default-light は data-theme の無い文書の既定も兼ねる", () => 
 });
 
 test("[data-theme] 単独の規則（全テーマへの宣言）は最後にある", () => {
-  const rules = [...css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{[^{}]*\}/g)];
-  const last = rules[rules.length - 1][1].split(",").map((s) => s.trim());
+  const rules = topLevelRules(css);
+  const last = rules[rules.length - 1].selector.split(",").map((s) => s.trim());
   assert.ok(last.includes("[data-theme]"));
 });

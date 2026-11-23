@@ -14,17 +14,51 @@ const NAMED = /^(?::root|html)?\[data-theme=(["']?)([\w-]+)\1\]$/;
 const ANY = /^(?::root|html)?\[data-theme\]$/;
 const NO_THEME = /^:root:not\(\[data-theme\]\)$/;
 
-/** 深さ 0 の規則（セレクタと、深さ 1 の宣言の本文）を取り出す。@ 規則のブロックは飛ばす */
-function topLevelRules(css: string): Array<{ selector: string; body: string }> {
+/**
+ * 深さ 0 の規則（セレクタと、深さ 1 の宣言の本文）を取り出す。引用符の中の波括弧は数えない。
+ * @ 規則のブロックは飛ばすが、@keyframes 以外で中に data-theme があれば例外（テーマの上書きは @media に入れない。DESIGN.md 1.8）。
+ * 読み終えて波括弧が閉じていなければ例外
+ */
+export function topLevelRules(source: string): Array<{ selector: string; body: string }> {
+  const css = source.replace(/\/\*[\s\S]*?\*\//g, "");
   const rules: Array<{ selector: string; body: string }> = [];
   let depth = 0;
   let prelude = "";
   let body = "";
-  for (const ch of css) {
+  let inner = "";
+  let quote = "";
+  for (let i = 0; i < css.length; i++) {
+    const ch = css[i];
+    if (quote !== "") {
+      if (depth === 0) prelude += ch;
+      else inner += ch;
+      if (ch === "\\" && i + 1 < css.length) {
+        i++;
+        if (depth === 0) prelude += css[i];
+        else {
+          inner += css[i];
+          if (depth === 1) body += ch + css[i];
+        }
+        continue;
+      }
+      if (depth === 1) body += ch;
+      if (ch === quote) quote = "";
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      quote = ch;
+      if (depth === 0) prelude += ch;
+      else {
+        inner += ch;
+        if (depth === 1) body += ch;
+      }
+      continue;
+    }
     if (depth === 0) {
       if (ch === "{") {
         depth = 1;
         body = "";
+        inner = "";
       } else if (ch === ";") {
         prelude = ""; // @import など、ブロックの無い @ 規則
       } else {
@@ -35,21 +69,28 @@ function topLevelRules(css: string): Array<{ selector: string; body: string }> {
       else if (ch === "}") depth--;
       if (depth === 0) {
         const selector = prelude.trim();
-        if (!selector.startsWith("@")) rules.push({ selector, body });
+        if (selector.startsWith("@")) {
+          if (!/^@(-\w+-)?keyframes\b/.test(selector) && inner.includes("data-theme")) {
+            throw new Error(`@ 規則の中にテーマのセレクタがあります: ${selector}（テーマの上書きは @media に入れない。DESIGN.md 1.8）`);
+          }
+        } else {
+          rules.push({ selector, body });
+        }
         prelude = "";
-      } else if (depth === 1) {
-        body += ch;
+      } else {
+        inner += ch;
+        if (depth === 1) body += ch;
       }
     }
   }
+  if (depth !== 0 || quote !== "") throw new Error("波括弧か引用符が閉じていません");
   return rules;
 }
 
 export function readThemes(...sources: string[]): Themes {
   const themes: Themes = new Map();
   for (const source of sources) {
-    const css = source.replace(/\/\*[\s\S]*?\*\//g, "");
-    for (const { selector, body } of topLevelRules(css)) {
+    for (const { selector, body } of topLevelRules(source)) {
       const targets: string[] = [];
       let all = false;
       for (const part of selector.split(",")) {

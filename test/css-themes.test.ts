@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { readThemes } from "../src/css-themes.ts";
+import { readThemes, topLevelRules } from "../src/css-themes.ts";
 
 const css = `
 /* コメント { は無視する } */
@@ -42,13 +42,12 @@ test("readThemes は @media などの中を読まない", () => {
   const themes = readThemes(`
 [data-theme="mocha"] { --bg: #1e1e2e; }
 @media (prefers-color-scheme: dark) {
-  [data-theme="mocha"] { --accent: #cba6f7; }
-  [data-theme="latte"] { --bg: #ffffff; }
+  :root { --accent: #cba6f7; }
 }
 @import "x.css";
 [data-theme="mocha"] { --fg: #cdd6f4; }`);
   assert.deepEqual(themes.get("mocha"), new Map([["--bg", "#1e1e2e"], ["--fg", "#cdd6f4"]]));
-  assert.equal(themes.has("latte"), false);
+  assert.deepEqual([...themes.keys()], ["mocha"]);
 });
 
 test("readThemes は子孫・複合セレクタで例外を投げる（セレクタを含める）", () => {
@@ -79,4 +78,25 @@ test("readThemes は [data-theme] 単独を、その時点までに読んだ全�
   const themes = readThemes(`[data-theme="a"] { --x: #000000; } [data-theme] { --y: #111111; } [data-theme="b"] { --x: #222222; }`);
   assert.equal(themes.get("a")?.get("--y"), "#111111");
   assert.equal(themes.get("b")?.has("--y"), false);
+});
+
+test("引用符の中の波括弧を数えない", () => {
+  const themes = readThemes(`.a::after { content: "}"; }\n.b::before { content: '{'; }\n[data-theme="mocha"] { --bg: #111111; }`);
+  assert.equal(themes.get("mocha")?.get("--bg"), "#111111");
+});
+
+test("波括弧が閉じていなければ例外", () => {
+  assert.throws(() => readThemes(`[data-theme="mocha"] { --bg: #111111;`), /閉じて/);
+});
+
+test("@media・@supports の中に data-theme があれば例外（@keyframes は対象外）", () => {
+  assert.throws(() => readThemes(`@media (prefers-color-scheme: dark) { [data-theme="mocha"] { --a: #000000; } }`), /DESIGN\.md 1\.8/);
+  assert.throws(() => readThemes(`@supports (color: red) { :root:not([data-theme]) { --a: #000000; } }`), /DESIGN\.md 1\.8/);
+  assert.doesNotThrow(() => readThemes(`@media (min-width: 1px) { .a { color: red; } }\n@keyframes x { from { opacity: 0; } to { opacity: 1; } }`));
+});
+
+test("topLevelRules は深さ 0 の規則のセレクタと本文を返す", () => {
+  const rules = topLevelRules(`/* c { */ .a, .b { color: red; }\n@media (x) { .c { top: 0; } }\n.d { left: 0; }`);
+  assert.deepEqual(rules.map((r) => r.selector), [".a, .b", ".d"]);
+  assert.match(rules[0].body, /color: red/);
 });
