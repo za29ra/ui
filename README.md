@@ -8,7 +8,7 @@
 
 - アプリは git の依存として読む: `"ui": "github:za29ra/ui#v<版>"`。
 - **タグには、ビルドした `dist/`（`.js` と `.d.ts`）をコミットする。** Node は `node_modules` の中の `.ts` の型を除去しない（`ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`）ので、アプリの `node --test` が読めない。pnpm は依存の build スクリプトを既定で走らせないので、`prepare` には頼らない。
-- `package.json` の `exports` で、JS のモジュール（`ui/contrast`・`ui/css-themes`）と CSS（`ui/tokens.css`・`ui/base.css`）・`ui/DESIGN.md` を出す。部品を足したら（3b 以降）、`ui/components.css` と部品のモジュールもここに足す。
+- `package.json` の `exports` で、JS のモジュール（`ui/contrast`・`ui/css-themes`）と CSS（`ui/tokens.css`・`ui/base.css`・`ui/components.css`）・`ui/DESIGN.md` を出す。Preact の部品を足したら（3c 以降）、部品のモジュールもここに足す。
 - `package.json` の `files` に `dist`・CSS・`DESIGN.md` を入れる（pnpm は git の依存を pack してから入れるので、`files` が無いと `.gitignore` に入れたものが落ちる）。
 - 部品（Preact）を足すときは、`preact` を `peerDependencies` にする（`dependencies` にすると Preact が 2 つ読まれ、フックが壊れる）。今はまだ部品が無いので、依存は無い。
 - 値の検査（`bin/check-tokens.js`、DESIGN.md 5.1）は、まだ無い。作ったら、アプリのテストから呼ぶ（呼び方は実装のときに書く）。
@@ -29,3 +29,7 @@
 ## pnpm の `minimumReleaseAge`
 
 git の依存にはかからない。作ったばかりのタグでも `pnpm add ui@github:za29ra/ui#v<版>` で入る（pnpm 12.14 で確かめた）。lockfile には、タグが指すコミットの tarball の URL と integrity が入る。
+
+## 部品の見本
+
+`pnpm gallery` で `http://127.0.0.1:5190/gallery/` に全部の部品を並べる（`gallery/` は配らない）。`?theme=<data-theme>` でテーマを、`?sheet` でシートを開いた状態を、`?dialogs` でダイアログの形を選ぶ。部品を足す・変えるときは、見本も足す・直す。

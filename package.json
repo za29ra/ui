@@ -18,7 +18,8 @@
     "test": "node --test \"test/**/*.test.ts\"",
     "typecheck": "tsc --noEmit -p .",
     "build": "tsc -p tsconfig.build.json",
-    "migrate": "node scripts/migrate-literals.ts"
+    "migrate": "node scripts/migrate-literals.ts",
+    "gallery": "node scripts/serve.ts"
   },
   "devDependencies": {
     "@types/node": "26.6.6",
