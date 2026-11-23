@@ -1,4 +1,3 @@
-// src/contrast.ts
 /**
  * 色の相対輝度とコントラスト比（WCAG 2.x の式）。DESIGN.md 1.9 の検査に使う。
  * 読めるのは #rgb と #rrggbb だけ（トークンの値をそのまま渡す。var や color-mix は呼ぶ側で除く）

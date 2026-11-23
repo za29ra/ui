@@ -33,11 +33,12 @@ html {
   outline-offset: 2px;
 }
 
-/* 出入りの動きを止める。animation は止めない（トーストの時間を CSS のアニメーションで数えるため。DESIGN.md 1.7） */
+/* 出入りの動きを止める。0s ではなく 0.01ms にするのは、0s だと transitionend が発火せず、それを待つ処理が止まるため。
+   animation は止めない（トーストの時間を CSS のアニメーションで数えるため。DESIGN.md 1.7） */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    transition-duration: 0s !important;
+    transition-duration: 0.01ms !important;
   }
 }

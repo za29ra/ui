@@ -1,4 +1,3 @@
-// test/contrast.test.ts
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { contrast, luminance, parseColor } from "../src/contrast.ts";

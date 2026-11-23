@@ -1,4 +1,3 @@
-// test/tokens.test.ts
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
@@ -14,6 +13,8 @@ const COLOR_TOKENS = [
   "--fg", "--fg-muted", "--fg-faint", "--border",
   "--accent", "--accent-fg", "--danger", "--danger-fg", "--success",
   "--toast-bg", "--toast-fg",
+  "--scrim", "--shadow-sm", "--shadow-md", "--shadow-lg",
+  "--accent-soft", "--on-media",
 ];
 
 test("6 テーマのすべてが色のトークンをそろえる", () => {
@@ -49,4 +50,10 @@ for (const theme of ["default-light", "default-dark"]) {
 
 test("default-light は data-theme の無い文書の既定も兼ねる", () => {
   assert.match(css, /:root:not\(\[data-theme\]\),\s*\[data-theme="default-light"\]\s*\{/);
+});
+
+test("[data-theme] 単独の規則（全テーマへの宣言）は最後にある", () => {
+  const rules = [...css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{[^{}]*\}/g)];
+  const last = rules[rules.length - 1][1].split(",").map((s) => s.trim());
+  assert.ok(last.includes("[data-theme]"));
 });
