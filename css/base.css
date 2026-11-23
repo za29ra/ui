@@ -1,0 +1,43 @@
+/* 全アプリの土台（DESIGN.md 2.3）。tokens.css のあとに読む */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+}
+
+/* ダブルタップの拡大を止める（ピンチは効く）。祖先にも付けないと効かないことがある */
+html,
+body,
+a,
+button {
+  touch-action: manipulation;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  scrollbar-color: var(--border) transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 出入りの動きを止める。animation は止めない（トーストの時間を CSS のアニメーションで数えるため。DESIGN.md 1.7） */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+  }
+}
