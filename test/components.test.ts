@@ -7,13 +7,47 @@ const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url),
 /** コメントを除いた本文 */
 const body = css.replace(/\/\*[\s\S]*?\*\//g, "");
 
+/** 括弧の深さが 0 のところにある sep だけで分ける */
+function splitTopLevel(value: string, sep: RegExp): string[] {
+  const out: string[] = [];
+  const re = new RegExp(sep.source, sep.flags.replace("g", ""));
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < value.length; i++) {
+    const c = value[i];
+    if (c === "(") depth++;
+    else if (c === ")") depth--;
+    else if (depth === 0) {
+      const m = re.exec(value.slice(i));
+      if (m && m.index === 0 && m[0].length > 0) {
+        out.push(value.slice(start, i));
+        i += m[0].length - 1;
+        start = i + 1;
+      }
+    }
+  }
+  out.push(value.slice(start));
+  return out;
+}
+
+/** セレクタが :where(...) 1 つ（と末尾の ::擬似要素）だけでできている（詳細度 0） */
+function isZeroSpecificity(selector: string): boolean {
+  if (!selector.startsWith(":where(")) return false;
+  let depth = 0;
+  for (let i = 0; i < selector.length; i++) {
+    if (selector[i] === "(") depth++;
+    else if (selector[i] === ")" && --depth === 0) return /^(::[\w-]+)?$/.test(selector.slice(i + 1));
+  }
+  return false;
+}
+
 /** 規則のセレクタ（@ 規則と @keyframes の中の from・to・% を除く）。, で分けたもの */
 function selectors(): string[] {
   const out: string[] = [];
   for (const m of body.matchAll(/([^{};]+)\{/g)) {
     const prelude = m[1].trim();
-    if (prelude.startsWith("@") || /^(from|to|\d+%)$/.test(prelude)) continue;
-    out.push(...prelude.split(/,(?![^()]*\))/).map((s) => s.trim()));
+    if (prelude.startsWith("@") || /^(from|to|\d+%)(\s*,\s*(from|to|\d+%))*$/.test(prelude)) continue;
+    out.push(...splitTopLevel(prelude, /,/).map((s) => s.trim()));
   }
   return out;
 }
@@ -29,7 +63,7 @@ function declarations(): Array<{ prop: string; value: string; line: string }> {
 test("規則のセレクタは :where() で包む（詳細度 0。アプリの指定が必ず勝つ）", () => {
   const all = selectors();
   assert.ok(all.length > 0);
-  for (const s of all) assert.match(s, /^:where\(.*\)(::[\w-]+)?$/s, s);
+  for (const s of all) assert.ok(isZeroSpecificity(s), s);
 });
 
 test("class の名前は ui- で始める", () => {
@@ -62,10 +96,22 @@ test("border-radius はトークン・0・50%・同心の calc()", () => {
   const one = /^(var\(--radius-[\w-]+\)|0|50%|calc\(var\(--radius-[\w-]+\) - (var\(--space-[\w-]+\)|1px)\))$/;
   for (const { prop, value, line } of declarations()) {
     if (prop !== "border-radius") continue;
-    for (const part of value.split(/\s+(?![^()]*\))/)) assert.match(part, one, line);
+    for (const part of splitTopLevel(value, /\s+/)) assert.match(part, one, line);
   }
 });
 
 test("package.json が components.css を出す", () => {
   assert.equal(pkg.exports["./components.css"], "./css/components.css");
+});
+
+test("splitTopLevel は括弧の中では分けない", () => {
+  assert.deepEqual(splitTopLevel("calc(var(--radius-lg) - var(--space-0_5)) 0", /\s/), ["calc(var(--radius-lg) - var(--space-0_5))", "0"]);
+  assert.deepEqual(splitTopLevel(":where(a, b), :where(c)", /,/).map((x) => x.trim()), [":where(a, b)", ":where(c)"]);
+});
+
+test("isZeroSpecificity は :where の外に何かあるセレクタを通さない", () => {
+  assert.equal(isZeroSpecificity(":where(a) .b"), false);
+  assert.equal(isZeroSpecificity(":where(a) .b:not(.c)"), false);
+  assert.equal(isZeroSpecificity(":where(dialog.ui-sheet)::backdrop"), true);
+  assert.equal(isZeroSpecificity(":where(a, b)"), true);
 });
