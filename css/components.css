@@ -319,3 +319,181 @@
   color: var(--accent);
   font-weight: 600;
 }
+
+/* ---- シート（狭い画面では下から。html.dialogs ではダイアログの形。DESIGN.md 2.2） ---- */
+
+:where(dialog.ui-sheet) {
+  width: 100%;
+  max-width: 560px;
+  max-height: 92dvh;
+  margin: auto auto 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--bg-raised);
+  color: var(--fg);
+  /* 端までスクロールしても、後ろのページに渡さない（iOS では dialog まで一緒に動く） */
+  overscroll-behavior: contain;
+}
+
+:where(dialog.ui-sheet)::backdrop {
+  background: var(--scrim);
+}
+
+/* 開くとき、下から上がってくる（幕は薄く現れる）。閉じるときは動かさない */
+:where(dialog.ui-sheet[open]) {
+  animation: ui-sheet-up var(--duration-slow) var(--ease-out);
+}
+
+:where(dialog.ui-sheet[open])::backdrop {
+  animation: ui-fade-in var(--duration-slow) var(--ease-out);
+}
+
+:where(html.dialogs dialog.ui-sheet) {
+  width: min(480px, calc(100% - 2 * var(--gutter)));
+  max-height: 85dvh;
+  margin: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+:where(html.dialogs dialog.ui-sheet[open]) {
+  animation: ui-dialog-in var(--duration-fast) var(--ease-out);
+}
+
+@keyframes ui-sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes ui-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes ui-dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(dialog.ui-sheet[open]),
+  :where(dialog.ui-sheet[open])::backdrop,
+  :where(html.dialogs dialog.ui-sheet[open]) {
+    animation: none;
+  }
+}
+
+/* ---- ポップアップ（欄やボタンに接して出す選択。面だけ。大きさと位置はアプリ） ---- */
+
+:where(.ui-popup) {
+  margin: 0;
+  padding: var(--space-2_5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  color: var(--fg);
+  box-shadow: var(--shadow-lg);
+  overflow: auto;
+  overscroll-behavior: contain;
+  font-size: var(--text-base);
+  font-weight: 400;
+  text-align: left;
+}
+
+/* ---- メニュー（⋯ やボタンから出す操作の一覧） ---- */
+
+:where(.ui-menu) {
+  margin: 0;
+  padding: var(--space-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  color: var(--fg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* メニューは外を押すと閉じるだけなので、幕は透明 */
+:where(dialog.ui-menu)::backdrop {
+  background: transparent;
+}
+
+:where(.ui-menu-list) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0_5);
+}
+
+:where(.ui-menu-list > button) {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-1_5);
+  min-height: 36px;
+  padding: var(--space-1_5) var(--space-2_5);
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+:where(.ui-menu-list > button:focus-visible) {
+  background: var(--bg-hover);
+}
+
+@media (hover: hover) {
+  :where(.ui-menu-list > button:hover) {
+    background: var(--bg-hover);
+  }
+}
+
+:where(.ui-menu-list > button.ui-danger) {
+  color: var(--danger);
+}
+
+/* ---- トースト（画面の下に 1 つ。下からの位置は --toast-offset。DESIGN.md 3.4） ---- */
+
+:where(.ui-toast-region) {
+  position: fixed;
+  inset: auto var(--gutter) calc(env(safe-area-inset-bottom) + var(--toast-offset, var(--space-4)));
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+:where(.ui-toast-region[popover]) {
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: none;
+  color: inherit;
+}
+
+:where(.ui-toast-region[popover]:not(:popover-open)) {
+  display: none;
+}
+
+:where(.ui-toast) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 560px;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--toast-bg);
+  color: var(--toast-fg);
+  pointer-events: auto;
+}
+
+:where(.ui-toast > span) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
