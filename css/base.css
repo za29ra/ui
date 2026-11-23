@@ -1,11 +1,5 @@
 /* 全アプリの土台（DESIGN.md 2.3）。tokens.css のあとに読む */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 body {
   margin: 0;
   background: var(--bg);
@@ -28,17 +22,12 @@ html {
   scrollbar-color: var(--border) transparent;
 }
 
-:focus-visible {
+:where(:focus-visible) {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* 出入りの動きを止める。0s ではなく 0.01ms にするのは、0s だと transitionend が発火せず、それを待つ処理が止まるため。
-   animation は止めない（トーストの時間を CSS のアニメーションで数えるため。DESIGN.md 1.7） */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition-duration: 0.01ms !important;
-  }
+/* 欄の輪は欄に付ける（アプリの指定が勝つよう、詳細度は 0 にしてある） */
+:where(input, textarea, select):focus-visible {
+  outline-offset: 0;
 }

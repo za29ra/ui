@@ -180,7 +180,7 @@
 | `--toast-duration-action` | 10s | 操作（「取り消す」など）のあるトーストが消えるまで |
 
 - トーストの時間は CSS のアニメーションで数える（hover・フォーカスの間は `animation-play-state: paused` で止める）。JS の定数で数えない。
-- `prefers-reduced-motion: reduce` では、出入りの動きを止める（色の変化は残してよい）。ただしトーストの時間（`animation-delay`）は変えない（変えるとトーストが消えなくなるか、すぐ消える）。止めるのは消える動きの長さだけ。
+- `prefers-reduced-motion: reduce` では、出入りの動きを止める（色の変化は残してよい）。ただしトーストの時間（`animation-delay`）は変えない（変えるとトーストが消えなくなるか、すぐ消える）。止めるのは消える動きの長さだけ。止めるのは各部品の CSS で行い、全体に一律の規則（`* { transition-duration: … }` など）は置かない（`transition` の無い要素まで動かしてしまうため）。
 - くるくる回る・明滅する繰り返しの周期は、その `@keyframes` を使う部品の CSS で決める（`ui` でもアプリでも。5.1 で許す）。
 
 ### 1.8 アプリ別のアクセントとドメインの色
@@ -304,7 +304,7 @@
 | 送信中 | ボタンの文言を「〜中…」にして無効にする | 二重に送らない |
 | エラーのある Field | 線と文を `--danger`、欄の下に理由の文 | `aria-invalid`、文は `aria-describedby` |
 
-`ui/base.css` が持つもの: `box-sizing: border-box`、`body` の文字（`--font-sans`・`--text-base`・`--leading-body`）、`touch-action: manipulation`（`html`・`body`・`a`・`button`。ダブルタップの拡大を止める）、`-webkit-tap-highlight-color: transparent`、フォーカスの輪、スクロールバーの色、`prefers-reduced-motion`。
+`ui/base.css` が持つもの: `body` の文字（`--font-sans`・`--text-base`・`--leading-body`）、`touch-action: manipulation`（`html`・`body`・`a`・`button`。ダブルタップの拡大を止める）、`-webkit-tap-highlight-color: transparent`、フォーカスの輪（詳細度 0 なのでアプリの指定が勝つ。入力欄は `outline-offset: 0`）、スクロールバーの色。`box-sizing` と `prefers-reduced-motion` は持たない（アプリ・部品の側で決める）。
 
 ### 2.4 ダイアログ・シートの構成と文言
 
