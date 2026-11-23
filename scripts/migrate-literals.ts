@@ -83,12 +83,16 @@ export function migrate(source: string): { css: string; leftovers: Leftover[] } 
       leftovers.push({ line: i + 1, text: line.trim() });
       return line;
     };
+    const handled =
+      prop === "font-size" || SPACE_PROPS.test(prop) || prop === "border-radius" || prop === "box-shadow" || /^(transition|animation)(-duration)?$/.test(prop);
+    if (handled && value.includes("!important")) return leftover(); // 上書きの意図があるので手で決める
 
     if (prop === "font-size") {
       const fm = /^(\d*\.?\d+)(px|rem)$/.exec(value);
       if (fm === null) return keep();
       const px = toPx(fm[1], fm[2]);
       if (px === 16 && /\b(input|textarea|select)\b/.test(selector)) return set("var(--text-input)");
+      if (px < TEXT[0][0] || px > TEXT[TEXT.length - 1][0]) return leftover(); // 段階の外。端に寄せると大きさが大きく変わる
       return set(`var(--text-${nearest(px, TEXT)})`);
     }
 
@@ -97,7 +101,7 @@ export function migrate(source: string): { css: string; leftovers: Leftover[] } 
       const v = value.replace(/(-?)(\d*\.?\d+)px\b/g, (all, minus: string, num: string) => {
         const px = parseFloat(num);
         if (px === 0) return all;
-        if (px === 1 || px > 32) {
+        if (px < 2 || px > 32) {
           bad = true;
           return all;
         }
@@ -128,13 +132,15 @@ export function migrate(source: string): { css: string; leftovers: Leftover[] } 
 
     if (/^(transition|animation)(-duration)?$/.test(prop)) {
       if (value.includes("infinite")) return keep();
-      // カンマで分けた項目ごとに、1 つ目の時間だけを段階にする。delay（2 つ目の時間）や 500ms を超える時間は手で決める
+      // カンマで分けた項目ごとに、1 つ目の時間だけを段階にする。delay（2 つ目の時間）や 500ms を超える時間は手で決める。50ms 未満があれば触らない
       const time = /(?<![\w.-])(\d*\.?\d+)(ms|s)\b/g;
       const toMs = (num: string, unit: string) => (unit === "s" ? parseFloat(num) * 1000 : parseFloat(num));
       const items = splitTopLevel(value);
       for (const item of items) {
         const times = [...item.matchAll(time)];
         if (times.length > 1 || times.some((t) => toMs(t[1], t[2]) > 500)) return leftover();
+        // 0 や極小の時間は、動きを止めるための指定（動きを減らす設定など）。段階にすると動き出す
+        if (times.some((t) => toMs(t[1], t[2]) < 50)) return keep();
       }
       const v = items
         .map((item) => item.replace(time, (_all, num: string, unit: string) => `var(--duration-${nearest(toMs(num, unit), DURATION)})`))

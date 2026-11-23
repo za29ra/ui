@@ -190,23 +190,23 @@
 ```css
 /* 標準テーマのアクセント。:root を付けない（付けると、あとに読むこの規則が Catppuccin のテーマにも勝ち、mauve が消える） */
 [data-theme="default-light"] {
-  --accent: #165e83;
+  --accent: #0f6e6e;
   --accent-fg: #ffffff;
 }
 [data-theme="default-dark"] {
-  --accent: #7fb8d8;
-  --accent-fg: #0b1d28;
+  --accent: #7fcfcf;
+  --accent-fg: #0b2424;
 }
 
 /* ドメインの色: 標準テーマは light-dark()、Catppuccin はテーマごとにパレットの色 */
 [data-theme="default-light"],
 [data-theme="default-dark"] {
-  --now: light-dark(#d9480f, #ff8a5c);
+  --marker: light-dark(#b35c00, #f0a050);
 }
-[data-theme="latte"] { --now: #fe640b; } /* peach */
-[data-theme="frappe"] { --now: #ef9f76; }
-[data-theme="macchiato"] { --now: #f5a97f; }
-[data-theme="mocha"] { --now: #fab387; }
+[data-theme="latte"] { --marker: #fe640b; } /* peach */
+[data-theme="frappe"] { --marker: #ef9f76; }
+[data-theme="macchiato"] { --marker: #f5a97f; }
+[data-theme="mocha"] { --marker: #fab387; }
 ```
 
 アクセントの値（標準テーマの `--accent` と `--accent-fg`）は、各アプリの側で決めて書く。`ui` には置かない。`--accent-fg` は `--accent` の上で 4.5:1 以上にする。
@@ -472,7 +472,7 @@ Service Worker は、共通の部分を `ui` の `sw` から読み、キャッ�
 
 いつでも許すもの:
 
-- **カスタムプロパティの定義そのもの**（`--accent: #165e83` のように、`--` で始まる宣言の値）。アプリのアクセントとドメインの色はここに書く（1.8）。
+- **カスタムプロパティの定義そのもの**（`--accent: #0f6e6e` のように、`--` で始まる宣言の値）。アプリのアクセントとドメインの色はここに書く（1.8）。
 - `border` の太さの `1px`・`2px`、`outline` の `2px`。
 - `url("data:…")` の中（アイコンの SVG の `black` など。`mask` で使うので色ではない）と、`mask` のグラデーションの `#000`。
 - 大きさ（`width`・`height`・`min-*`・`max-*`・`flex-basis` など）と位置（`top`・`left`・`inset` など）は検査しない（1.10）。

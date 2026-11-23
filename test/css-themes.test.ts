@@ -17,13 +17,13 @@ const css = `
   --space-1: 4px;
 }
 [data-theme="default-light"] {
-  --accent: #165e83;
+  --accent: #0f6e6e;
 }
 `;
 
 test("readThemes はテーマごとにトークンをまとめ、あとの宣言で上書きする", () => {
   const themes = readThemes(css);
-  assert.deepEqual(themes.get("default-light"), new Map([["--bg", "#f7f6f2"], ["--fg", "#1f2328"], ["--accent", "#165e83"]]));
+  assert.deepEqual(themes.get("default-light"), new Map([["--bg", "#f7f6f2"], ["--fg", "#1f2328"], ["--accent", "#0f6e6e"]]));
   assert.deepEqual(themes.get("mocha"), new Map([["--bg", "#1e1e2e"]]));
 });
 

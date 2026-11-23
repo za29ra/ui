@@ -6,7 +6,6 @@ const run = (css: string) => migrate(css).css;
 
 test("font-size を段階へ寄せる", () => {
   assert.equal(run(".a {\n  font-size: 0.9rem;\n}"), ".a {\n  font-size: var(--text-md);\n}");
-  assert.equal(run(".a {\n  font-size: 0.625rem;\n}"), ".a {\n  font-size: var(--text-2xs);\n}");
   assert.equal(run(".a {\n  font-size: 15px;\n}"), ".a {\n  font-size: var(--text-md);\n}");
   assert.equal(run(".a {\n  font-size: 1.1rem;\n}"), ".a {\n  font-size: var(--text-lg);\n}");
   assert.equal(run(".a {\n  font-size: 1em;\n}"), ".a {\n  font-size: 1em;\n}");
@@ -24,7 +23,7 @@ test("余白の px を段階へ。負の値は calc、0 はそのまま", () => 
   assert.equal(run(".a {\n  padding-left: max(8px, env(safe-area-inset-left));\n}"), ".a {\n  padding-left: max(var(--space-2), env(safe-area-inset-left));\n}");
 });
 
-test("1px と 32px を超える余白は残りに出して触らない", () => {
+test("1px と 32px を超える余白は残りに出して触らない（2px 未満はすべて残り）", () => {
   const r = migrate(".a {\n  padding: 1px 48px;\n}");
   assert.equal(r.css, ".a {\n  padding: 1px 48px;\n}");
   assert.deepEqual(r.leftovers.map((l) => l.line), [2]);
@@ -87,4 +86,34 @@ test("16px を超え 100px 未満の角丸は残りに出す。100px 以上は f
 test("ベンダー接頭辞の keyframes の中も触らない", () => {
   const css = "@-webkit-keyframes x {\n  from {\n    padding: 6px;\n  }\n}";
   assert.equal(run(css), css);
+});
+
+test("段階の外（11px 未満・22px を超える）の文字の大きさは残りに出して触らない", () => {
+  for (const v of ["0.625rem", "9px", "2.5rem", "24px"]) {
+    const r = migrate(`.a {\n  font-size: ${v};\n}`);
+    assert.equal(r.css, `.a {\n  font-size: ${v};\n}`);
+    assert.deepEqual(r.leftovers.map((l) => l.line), [2]);
+  }
+});
+
+test("!important の付いた宣言は残りに出して触らない", () => {
+  for (const d of ["font-size: 14px !important", "padding: 8px !important", "border-radius: 6px !important", "transition: opacity 0.2s !important"]) {
+    const r = migrate(`.a {\n  ${d};\n}`);
+    assert.equal(r.css, `.a {\n  ${d};\n}`);
+    assert.deepEqual(r.leftovers.map((l) => l.line), [2]);
+  }
+});
+
+test("2px 未満の余白（0.5px など）は残りに出して触らない", () => {
+  const r = migrate(".a {\n  padding: 0.5px 8px;\n}");
+  assert.equal(r.css, ".a {\n  padding: 0.5px 8px;\n}");
+  assert.deepEqual(r.leftovers.map((l) => l.line), [2]);
+});
+
+test("0 や 50ms 未満の時間（動きを止める指定）は触らない", () => {
+  for (const d of ["transition-duration: 0s", "animation-duration: 0.01ms", "transition: opacity 0s, transform 0.2s"]) {
+    const r = migrate(`.a {\n  ${d};\n}`);
+    assert.equal(r.css, `.a {\n  ${d};\n}`);
+    assert.deepEqual(r.leftovers, []);
+  }
 });
