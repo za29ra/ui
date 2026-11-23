@@ -28,6 +28,6 @@ html {
 }
 
 /* 欄の輪は欄に付ける（アプリの指定が勝つよう、詳細度は 0 にしてある） */
-:where(input, textarea, select):focus-visible {
+:where(input:focus-visible, textarea:focus-visible, select:focus-visible) {
   outline-offset: 0;
 }
