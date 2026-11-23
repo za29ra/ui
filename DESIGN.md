@@ -51,10 +51,11 @@
 | `--accent-fg` | `--accent` の面の上の文字（`--accent` と 4.5:1 以上） |
 | `--accent-soft` | アクセントを薄くした面（選んでいるカードなど）。`color-mix(in srgb, var(--accent) 14%, var(--bg))` |
 | `--danger` | 危険な操作・正しくない値・エラーの文 |
+| `--danger-fg` | `--danger` の面の上の文字（件数のバッジなど。`--danger` と 4.5:1 以上） |
 | `--success` | 済んだ・うまくいった |
 | `--toast-bg` / `--toast-fg` | トースト（地と逆の明るさ） |
 | `--scrim` | モーダルの背景の幕 |
-| `--on-media` | 画像・動画の上に重ねる文字とアイコン（テーマによらず白） |
+| `--on-media` | 画像・動画・色の面の上に、テーマによらず白で置くもの（画像の上の文字、スイッチのつまみ） |
 
 `--accent-soft` のように別のトークンから作るものは、`:root` だけでなく**すべての `[data-theme]` のセレクタで宣言する**（var は宣言した要素で解決されるので、`:root` だけだと色見本の中が親のテーマの色になる）。
 
@@ -72,11 +73,12 @@
 | `--fg-faint` | `#9ca3af` | `#6b7280` |
 | `--border` | `#dcdad3` | `#30343b` |
 | `--danger` | `#c92a2a` | `#ff6b6b` |
+| `--danger-fg` | `#ffffff` | `#16181c` |
 | `--success` | `#2b8a3e` | `#51cf66` |
 | `--toast-bg` / `--toast-fg` | `#1f2328` / `#ffffff` | `#e6e6e6` / `#16181c` |
 | `--scrim` | `rgb(0 0 0 / 0.35)` | `rgb(0 0 0 / 0.5)` |
 
-`--accent` と `--accent-fg` はアプリ別（1.8）。
+`--accent` と `--accent-fg` はアプリ別（1.8）。`ui/tokens.css` は、アプリが書かなかったときの既定（light `#2f5d8a` / `#ffffff`、dark `#8cb4d8` / `#0b1d28`）を持つ。
 
 #### Catppuccin のテーマ
 
@@ -96,6 +98,7 @@
 | `--accent` | mauve（**全アプリ共通**。アプリ別のアクセントは標準テーマだけ） | |
 | `--accent-fg` | base | |
 | `--danger` | red | Errors |
+| `--danger-fg` | base | |
 | `--success` | green | Success |
 | `--toast-bg` / `--toast-fg` | text / base | |
 | `--scrim` と影（1.6） | テーマの `color-scheme`（latte はライト、ほかはダーク）の値 | |
@@ -226,6 +229,7 @@
 | `--fg-muted` on `--bg`・`--bg-raised`・`--bg-sunken`・`--bg-hover` | 4.5:1 以上（選んでいる行の補足の文字は `--fg` にするか、基準の外として薄さを許す） |
 | `--accent-fg` on `--accent` | 4.5:1 以上 |
 | `--danger` on `--bg`・`--bg-raised`（エラーの文） | 4.5:1 以上 |
+| `--danger-fg` on `--danger` | 4.5:1 以上 |
 | `--accent`・`--success`・`--danger` on `--bg`（アイコン・状態の印・選択の印） | 3:1 以上 |
 | `--toast-fg` on `--toast-bg` | 4.5:1 以上 |
 
