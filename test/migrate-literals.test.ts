@@ -55,3 +55,36 @@ test("カスタムプロパティの宣言と @keyframes の中は触らない",
   const css = ":root {\n  --gutter: 16px;\n}\n@keyframes x {\n  from {\n    padding: 6px;\n  }\n}";
   assert.equal(run(css), css);
 });
+
+test("transition・animation は項目の 1 つ目の時間だけを段階にする", () => {
+  assert.equal(run(".a {\n  transition: opacity 0.15s, transform 0.28s;\n}"), ".a {\n  transition: opacity var(--duration-fast), transform var(--duration-slow);\n}");
+});
+
+test("delay のある項目と 500ms を超える時間は触らず残りに出す", () => {
+  const a = migrate(".a {\n  animation: toast-out 0.3s 5s forwards;\n}");
+  assert.equal(a.css, ".a {\n  animation: toast-out 0.3s 5s forwards;\n}");
+  assert.deepEqual(a.leftovers.map((l) => l.line), [2]);
+  const b = migrate(".a {\n  transition: opacity 1.2s;\n}");
+  assert.equal(b.css, ".a {\n  transition: opacity 1.2s;\n}");
+  assert.deepEqual(b.leftovers.map((l) => l.line), [2]);
+});
+
+test("cubic-bezier の中のカンマで項目を分けない", () => {
+  assert.equal(run(".a {\n  transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1);\n}"), ".a {\n  transition: opacity var(--duration-base) cubic-bezier(0.2, 0, 0, 1);\n}");
+});
+
+test("複数行のセレクタを 1 つにまとめて読む", () => {
+  assert.equal(run(".a input,\n.b {\n  font-size: 16px;\n}"), ".a input,\n.b {\n  font-size: var(--text-input);\n}");
+});
+
+test("16px を超え 100px 未満の角丸は残りに出す。100px 以上は full", () => {
+  const r = migrate(".a {\n  border-radius: 22px;\n}");
+  assert.equal(r.css, ".a {\n  border-radius: 22px;\n}");
+  assert.deepEqual(r.leftovers.map((l) => l.line), [2]);
+  assert.equal(run(".a {\n  border-radius: 100px;\n}"), ".a {\n  border-radius: var(--radius-full);\n}");
+});
+
+test("ベンダー接頭辞の keyframes の中も触らない", () => {
+  const css = "@-webkit-keyframes x {\n  from {\n    padding: 6px;\n  }\n}";
+  assert.equal(run(css), css);
+});

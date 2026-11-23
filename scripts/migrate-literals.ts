@@ -2,7 +2,7 @@
  * 直書きの値を ui のトークンへ置き換える（開発用。配らない）。
  * 使い方: node scripts/migrate-literals.ts <file.css>
  *   ファイルを書き換え、置き換えられなかった行（残り）を stdout に出す。
- * CSS は 1 行に 1 宣言、セレクタの行は { で終わる書き方（Prettier の出力）を前提にする
+ * CSS は 1 行に 1 宣言、セレクタは { で終わる行（, で終わる行が続く複数行も可）（Prettier の出力）を前提にする
  */
 import { readFileSync, writeFileSync } from "node:fs";
 
@@ -32,21 +32,47 @@ function toPx(num: string, unit: string): number {
 
 const SPACE_PROPS = /^(padding|margin)(-(top|right|bottom|left|inline|block)(-(start|end))?)?$|^(gap|row-gap|column-gap)$/;
 
+/** 括弧の外のカンマで分ける（cubic-bezier(…) の中は分けない） */
+function splitTopLevel(value: string): string[] {
+  const items: string[] = [];
+  let depth = 0;
+  let cur = "";
+  for (const ch of value) {
+    if (ch === "(") depth++;
+    else if (ch === ")") depth--;
+    if (ch === "," && depth === 0) {
+      items.push(cur.trim());
+      cur = "";
+    } else cur += ch;
+  }
+  items.push(cur.trim());
+  return items;
+}
+
 export function migrate(source: string): { css: string; leftovers: Leftover[] } {
   const lines = source.split("\n");
   const leftovers: Leftover[] = [];
   let selector = "";
+  let pending = ""; // , で終わる複数行のセレクタの前の行
   let keyframesDepth = 0;
   let depth = 0;
 
   const out = lines.map((line, i) => {
     const opens = (line.match(/\{/g) ?? []).length;
     const closes = (line.match(/\}/g) ?? []).length;
-    if (/^\s*@keyframes\b/.test(line)) keyframesDepth = depth + 1;
-    if (opens > 0) selector = line;
+    const isKeyframes = /^\s*@(-\w+-)?keyframes\b/.test(line);
+    if (isKeyframes) keyframesDepth = depth + 1;
+    if (opens > 0) {
+      selector = pending + line;
+      pending = "";
+    } else if (line.trim().endsWith(",")) {
+      pending += line + "\n";
+    } else {
+      pending = "";
+    }
     depth += opens - closes;
     if (keyframesDepth > 0 && depth < keyframesDepth) keyframesDepth = 0;
-    if (keyframesDepth > 0 && !/^\s*@keyframes\b/.test(line)) return line;
+    if (keyframesDepth > 0 && !isKeyframes) return line;
 
     const m = /^(\s*)([a-z-]+)\s*:\s*(.+?);\s*$/.exec(line);
     if (m === null) return line;
@@ -87,6 +113,7 @@ export function migrate(source: string): { css: string; leftovers: Leftover[] } 
       const rm = /^(\d*\.?\d+)(px|rem)$/.exec(value);
       if (rm === null) return value.includes("var(") ? keep() : leftover();
       const px = toPx(rm[1], rm[2]);
+      if (px > 16 && px < 100) return leftover(); // 形が変わりうるので手で決める
       const name = px <= 4 ? "sm" : px <= 9 ? "md" : px <= 16 ? "lg" : "full";
       return set(`var(--radius-${name})`);
     }
@@ -101,10 +128,17 @@ export function migrate(source: string): { css: string; leftovers: Leftover[] } 
 
     if (/^(transition|animation)(-duration)?$/.test(prop)) {
       if (value.includes("infinite")) return keep();
-      const v = value.replace(/\b(\d*\.?\d+)(ms|s)\b/g, (_all, num: string, unit: string) => {
-        const ms = unit === "s" ? parseFloat(num) * 1000 : parseFloat(num);
-        return `var(--duration-${nearest(ms, DURATION)})`;
-      });
+      // カンマで分けた項目ごとに、1 つ目の時間だけを段階にする。delay（2 つ目の時間）や 500ms を超える時間は手で決める
+      const time = /(?<![\w.-])(\d*\.?\d+)(ms|s)\b/g;
+      const toMs = (num: string, unit: string) => (unit === "s" ? parseFloat(num) * 1000 : parseFloat(num));
+      const items = splitTopLevel(value);
+      for (const item of items) {
+        const times = [...item.matchAll(time)];
+        if (times.length > 1 || times.some((t) => toMs(t[1], t[2]) > 500)) return leftover();
+      }
+      const v = items
+        .map((item) => item.replace(time, (_all, num: string, unit: string) => `var(--duration-${nearest(toMs(num, unit), DURATION)})`))
+        .join(", ");
       return v === value ? keep() : set(v);
     }
 
