@@ -26,6 +26,6 @@
 2. アプリの側で一時的に `pnpm add ui@link:../ui` で繋ぐ。`ui` のファイルが `../ui/node_modules/preact` を読まないよう、アプリの Vite の設定に `resolve.dedupe: ["preact"]` を入れておく。
 3. コミットする前に、アプリの依存をタグの指定へ戻す。
 
-## 要確認
+## pnpm の `minimumReleaseAge`
 
-- `pnpm-workspace.yaml` の `minimumReleaseAge` が git の依存にかからないか（最初に読み込むときに確かめる）。
+git の依存にはかからない。作ったばかりのタグでも `pnpm add ui@github:za29ra/ui#v<版>` で入る（pnpm 12.14 で確かめた）。lockfile には、タグが指すコミットの tarball の URL と integrity が入る。
