@@ -318,7 +318,7 @@
 | 送信中 | ボタンの文言を「〜中…」にして無効にする | 二重に送らない |
 | エラーのある Field | 線と文を `--danger`、欄の下に理由の文 | `aria-invalid`、文は `aria-describedby` |
 
-`ui/base.css` が持つもの: `body` の文字（`--font-sans`・`--text-base`・`--leading-body`）、`touch-action: manipulation`（`html`・`body`・`a`・`button`。ダブルタップの拡大を止める）、`-webkit-tap-highlight-color: transparent`、フォーカスの輪（詳細度 0 なのでアプリの指定が勝つ。入力欄は `outline-offset: 0`）、スクロールバーの色。`box-sizing` と `prefers-reduced-motion` は持たない（アプリ・部品の側で決める）。
+`ui/base.css` が持つもの: `body` の文字（`--font-sans`・`--text-base`・`--leading-body`）、`touch-action: manipulation`（`html`・`body`・`a`・`button`。ダブルタップの拡大を止める）、`-webkit-tap-highlight-color: transparent`、フォーカスの輪（詳細度 0 なのでアプリの指定が勝つ。入力欄は `outline-offset: 0`）、スクロールバーの色。`box-sizing` と `prefers-reduced-motion` は持たない（アプリ・部品の側で決める）。`components.css` は、`width: 100%` にする入力欄だけ `box-sizing: border-box` にする。
 
 ### 2.4 ダイアログ・シートの構成と文言
 

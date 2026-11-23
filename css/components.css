@@ -78,6 +78,7 @@
 }
 
 :where(input, select, textarea) {
+  box-sizing: border-box;
   width: 100%;
   padding: var(--space-2);
   border: 1px solid var(--border);
@@ -184,6 +185,11 @@
   border-color: var(--accent);
   background: var(--accent);
   color: var(--accent-fg);
+}
+
+/* 入れ物が横に流れる（overflow）ので、外に出る輪は切れる。輪を内側に描く */
+:where(.ui-chips > button:focus-visible, .ui-tabs > button:focus-visible) {
+  outline-offset: -2px;
 }
 
 /* ---- タブ（同じ場所の中身の切り替え。下線） ---- */
@@ -447,7 +453,7 @@
 }
 
 @media (hover: hover) {
-  :where(.ui-menu-list > button:hover) {
+  :where(.ui-menu-list > button:not(:disabled):hover) {
     background: var(--bg-hover);
   }
 }
