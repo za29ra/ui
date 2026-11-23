@@ -1,0 +1,165 @@
+/* 基本コンポーネントの見た目（DESIGN.md 2 章）。tokens.css・base.css のあとに読む。
+   規則はすべて :where() で包む（詳細度 0。アプリの規則が必ず勝つ）。部品の class と @keyframes は ui- で始める */
+
+/* ---- ボタンと入力欄（要素の既定） ---- */
+
+:where(button, input, select, textarea) {
+  font: inherit;
+  color: inherit;
+}
+
+:where(button) {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-raised);
+  cursor: pointer;
+  transition: background-color var(--duration-fast);
+}
+
+:where(button:disabled) {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* hover はマウスのときだけ（タッチで押したあとに色を残さない）。地の無いボタン（アプリが background を決めたもの）には付かない */
+@media (hover: hover) {
+  :where(button:not(:disabled):hover) {
+    background: var(--bg-hover);
+  }
+}
+
+:where(button:not(:disabled):active) {
+  background: var(--bg-selected);
+}
+
+/* 主の操作（その画面に 1 つ） */
+:where(button.ui-primary) {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+@media (hover: hover) {
+  :where(button.ui-primary:not(:disabled):hover) {
+    background: var(--accent);
+    filter: brightness(1.1);
+  }
+}
+
+:where(button.ui-primary:not(:disabled):active) {
+  background: var(--accent);
+  filter: brightness(0.9);
+}
+
+/* 壊す操作 */
+:where(button.ui-danger) {
+  color: var(--danger);
+}
+
+/* アイコンだけ（aria-label 必須）。押せる大きさは 44px */
+:where(button.ui-icon) {
+  display: inline-grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* 地も線も無い文字だけ（トーストの「取り消す」など） */
+:where(button.ui-text) {
+  flex: none;
+  border: 0;
+  background: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+:where(input, select, textarea) {
+  width: 100%;
+  padding: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-raised);
+}
+
+/* iOS は 16px 未満の入力欄に入ると拡大する */
+:where(input:not([type="checkbox"], [type="radio"]), select, textarea) {
+  font-size: var(--text-input);
+}
+
+/* 上の width: 100% はチェックボックスには効かせない（ラベルの文字が端に離れる） */
+:where(input[type="checkbox"], input[type="radio"]) {
+  width: auto;
+  padding: 0;
+}
+
+:where(input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"]) {
+  border-color: var(--danger);
+}
+
+/* ---- スイッチ（すぐ反映されるオン・オフ）: 角の丸い枠の中を丸が動く。オンは --success ---- */
+
+:where(.ui-switch-row) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+  cursor: pointer;
+}
+
+:where(input.ui-switch) {
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 51px;
+  height: 31px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--border);
+  cursor: pointer;
+  transition: background-color var(--duration-base);
+}
+
+:where(input.ui-switch)::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: var(--on-media);
+  box-shadow: var(--shadow-sm);
+  transition: translate var(--duration-base);
+}
+
+:where(input.ui-switch:checked) {
+  background: var(--success);
+}
+
+:where(input.ui-switch:checked)::before {
+  translate: 20px 0;
+}
+
+:where(input.ui-switch:disabled) {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* 欄の輪（base.css の outline-offset: 0）ではなく、ボタンと同じ離した輪 */
+:where(input.ui-switch:focus-visible) {
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(input.ui-switch),
+  :where(input.ui-switch)::before {
+    transition: none;
+  }
+}
