@@ -29,10 +29,14 @@ export function resolveTheme(prefs, systemDark) {
 function pick(list, value, fallback) {
     return list.find((t) => t.id === value)?.id ?? fallback;
 }
-/** storage は関数で受ける（localStorage を読むだけで例外になるブラウザがあるため） */
+/**
+ * storage は関数で受ける（localStorage を読むだけで例外になるブラウザがあるため）。
+ * アプリ名が不正なら投げる（storage の例外と違い、黙って既定にしない）
+ */
 export function loadThemePrefs(app, storage) {
+    const key = themeKey(app);
     try {
-        const raw = JSON.parse(storage().getItem(themeKey(app)) ?? "{}");
+        const raw = JSON.parse(storage().getItem(key) ?? "{}");
         const v = typeof raw === "object" && raw !== null ? raw : {};
         return {
             mode: pick(MODES, v.mode, DEFAULT_THEME_PREFS.mode),
@@ -45,8 +49,9 @@ export function loadThemePrefs(app, storage) {
     }
 }
 export function saveThemePrefs(app, storage, prefs) {
+    const key = themeKey(app);
     try {
-        storage().setItem(themeKey(app), JSON.stringify({ mode: prefs.mode, light: prefs.light, dark: prefs.dark }));
+        storage().setItem(key, JSON.stringify({ mode: prefs.mode, light: prefs.light, dark: prefs.dark }));
     }
     catch {
         // 覚えられなくても動く

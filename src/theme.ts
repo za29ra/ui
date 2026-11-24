@@ -59,10 +59,14 @@ function pick<T extends string>(list: Array<{ id: T }>, value: unknown, fallback
   return list.find((t) => t.id === value)?.id ?? fallback;
 }
 
-/** storage は関数で受ける（localStorage を読むだけで例外になるブラウザがあるため） */
+/**
+ * storage は関数で受ける（localStorage を読むだけで例外になるブラウザがあるため）。
+ * アプリ名が不正なら投げる（storage の例外と違い、黙って既定にしない）
+ */
 export function loadThemePrefs(app: string, storage: () => StorageLike): ThemePrefs {
+  const key = themeKey(app);
   try {
-    const raw: unknown = JSON.parse(storage().getItem(themeKey(app)) ?? "{}");
+    const raw: unknown = JSON.parse(storage().getItem(key) ?? "{}");
     const v = typeof raw === "object" && raw !== null ? (raw as Record<string, unknown>) : {};
     return {
       mode: pick(MODES, v.mode, DEFAULT_THEME_PREFS.mode),
@@ -75,8 +79,9 @@ export function loadThemePrefs(app: string, storage: () => StorageLike): ThemePr
 }
 
 export function saveThemePrefs(app: string, storage: () => StorageLike, prefs: ThemePrefs): void {
+  const key = themeKey(app);
   try {
-    storage().setItem(themeKey(app), JSON.stringify({ mode: prefs.mode, light: prefs.light, dark: prefs.dark }));
+    storage().setItem(key, JSON.stringify({ mode: prefs.mode, light: prefs.light, dark: prefs.dark }));
   } catch {
     // 覚えられなくても動く
   }

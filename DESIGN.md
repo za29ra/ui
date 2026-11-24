@@ -363,7 +363,7 @@
 | `pull` | `ui/pull`: 判定の関数と定数（`PULL_TRIGGER`・`pullDistance`・`pullReady`・`pullAxis`・`isScrollContainer`・`refreshDone` など）。`ui/pull-refresh`: `PullRefresh`・`PullRefreshProps`・`DEFAULT_BLOCK`・`blocked(target, block?, scroller?)` | 下へ引く操作の判定と、PullRefresh の部品（2.1） |
 | `dialog-layout` | `ui/dialog-layout`: `SHEET_MAX_PX`・`usesDialog`・`isDialogLayout`・`watchDialogLayout` | 2.2 の判定 |
 | `toast` | `ui/toast`: `ToastAction`・`ToastState`・`Notify`・`useToastState()` | トーストの状態（文言・操作・sticky・id） |
-| `storage` | `ui/storage`: `StorageLike`・`appKey(app, key)` | 端末に覚える値の読み書き（キーは `<アプリ名>.<キー>`。アプリ名は引数で渡す） |
+| `storage` | `ui/storage`: `StorageLike`・`appKey(app, key)` | 端末に覚えるキーの決まり（`<アプリ名>.<キー>`。アプリ名は英小文字・数字・`-`）と `StorageLike`。読み書きは各モジュール（`theme`・`auth`）が行う |
 | `pwa` | `ui/pwa`: `isStandalone()`・`isIos()` | ホーム画面から開いているか・iOS か |
 
 アプリが渡すもの（アプリごとに違うので `ui` は持たない）:

@@ -34,7 +34,10 @@ export declare const DEFAULT_THEME_PREFS: ThemePrefs;
 export declare function themeKey(app: string): string;
 export declare const DARK_QUERY = "(prefers-color-scheme: dark)";
 export declare function resolveTheme(prefs: ThemePrefs, systemDark: boolean): ResolvedTheme;
-/** storage は関数で受ける（localStorage を読むだけで例外になるブラウザがあるため） */
+/**
+ * storage は関数で受ける（localStorage を読むだけで例外になるブラウザがあるため）。
+ * アプリ名が不正なら投げる（storage の例外と違い、黙って既定にしない）
+ */
 export declare function loadThemePrefs(app: string, storage: () => StorageLike): ThemePrefs;
 export declare function saveThemePrefs(app: string, storage: () => StorageLike, prefs: ThemePrefs): void;
 /**

@@ -70,6 +70,11 @@ test("storage が例外を出しても既定で動き、保存は黙って諦め
   assert.doesNotThrow(() => saveThemePrefs("demo", throwing, DEFAULT_THEME_PREFS));
 });
 
+test("アプリ名が不正なら、読み書きとも投げる（storage の例外と違い、黙って既定にしない）", () => {
+  assert.throws(() => loadThemePrefs("Bad", throwing));
+  assert.throws(() => saveThemePrefs("Bad", throwing, DEFAULT_THEME_PREFS));
+});
+
 /** スクリプトを偽の localStorage・matchMedia・document で動かし、付けた data-theme を返す */
 function runBoot(app: string, stored: string | null, systemDark: boolean): string | undefined {
   const dataset: Record<string, string> = {};
