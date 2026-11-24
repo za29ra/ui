@@ -281,12 +281,12 @@
 | **Sheet** | `ui/modal` の `Modal`（`dialog.ui-sheet`。シートの振る舞いは `sheet`、既定 `true`）・`SheetClose`（`button.ui-icon.ui-sheet-close`）。骨格は `ui/sheet-frame` の `SheetFrame`（`.ui-sheet-frame`・`.ui-sheet-head`・`.ui-sheet-title`・`.ui-sheet-sub`・`.ui-sheet-main`・`.ui-sheet-foot`）。閉じる操作の判定は `ui/modal-rules` | 編集や選択の画面。狭い画面では下から、広い画面（2.2）ではダイアログになる | 選ぶだけの短い一覧は、広い画面では Popup |
 | **ConfirmDialog** | `ui/confirm` の `useConfirm`（`.ui-confirm`・`.ui-confirm-message`。ボタンは `.ui-dialog-actions`）。入力を捨てる確認は `DISCARD_CONFIRM`・`discardGuard` | 戻せない操作の前の確認（3.3） | 取り消せる操作には使わない（トーストで取り消す） |
 | **Toast** | `ui/toast` の `Toast`・`useToastState`。`.ui-toast-region`（popover）の中に `.ui-toast[data-kind="plain" \| "action" \| "sticky"]`、✕ は `.ui-toast-close`。読み上げは外に常に置く `.ui-visually-hidden` の `role="status"`。下からの位置は `--toast-offset` | 操作の結果・失敗・取り消し・新しい版の知らせ（3.4） | 入力が要るものは Dialog |
-| **Menu** | `.ui-menu`（面）の中に `.ui-menu-list`、項目は中の `button`。部品は（3c-3） | ⋯ やボタンから出す操作の一覧（項目・区切り・危険・アイコン） | 値を 1 つ選ぶなら Popup |
+| **Menu** | `ui/menu` の `Menu`・`useMenu`・`menuTrigger`（`dialog.ui-menu[popover]` の中に `.ui-menu-list`。項目は `button`・`a`、区切りは `.ui-menu-sep`、チェックは `.ui-menu-check[aria-pressed]`、右クリックの位置は `.ui-menu-anchor`）。項目は操作・リンク・区切りの 3 種類で、操作にはチェック・危険・アイコンを付けられる。ボタンから開く（ボタンに `menuTrigger` を広げる。位置はボタンの下）ときと、右クリックで押した位置に開く（`useMenu` の `openAt`）ときがある。右クリックでボタンを押したままなら、離してから開く（押したまま開くと、離したときに閉じるため）。選ぶと閉じてから項目の操作を行う。幅は部品の変数 `--menu-width`（既定 220px）で替えられる。`role="menu"` は付けず、開くボタンに `aria-haspopup="menu"`、メニューに `aria-label`、チェックは `aria-pressed`。キーの判定は `ui/menu-rules` | ⋯ やボタンから出す操作の一覧・行の右クリック | 値を 1 つ選ぶなら Popup |
 | **Popup** | `ui/popup` の `Popup`（`.ui-popup`。置き方（位置・高さの上限・安全域）は ui が持つ。位置の計算は `ui/popup-rules` の `placePopup`。幅と中身はアプリ） | 欄やボタンに接して出す選択（日付・候補・行き先など）。中身はアプリ別でよい | — |
 | **Chip** | `.ui-chips` の中に `button.ui-chip` | 絞り込みのオン・オフ、選択肢の並び | 画面の切り替えは Tabs |
 | **Tabs** | `.ui-tabs` の中に `button` | 同じ場所の中身の切り替え（下線のタブ。設定の項目など） | — |
 | **Badge** | `.ui-badge`（`.ui-tab-item` の中では小さく右上に） | 件数（ナビの項目の右・アイコンの上） | — |
-| **Icon** | （3c-3）。✕ だけ `ui/close-icon` の `CloseIcon` | アイコン（2.5） | — |
+| **Icon** | `span.ui-ico`（土台）に `ui-ico-<名前>`（`ui` のアイコン）か、アプリのアイコンの class を足す | アイコン（2.5） | — |
 | **NavItem** | `.ui-tab-item`（タブバー）・`.ui-side-item`（サイドナビ） | サイドナビ・タブバー・ドロワーの項目（アイコン・名前・選択中・バッジ） | ナビの構成はアプリ別 |
 | **Skeleton** | `.ui-skeleton`（棒の見た目と動き。並べ方はアプリ） | 読み込み中の形（灰色の棒の見た目と動き）。並べ方はアプリ別 | すぐ出るもの（0.3 秒以内）には出さない |
 | **Empty** | `.ui-empty` | 一覧が空のときの文（中央・`--fg-muted`）。文言はアプリ別 | — |
@@ -351,7 +351,9 @@
 - 色は `currentColor`（テーマとボタンの状態に追従する）。SVG を CSS の `mask` で塗る（`--glyph` に SVG の URL を入れる）か、`fill`/`stroke` に `currentColor` を使う。
 - 大きさは 20px（ボタンの中）を基本にし、小さな印は 16px、タブバーは 24px。線の太さは 2（20px のとき）。
 - アイコンだけのボタンは押せる大きさ（2.3）を満たし、`aria-label` を付ける。
-- ✕ は `ui/close-icon` の `CloseIcon`（`SheetClose` と `Toast` が使う。`SheetClose` は `icon` で差し替えられる）。ほかのアイコンの仕組みは 3c-3。
+- 書き方は `<span class="ui-ico ui-ico-名前" aria-hidden="true"></span>`。土台の `.ui-ico` は 20px・`currentColor`・`mask: var(--glyph)`。大きさを変えるときは `width`・`height` を上書きする。
+- `ui` が持つアイコンは、部品が使う `ui-ico-close`・`ui-ico-check`・`ui-ico-bell`・`ui-ico-bell-off`・`ui-ico-alert`・`ui-ico-more`（24 の枠・線 2.5 前後の SVG）。`SheetClose`・`Toast` の ✕、`ThemeSettings` の選んだ印、`NotifySettings` の状態は、これを描く。
+- アプリのアイコンは、同じ土台（`.ui-ico`）の上で、アプリの class（`ui-` を付けない名前）に `--glyph` を書く。
 
 ### 2.6 共通のロジック
 
@@ -370,6 +372,7 @@
 | `dialog-layout` | `ui/dialog-layout`: `SHEET_MAX_PX`・`usesDialog`・`isDialogLayout`・`watchDialogLayout` | 2.2 の判定 |
 | `toast` | `ui/toast-state`: `ToastAction`・`ToastState`・`Notify`・`dismissToast`・`toastKind`。`ui/toast`: その再 export と `useToastState()`・`Toast` | トーストの状態（文言・操作・sticky・id）と部品（2.1・3.4） |
 | `modal-rules` / `popup-rules` | `ui/modal-rules`: `isBackdropClick`・`closesOnEscape`・`inSheetTop`・`isDismissSwipe`・`keyboardInset`・`blocksTouchScroll`・`isTextField`・`revealDelta` など。`ui/popup-rules`: `placePopup`・`popupMaxHeight`・`visibleView`・`pickStep`・`pressKind` など | シートを閉じる操作の判定・キーボードの分の高さと、Popup の位置（`ui/modal`・`ui/popup` が使う） |
+| `menu-rules` | `ui/menu-rules`: `nextMenuIndex(key, current, count)`・`moveInMenu(e)`・`opensOnRelease(buttons)`・`afterRelease(win, run, defer?)` | メニューの ↑↓・Home・End の移動と、右クリックでボタンを押したままなら離してから開く判定（`ui/menu` が使う） |
 | `settings-text` | `ui/settings-text`: `PushIconName`・`PushTextOptions`・`PUSH_STATES`・`pushStateText(status, { appName, onDetail })` | 通知の状態の見出し・説明・アイコンの名前（4 章。`NotifySettings` が使う） |
 | `storage` | `ui/storage`: `StorageLike`・`appKey(app, key)` | 端末に覚えるキーの決まり（`<アプリ名>.<キー>`。アプリ名は英小文字・数字・`-`）と `StorageLike`。読み書きは各モジュール（`theme`・`auth`）が行う |
 | `pwa` | `ui/pwa`: `isStandalone()`・`isIos()` | ホーム画面から開いているか・iOS か |
@@ -390,6 +393,7 @@
 
 - ✕・背景を押す・Esc・シートの上部を下へスワイプは、**どれも同じ「閉じる要求」**。
 - Esc は**内側から 1 つずつ**閉じる（ポップアップ → 開いた行 → シート）。
+- メニューは、項目を選ぶと閉じる（閉じてから項目の操作を行う。確認のダイアログやシートを、メニューを出したまま開かない）。外側を押す・Esc でも閉じ、開いたボタンにフォーカスが戻る。
 - 入力を自動で残せるもの（下書き）は、確認なしに閉じて残す。残せないものは、**変えた項目があるときだけ**「変更を破棄しますか？」（「破棄する」`danger`／「続ける」）を出す。
 
 ### 3.2 キー
@@ -532,6 +536,6 @@ UI を変えたらこれで確かめる。
 
 - `package.json` で `ui` をタグで固定して読む（`github:za29ra/ui#v<版>`）。
 - `web/src/styles.css` の先頭で `ui/tokens.css`・`ui/base.css`・`ui/components.css` の順に読み、そのあとにアプリのアクセント・ドメインの色（1.8）・レイアウトを書く。`components.css` はすべて詳細度 0 なので、アプリの規則が必ず勝つ。文脈で使う規則の多いアプリの class（シートの `.sheet` など）は残し、`ui-` の class を足して、重なる宣言だけを消してよい。
-- ロジックは `ui/<モジュール>` から読む。純粋な関数（`theme`・`push`・`pull`・`modal-rules`・`popup-rules`・`toast-state`・`settings-text` など）と、フック・部品（`use-theme`・`use-push`・`update-check`・`toast`・`pull-refresh`・`modal`・`popup`・`sheet-frame`・`confirm`・`settings`）はファイルが別なので、アプリの `node --test` は純粋な関数だけを読める。
-- 部品はアプリの class を `class` で受けて、`ui-` の class の後ろに足す。アイコン（✕ 以外）は props で受ける（アイコンの仕組みは 3c-3）。
+- ロジックは `ui/<モジュール>` から読む。純粋な関数（`theme`・`push`・`pull`・`modal-rules`・`popup-rules`・`menu-rules`・`toast-state`・`settings-text` など）と、フック・部品（`use-theme`・`use-push`・`update-check`・`toast`・`pull-refresh`・`modal`・`popup`・`sheet-frame`・`confirm`・`settings`・`menu`）はファイルが別なので、アプリの `node --test` は純粋な関数だけを読める。
+- 部品はアプリの class を `class` で受けて、`ui-` の class の後ろに足す。部品のアイコンは `ui-ico-*`（2.5）。
 - アプリの `CLAUDE.md` は、**`node_modules/ui/DESIGN.md`**（固定した版と同じ文書）を参照し、「このアプリの例外」（ドメインの色・段階にない大きさ・レイアウトの境目・使わない部品とその理由）を書く。
