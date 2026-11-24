@@ -115,3 +115,19 @@ test("isZeroSpecificity は :where の外に何かあるセレクタを通さな
   assert.equal(isZeroSpecificity(":where(dialog.ui-sheet)::backdrop"), true);
   assert.equal(isZeroSpecificity(":where(a, b)"), true);
 });
+
+/** ui の規則（:where(sel) {…}）の宣言の本文 */
+function ruleBody(sel: string): string {
+  const start = body.indexOf(`:where(${sel}) {`);
+  assert.ok(start >= 0, `${sel} の規則がある`);
+  return body.slice(start, body.indexOf("}", start));
+}
+
+test("Popup は ui の規則だけで画面に固定され、安全領域と高さの上限を使える（popup.tsx が left・top・--popup-max を入れ、--safe-top・--safe-bottom を読む）", () => {
+  const r = ruleBody(".ui-popup");
+  assert.match(r, /--safe-top:\s*env\(safe-area-inset-top/);
+  assert.match(r, /--safe-bottom:\s*env\(safe-area-inset-bottom/);
+  assert.match(r, /position:\s*fixed/);
+  assert.match(r, /inset:\s*auto/);
+  assert.match(r, /max-height:\s*var\(--popup-max/);
+});
