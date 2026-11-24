@@ -950,9 +950,8 @@
   --state: var(--danger);
 }
 
-/* 注意の色のトークンはまだ無い。アプリが --now（今を示す強い色）を持っていればそれを使い、無ければ地味な色にする */
 :where(.ui-push-status[data-state="unsupported"], .ui-push-status[data-state="needs-install"]) {
-  --state: var(--now, var(--fg-muted));
+  --state: var(--warning);
 }
 
 /* アイコンはアプリが渡す。行の高さを持たないよう flex にする */

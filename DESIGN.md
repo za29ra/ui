@@ -53,6 +53,7 @@
 | `--danger` | 危険な操作・正しくない値・エラーの文 |
 | `--danger-fg` | `--danger` の面の上の文字（件数のバッジなど。`--danger` と 4.5:1 以上） |
 | `--success` | 済んだ・うまくいった |
+| `--warning` | 注意（使えない・設定が要る） |
 | `--toast-bg` / `--toast-fg` | トースト（地と逆の明るさ） |
 | `--scrim` | モーダルの背景の幕 |
 | `--on-media` | 画像・動画・色の面の上に、テーマによらず白で置くもの（画像の上の文字、スイッチのつまみ） |
@@ -75,6 +76,7 @@
 | `--danger` | `#c92a2a` | `#ff6b6b` |
 | `--danger-fg` | `#ffffff` | `#16181c` |
 | `--success` | `#2b8a3e` | `#51cf66` |
+| `--warning` | `#d9480f` | `#ff8a5c` |
 | `--toast-bg` / `--toast-fg` | `#1f2328` / `#ffffff` | `#e6e6e6` / `#16181c` |
 | `--scrim` | `rgb(0 0 0 / 0.35)` | `rgb(0 0 0 / 0.5)` |
 
@@ -100,12 +102,13 @@
 | `--danger` | red | Errors |
 | `--danger-fg` | base | |
 | `--success` | green | Success |
+| `--warning` | peach | |
 | `--toast-bg` / `--toast-fg` | text / base | |
 | `--scrim` と影（1.6） | テーマの `color-scheme`（latte はライト、ほかはダーク）の値 | |
 
 - `--bg-selected` の Selection Background は、公式では文字の選択の色。それを選んでいる項目の面に転用している。
 - `--bg-hover` と `--border` はどちらも surface0 で同じ色になる。線のある行に hover すると線が地に溶けるが、hover の間だけなので許す。
-- 値はパレットのまま使う。1.9 の基準に届かない組（latte の subtext0 on base 4.37:1、green on base 2.96:1 など）は、公式の配色を優先した例外とする。
+- 値はパレットのまま使う。1.9 の基準に届かない組（latte の subtext0 on base 4.37:1、green on base 2.96:1、peach on base 2.64:1 など）は、公式の配色を優先した例外とする。
 
 ### 1.3 文字
 
@@ -236,10 +239,10 @@
 | `--accent-fg` on `--accent` | 4.5:1 以上 |
 | `--danger` on `--bg`・`--bg-raised`（エラーの文） | 4.5:1 以上 |
 | `--danger-fg` on `--danger` | 4.5:1 以上 |
-| `--accent`・`--success`・`--danger` on `--bg`（アイコン・状態の印・選択の印） | 3:1 以上 |
+| `--accent`・`--success`・`--warning`・`--danger` on `--bg`（アイコン・状態の印・選択の印） | 3:1 以上 |
 | `--toast-fg` on `--toast-bg` | 4.5:1 以上 |
 
-- `--success` は文字には使わない（印とアイコンだけ）。済んだことを文で言うときは `--fg`。
+- `--success` と `--warning` は文字には使わない（印・アイコン・線だけ）。済んだことや注意を文で言うときは `--fg`。
 - `--fg-faint` と `--border` は基準の外（無効の表示・飾り・区切り）。入力欄は線だけでなく、ラベルと置き場所で欄と分かるようにする。
 - `ui` のテストは、この表の組を標準テーマの値で検査する。アプリのアクセントとドメインの色は、アプリのテストで `ui` の検査の関数を呼んで確かめる。
 
