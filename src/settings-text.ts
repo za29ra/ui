@@ -4,7 +4,7 @@
  */
 import type { PushStatus } from "./push.ts";
 
-/** 状態のアイコンの名前。アイコンそのものは NotifySettings の icons でアプリが渡す */
+/** 状態のアイコンの名前。NotifySettings は ui-ico-<名前> で描く */
 export type PushIconName = "alert" | "bell" | "bell-off";
 
 export interface PushTextOptions {

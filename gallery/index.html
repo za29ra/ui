@@ -21,9 +21,8 @@
       .g-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
       .g-col { display: grid; gap: var(--space-2); max-width: 360px; }
       .g-tabbar { display: flex; max-width: 420px; padding: var(--space-1); gap: var(--space-0_5); border: 1px solid var(--border); border-radius: var(--radius-full); background: var(--bg-raised); }
-      .g-tabbar .ico, .g-side .ico { display: block; width: 24px; height: 24px; border-radius: var(--radius-sm); background: currentColor; }
+      .g-tabbar .ui-ico { width: 24px; height: 24px; }
       .g-side { display: grid; gap: var(--space-0_5); width: 220px; padding: var(--space-2); background: var(--bg-sunken); }
-      .g-side .ico { width: 20px; height: 20px; }
       .g-side .ui-badge { margin-left: auto; }
       .g-static { position: static; }
       /* 見本のトーストは消さない（撮るたびに消えないように） */
@@ -32,6 +31,12 @@
       .g-tp-bar, .g-tp-row { display: block; height: 8px; border-radius: var(--radius-sm); }
       .g-tp-bar { width: 70%; background: var(--fg); }
       .g-tp-row { background: var(--bg-hover); }
+      .g-icons { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+      .g-icons > span { display: inline-flex; align-items: center; gap: var(--space-1_5); font-size: var(--text-sm); color: var(--fg-muted); }
+      .g-icons .ui-ico { color: var(--fg); }
+      .g-menu-row { display: flex; align-items: center; gap: var(--space-2); }
+      .g-menu-row > :last-child { margin-left: auto; }
+      .g-context { display: grid; place-items: center; height: 96px; border: 1px dashed var(--border); border-radius: var(--radius-md); color: var(--fg-muted); font-size: var(--text-sm); }
       .g-skeleton-row { display: flex; gap: var(--space-3); align-items: center; }
       .g-surfaces { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: flex-start; }
       .g-surfaces > * { position: static; }
@@ -49,6 +54,19 @@
           <button type="button" class="ui-icon" aria-label="閉じる">✕</button>
           <button type="button" disabled>無効</button>
           <button type="button" class="ui-primary" disabled>保存中…</button>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>Icon</h2>
+        <div class="g-icons">
+          <span><span class="ui-ico ui-ico-close" aria-hidden="true"></span>close</span>
+          <span><span class="ui-ico ui-ico-check" aria-hidden="true"></span>check</span>
+          <span><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>bell</span>
+          <span><span class="ui-ico ui-ico-bell-off" aria-hidden="true"></span>bell-off</span>
+          <span><span class="ui-ico ui-ico-alert" aria-hidden="true"></span>alert</span>
+          <span><span class="ui-ico ui-ico-more" aria-hidden="true"></span>more</span>
+          <button type="button" class="ui-icon" aria-label="その他の操作"><span class="ui-ico ui-ico-more" aria-hidden="true"></span></button>
         </div>
       </section>
 
@@ -106,15 +124,15 @@
       <section class="g-section">
         <h2>NavItem</h2>
         <nav class="g-tabbar" aria-label="タブバー">
-          <button type="button" class="ui-tab-item" aria-current="page"><span class="ico"></span>ホーム<span class="ui-badge">2</span></button>
-          <button type="button" class="ui-tab-item"><span class="ico"></span>タイムライン</button>
-          <button type="button" class="ui-tab-item"><span class="ico"></span>一覧</button>
-          <button type="button" class="ui-tab-item"><span class="ico"></span>設定</button>
+          <button type="button" class="ui-tab-item" aria-current="page"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>ホーム<span class="ui-badge">2</span></button>
+          <button type="button" class="ui-tab-item"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>タイムライン</button>
+          <button type="button" class="ui-tab-item"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>一覧</button>
+          <button type="button" class="ui-tab-item"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>設定</button>
         </nav>
         <nav class="g-side" aria-label="サイドナビ">
-          <button type="button" class="ui-side-item" aria-current="page"><span class="ico"></span>ホーム<span class="ui-badge">12</span></button>
-          <button type="button" class="ui-side-item"><span class="ico"></span>一覧</button>
-          <button type="button" class="ui-side-item"><span class="ico"></span>設定</button>
+          <button type="button" class="ui-side-item" aria-current="page"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>ホーム<span class="ui-badge">12</span></button>
+          <button type="button" class="ui-side-item"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>一覧</button>
+          <button type="button" class="ui-side-item"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>設定</button>
         </nav>
       </section>
 
@@ -123,10 +141,10 @@
         <div class="g-surfaces">
           <div class="ui-popup" style="position: static; width: 240px">ポップアップの面。中身はアプリが決める。</div>
           <div class="ui-menu" style="width: 220px">
-            <div class="ui-menu-list" role="menu">
-              <button type="button" role="menuitem">名前を変える</button>
-              <button type="button" role="menuitem">複製する</button>
-              <button type="button" role="menuitem" class="ui-danger">削除する</button>
+            <div class="ui-menu-list">
+              <button type="button">名前を変える</button>
+              <button type="button">複製する</button>
+              <button type="button" class="ui-danger">削除する</button>
             </div>
           </div>
           <div class="ui-toast-region g-static">
@@ -135,10 +153,30 @@
           <div class="ui-toast-region g-static">
             <div class="ui-toast" data-kind="plain">
               <span>保存できませんでした</span>
-              <button type="button" class="ui-icon ui-toast-close" aria-label="閉じる"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg></button>
+              <button type="button" class="ui-icon ui-toast-close" aria-label="閉じる"><span class="ui-ico ui-ico-close" aria-hidden="true"></span></button>
             </div>
           </div>
         </div>
+      </section>
+
+      <section class="g-section">
+        <h2>Menu</h2>
+        <div class="g-menu-row">
+          <button type="button" id="g-menu-button" commandfor="g-menu" command="toggle-popover" aria-haspopup="menu">表示を選ぶ</button>
+          <button type="button" class="ui-icon" commandfor="g-menu" command="toggle-popover" aria-haspopup="menu" aria-label="その他の操作"><span class="ui-ico ui-ico-more" aria-hidden="true"></span></button>
+        </div>
+        <div class="g-context" id="g-context">ここを右クリックすると、押した位置にメニューを開く</div>
+        <span class="ui-menu-anchor" id="g-menu-anchor"></span>
+        <dialog id="g-menu" class="ui-menu" popover="auto" aria-label="見本のメニュー">
+          <div class="ui-menu-list">
+            <button type="button"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>通知を設定する</button>
+            <button type="button" class="ui-menu-check" aria-pressed="true">リスト</button>
+            <button type="button" class="ui-menu-check" aria-pressed="false">週</button>
+            <hr class="ui-menu-sep" />
+            <a href="https://example.com/" target="_blank" rel="noopener noreferrer">使い方を開く</a>
+            <button type="button" class="ui-danger">削除する</button>
+          </div>
+        </dialog>
       </section>
 
       <section class="g-section">
@@ -185,19 +223,19 @@
                 <label class="ui-theme-card">
                   <input type="radio" name="g-theme-light" checked />
                   <span class="ui-theme-preview" data-theme="default-light" aria-hidden="true"><span class="g-tp-bar"></span><span class="g-tp-row"></span><span class="g-tp-row"></span></span>
-                  <span class="ui-theme-card-name">標準<span class="ui-theme-card-check" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span></span>
+                  <span class="ui-theme-card-name">標準<span class="ui-theme-card-check" aria-hidden="true"><span class="ui-ico ui-ico-check"></span></span></span>
                 </label>
                 <label class="ui-theme-card">
                   <input type="radio" name="g-theme-light" />
                   <span class="ui-theme-preview" data-theme="latte" aria-hidden="true"><span class="g-tp-bar"></span><span class="g-tp-row"></span><span class="g-tp-row"></span></span>
-                  <span class="ui-theme-card-name">Catppuccin Latte<span class="ui-theme-card-check" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span></span>
+                  <span class="ui-theme-card-name">Catppuccin Latte<span class="ui-theme-card-check" aria-hidden="true"><span class="ui-ico ui-ico-check"></span></span></span>
                 </label>
               </div>
             </fieldset>
             <div class="ui-settings-group">
               <span>この端末の通知</span>
               <div class="ui-push-status" role="status" data-state="on">
-                <span class="ui-push-status-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+                <span class="ui-push-status-icon" aria-hidden="true"><span class="ui-ico ui-ico-bell"></span></span>
                 <div>
                   <p class="ui-push-status-title">通知を受け取っています</p>
                   <p class="ui-push-status-detail">毎朝、その日の予定をお知らせします。</p>
@@ -230,7 +268,7 @@
           <form class="ui-sheet-frame" aria-label="予定の編集" method="dialog">
             <header class="ui-sheet-head">
               <button type="button" class="ui-icon ui-sheet-close" aria-label="閉じる" data-close>
-                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+                <span class="ui-ico ui-ico-close" aria-hidden="true"></span>
               </button>
               <div class="ui-sheet-title">
                 <h2>予定を編集</h2>
@@ -273,8 +311,39 @@
       document.getElementById("open-frame").onclick = openFrame;
       document.getElementById("open-confirm").onclick = () => confirm.showModal();
       for (const b of document.querySelectorAll("[data-close]")) b.onclick = () => b.closest("dialog").close();
-      // ?sheet・?frame・?confirm でそれぞれのシートを開いた状態にする（VRT で撮る）
+      // メニュー（ui/menu の Menu と同じ作り）: 選ぶと閉じる・↓↑・Home・End で動く・右クリックで押した位置に開く
+      const menu = document.getElementById("g-menu");
+      const anchor = document.getElementById("g-menu-anchor");
+      const menuItems = [...menu.querySelectorAll("button, a[href]")];
+      for (const item of menuItems) item.addEventListener("click", () => menu.hidePopover());
+      menu.addEventListener("beforetoggle", (e) => {
+        if (e.newState === "closed") delete menu.dataset.at;
+      });
+      menu.addEventListener("keydown", (e) => {
+        const i = menuItems.indexOf(document.activeElement);
+        const n = menuItems.length;
+        const next = { ArrowDown: i < 0 ? 0 : (i + 1) % n, ArrowUp: i < 0 ? n - 1 : (i - 1 + n) % n, Home: 0, End: n - 1 }[e.key];
+        if (next === undefined) return;
+        e.preventDefault();
+        menuItems[next].focus();
+      });
+      document.getElementById("g-context").addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        const open = () => {
+          anchor.style.left = `${e.clientX}px`;
+          anchor.style.top = `${e.clientY}px`;
+          if (menu.matches(":popover-open")) menu.hidePopover();
+          // 押した位置の右下に開く（閉じると外す）
+          menu.dataset.at = "";
+          menu.showPopover({ source: anchor });
+        };
+        // ボタンを押したままなら、離してから開く（押したまま開くと、離したときに閉じる）
+        if (e.buttons !== 0) window.addEventListener("pointerup", () => setTimeout(open), { capture: true, once: true });
+        else open();
+      });
+      // ?sheet・?frame・?confirm でそれぞれのシートを開いた状態にする。?menu でメニューを開いた状態にする（VRT で撮る）
       const params = new URLSearchParams(location.search);
+      if (params.has("menu")) menu.showPopover({ source: document.getElementById("g-menu-button") });
       if (params.has("sheet")) sheet.showModal();
       if (params.has("frame")) openFrame();
       if (params.has("confirm")) confirm.showModal();

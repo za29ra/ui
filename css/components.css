@@ -1,6 +1,46 @@
 /* 基本コンポーネントの見た目（DESIGN.md 2 章）。tokens.css・base.css のあとに読む。
    規則はすべて :where() で包む（詳細度 0。アプリの規則が必ず勝つ）。部品の class と @keyframes は ui- で始める */
 
+/* ---- アイコン（DESIGN.md 2.5）。<span class="ui-ico ui-ico-名前" aria-hidden="true"></span>。
+   SVG を mask で塗るので、色は currentColor（テーマとボタンの状態に追従する）。アプリのアイコンは同じ土台で --glyph を書く ---- */
+
+:where(.ui-ico) {
+  --glyph: none;
+  display: inline-block;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  background-color: currentColor;
+  -webkit-mask: var(--glyph) center / contain no-repeat;
+  mask: var(--glyph) center / contain no-repeat;
+}
+
+/* ui の部品が使うアイコン（24 の枠・線 2.5 前後。20px で描くと線は約 2px）。data: の中の black は mask の形で、色ではない */
+:where(.ui-ico-close) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E");
+}
+
+:where(.ui-ico-check) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E");
+}
+
+:where(.ui-ico-bell) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4'/%3E%3C/svg%3E");
+}
+
+:where(.ui-ico-bell-off) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 16V11a6 6 0 0 1 9-5.2M18 11v5l2 2H4l2-2M10 21h4M3 3l18 18'/%3E%3C/svg%3E");
+}
+
+:where(.ui-ico-alert) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l10 18H2zM12 10v5M12 18h.01'/%3E%3C/svg%3E");
+}
+
+:where(.ui-ico-more) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h.01M12 12h.01M19 12h.01'/%3E%3C/svg%3E");
+}
+
 /* ---- ボタンと入力欄（要素の既定） ---- */
 
 :where(button, input, select, textarea) {
@@ -616,7 +656,7 @@
   outline: none;
 }
 
-/* ---- メニュー（⋯ やボタンから出す操作の一覧） ---- */
+/* ---- メニュー（⋯ やボタンから出す操作の一覧。ui/menu の Menu。DESIGN.md 2.1） ---- */
 
 :where(.ui-menu) {
   margin: 0;
@@ -639,7 +679,7 @@
   gap: var(--space-0_5);
 }
 
-:where(.ui-menu-list > button) {
+:where(.ui-menu-list > :is(button, a)) {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -651,20 +691,81 @@
   background: transparent;
   color: inherit;
   text-align: left;
+  text-decoration: none;
 }
 
-:where(.ui-menu-list > button:focus-visible) {
+/* 項目の輪郭は出さず、背景で示す */
+:where(.ui-menu-list > :is(button, a):focus-visible) {
+  outline: none;
   background: var(--bg-hover);
 }
 
 @media (hover: hover) {
-  :where(.ui-menu-list > button:not(:disabled):hover) {
+  :where(.ui-menu-list > :is(button:not(:disabled), a):hover) {
     background: var(--bg-hover);
   }
 }
 
 :where(.ui-menu-list > button.ui-danger) {
   color: var(--danger);
+}
+
+/* popover のメニュー: <dialog popover> の既定（全面・中央寄せ）を外し、アンカー（開いたボタンか、右クリックの位置）の下に置く。
+   収まらなければ上・左に反転する。高さは画面の半分まで。幅は --menu-width（既定 220px） */
+:where(dialog.ui-menu[popover]) {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  position-area: block-end span-inline-start;
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline, block-end, block-start;
+  box-sizing: border-box; /* 幅は枠と余白を含めて --menu-width */
+  width: var(--menu-width, 220px);
+  max-width: calc(100vw - 16px);
+  max-height: calc(50dvh - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* popover で開いた dialog は open 属性を持たないので、dialog:not([open]) の display: none を上書きする */
+:where(dialog.ui-menu:popover-open) {
+  display: block;
+}
+
+/* 右クリックで開いたメニュー（Menu が data-at を付ける）: 押した位置の右下に開く（端末の標準のメニューと同じ）。収まらなければ上の候補で反転する。
+   上の規則と同じ詳細度（0）なので、後ろに置く */
+:where(dialog.ui-menu[popover][data-at]) {
+  position-area: block-end span-inline-end;
+}
+
+/* 右クリックの位置。left と top は Menu が入れる */
+:where(.ui-menu-anchor) {
+  position: fixed;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* 区切り */
+:where(.ui-menu-sep) {
+  margin: var(--space-1) 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+/* チェックの項目。チェックは右端に置く（外れていても分をあける） */
+:where(.ui-menu-check)::after {
+  content: "";
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin-left: auto;
+}
+
+:where(.ui-menu-check[aria-pressed="true"])::after {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.5l3 3 5-6.5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background: var(--accent);
+  -webkit-mask: var(--glyph) center / contain no-repeat;
+  mask: var(--glyph) center / contain no-repeat;
 }
 
 /* ---- トースト（画面の下に 1 つ。下からの位置は --toast-offset。DESIGN.md 3.4） ---- */
@@ -901,7 +1002,7 @@
   font-weight: 600;
 }
 
-/* 選んだ印（アイコンはアプリが渡す）。選んだカードだけ見せる */
+/* 選んだ印（ui-ico-check）。選んだカードだけ見せる */
 :where(.ui-theme-card-check) {
   display: flex;
   color: var(--accent);
@@ -954,7 +1055,7 @@
   --state: var(--warning);
 }
 
-/* アイコンはアプリが渡す。行の高さを持たないよう flex にする */
+/* 状態のアイコン（ui-ico-alert・bell・bell-off）。行の高さを持たないよう flex にする */
 :where(.ui-push-status-icon) {
   display: flex;
   margin-top: var(--space-0_5);

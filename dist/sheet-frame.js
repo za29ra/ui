@@ -11,9 +11,9 @@ import { Fragment as _Fragment, jsx as _jsx, jsxs as _jsxs } from "preact/jsx-ru
 import { useEffect } from "preact/hooks";
 import { keyboardInset, revealDelta } from "./modal-rules.js";
 import { SheetClose } from "./modal.js";
-export function SheetFrame({ dialogRef, title, subtitle, right, footer, onSubmit, label, closeIcon, children }) {
+export function SheetFrame({ dialogRef, title, subtitle, right, footer, onSubmit, label, children }) {
     useKeyboardInset(dialogRef);
-    const inner = (_jsxs(_Fragment, { children: [_jsxs("header", { class: "ui-sheet-head", onMouseDown: (e) => e.preventDefault(), children: [_jsx(SheetClose, { dialogRef: dialogRef, icon: closeIcon }), _jsxs("div", { class: "ui-sheet-title", children: [title !== undefined && _jsx("h2", { children: title }), subtitle !== undefined && _jsx("div", { class: "ui-sheet-sub", children: subtitle })] }), right] }), _jsx("div", { class: "ui-sheet-main", children: children }), footer !== undefined && _jsx("footer", { class: "ui-sheet-foot", children: footer })] }));
+    const inner = (_jsxs(_Fragment, { children: [_jsxs("header", { class: "ui-sheet-head", onMouseDown: (e) => e.preventDefault(), children: [_jsx(SheetClose, { dialogRef: dialogRef }), _jsxs("div", { class: "ui-sheet-title", children: [title !== undefined && _jsx("h2", { children: title }), subtitle !== undefined && _jsx("div", { class: "ui-sheet-sub", children: subtitle })] }), right] }), _jsx("div", { class: "ui-sheet-main", children: children }), footer !== undefined && _jsx("footer", { class: "ui-sheet-foot", children: footer })] }));
     if (onSubmit === undefined) {
         return (_jsx("div", { class: "ui-sheet-frame", "aria-label": label, children: inner }));
     }

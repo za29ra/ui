@@ -19,8 +19,7 @@ export type CloseGuard = () => boolean | Promise<boolean>;
 /** 載っている Modal の閉じる要求に、確認を差し込む（Modal の中の部品から。読み込みのある編集など、入力の状態を中で持つもの） */
 export declare function useCloseGuard(guard: CloseGuard): void;
 export declare function Modal({ open, onClose, dialogRef, sheet, class: cls, style, guard, children }: ModalProps): import("preact").JSX.Element;
-/** シートの閉じるボタン。左上の ✕ に統一（やめるボタンは置かない）。icon で ✕ のアイコンを差し替えられる */
-export declare function SheetClose({ dialogRef, icon }: {
+/** シートの閉じるボタン。左上の ✕ に統一（やめるボタンは置かない）。✕ は ui-ico-close */
+export declare function SheetClose({ dialogRef }: {
     dialogRef: RefObject<HTMLDialogElement | null>;
-    icon?: ComponentChildren;
 }): import("preact").JSX.Element;

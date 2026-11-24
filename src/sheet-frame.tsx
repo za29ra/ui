@@ -21,19 +21,17 @@ export interface SheetFrameProps {
   footer?: ComponentChildren;
   onSubmit?(): void;
   label?: string;
-  /** ✕ のアイコンを差し替える（SheetClose の icon） */
-  closeIcon?: ComponentChildren;
   children: ComponentChildren;
 }
 
-export function SheetFrame({ dialogRef, title, subtitle, right, footer, onSubmit, label, closeIcon, children }: SheetFrameProps) {
+export function SheetFrame({ dialogRef, title, subtitle, right, footer, onSubmit, label, children }: SheetFrameProps) {
   useKeyboardInset(dialogRef);
   const inner = (
     <>
       {/* ヘッダーのボタン（✕ など）を押しても、入力中の欄からフォーカスを外さない。iOS は押した時点でキーボードを閉じ、
           シートの高さが変わってボタンが指の下からずれるので、click が来ない（キーボードが消えるだけになる） */}
       <header class="ui-sheet-head" onMouseDown={(e) => e.preventDefault()}>
-        <SheetClose dialogRef={dialogRef} icon={closeIcon} />
+        <SheetClose dialogRef={dialogRef} />
         <div class="ui-sheet-title">
           {title !== undefined && <h2>{title}</h2>}
           {subtitle !== undefined && <div class="ui-sheet-sub">{subtitle}</div>}

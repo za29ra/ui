@@ -131,3 +131,36 @@ test("Popup は ui の規則だけで画面に固定され、安全領域と高�
   assert.match(r, /inset:\s*auto/);
   assert.match(r, /max-height:\s*var\(--popup-max/);
 });
+
+test("アイコンの土台は 20px・currentColor・--glyph の mask（DESIGN.md 2.5）", () => {
+  const r = ruleBody(".ui-ico");
+  assert.match(r, /width:\s*20px/);
+  assert.match(r, /height:\s*20px/);
+  assert.match(r, /background-color:\s*currentColor/);
+  assert.match(r, /mask:\s*var\(--glyph\)/);
+});
+
+test("ui の部品が使うアイコンを持つ", () => {
+  for (const name of ["close", "check", "bell", "bell-off", "alert", "more"]) {
+    assert.match(ruleBody(`.ui-ico-${name}`), /--glyph:\s*url\("data:image\/svg\+xml,/, name);
+  }
+});
+
+test("popover のメニューはアンカーの下に置き、収まらなければ反転し、高さを画面の半分までにする", () => {
+  const r = ruleBody("dialog.ui-menu[popover]");
+  assert.match(r, /position:\s*fixed/);
+  assert.match(r, /inset:\s*auto/);
+  assert.match(r, /position-area:/);
+  assert.match(r, /position-try-fallbacks:/);
+  assert.match(r, /width:\s*var\(--menu-width,\s*220px\)/);
+  assert.match(r, /max-height:/);
+});
+
+test("popover で開いたメニューは表示される（dialog:not([open]) の display: none を上書きする）", () => {
+  assert.match(ruleBody("dialog.ui-menu:popover-open"), /display:\s*block/);
+});
+
+test("右クリックで開いたメニュー（data-at）は押した位置の右下に開き、ボタンのときの規則より後ろにある", () => {
+  assert.match(ruleBody("dialog.ui-menu[popover][data-at]"), /position-area:\s*block-end span-inline-end/);
+  assert.ok(body.indexOf(":where(dialog.ui-menu[popover][data-at])") > body.indexOf(":where(dialog.ui-menu[popover]) {"));
+});

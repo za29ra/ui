@@ -19,6 +19,7 @@
 - 名前を変えるときは、旧い名前を別名（`--old: var(--new)`）として残し、次の major で消す。
 - v0.3.0: 共通のロジック（DESIGN.md 2.6）と PullRefresh（`ui/pull-refresh`、見た目は `.ui-pull`）。
 - v0.4.0: シート・ダイアログ・確認・トースト・Popup・設定の部品。
+- v0.5.0: アイコンの土台とメニュー（`.ui-ico`・`ui-ico-*`、`ui/menu`・`ui/menu-rules`）。破壊的な変更: `ui/close-icon` と、部品のアイコンの props（`SheetClose` の `icon`・`SheetFrame` の `closeIcon`・`ThemeSettings` の `checkIcon`・`NotifySettings` の `icons`）を消した。部品は `ui-ico-*` を描く。
 
 ## 手元で `ui` とアプリを一緒に変える
 
@@ -34,4 +35,4 @@ git の依存にはかからない。作ったばかりのタグでも `pnpm add
 
 ## 部品の見本
 
-`pnpm gallery` で `http://127.0.0.1:5190/gallery/` に全部の部品を並べる（`gallery/` は配らない）。`?theme=<data-theme>` でテーマを、`?sheet` でシートを開いた状態を、`?dialogs` でダイアログの形を選ぶ。部品を足す・変えるときは、見本も足す・直す。
+`pnpm gallery` で `http://127.0.0.1:5190/gallery/` に全部の部品を並べる（`gallery/` は配らない）。`?theme=<data-theme>` でテーマを、`?sheet` でシートを開いた状態を、`?menu` でメニューを開いた状態を、`?dialogs` でダイアログの形を選ぶ。部品を足す・変えるときは、見本も足す・直す。
