@@ -43,11 +43,17 @@ export function Menu({ menu, label, items, class: cls = "", onClose }) {
         anchor.style.top = `${request.y}px`;
         if (el.matches(":popover-open"))
             el.hidePopover();
+        // 閉じると beforetoggle で外す。前のメニューを閉じたあとに付ける
+        el.dataset.at = "";
         el.showPopover({ source: anchor });
         opens.settle(request.seq);
     }, [request?.seq]);
     const hide = () => menuRef.current?.hidePopover();
-    return (_jsxs(_Fragment, { children: [_jsx("span", { ref: anchorRef, class: "ui-menu-anchor" }), _jsx("dialog", { id: menu.id, ref: menuRef, class: `ui-menu ${cls}`.trim(), popover: "auto", "aria-label": label, onKeyDown: moveInMenu, onToggle: (e) => {
+    return (_jsxs(_Fragment, { children: [_jsx("span", { ref: anchorRef, class: "ui-menu-anchor" }), _jsx("dialog", { id: menu.id, ref: menuRef, class: `ui-menu ${cls}`.trim(), popover: "auto", "aria-label": label, onKeyDown: moveInMenu, onBeforeToggle: (e) => {
+                    // toggle と違い、閉じるその時に来る（あとから来て、次に右クリックで開いたメニューの data-at を消さない）
+                    if (e.newState === "closed")
+                        delete e.currentTarget.dataset.at;
+                }, onToggle: (e) => {
                     // 次の右クリックを待っている間に来た、前のメニューの閉じた知らせでは呼ばない（menu-rules の createOpenCount）
                     if (e.newState === "closed" && opens.settled())
                         onClose?.();

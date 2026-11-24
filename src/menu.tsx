@@ -2,7 +2,8 @@
  * メニュー（DESIGN.md 2.1）。<dialog popover="auto"> を 1 つ描く。
  * - ボタンから開く: ボタンに {...menuTrigger(menu)} を広げる。外側を押す・Esc で閉じ、開いたボタンにフォーカスが戻る（ブラウザの標準の動き）。
  *   位置は開いたボタン（暗黙のアンカー）を基準に CSS（dialog.ui-menu[popover]）で決める。
- * - 右クリックで開く: 行に onContextMenu={menu.openAt} を付ける。押した位置に置いたアンカー（.ui-menu-anchor）を基準に開く。
+ * - 右クリックで開く: 行に onContextMenu={menu.openAt} を付ける。押した位置に置いたアンカー（.ui-menu-anchor）を基準に、右下へ開く
+ *   （開いている間は dialog に data-at を付ける。CSS がボタンのときの置き方と替える）。
  * 開くと先頭の項目にフォーカスが入り（dialog の標準）、↓↑・Home・End で動く（menu-rules の moveInMenu）。
  * 項目を選ぶと、メニューを閉じてから onSelect を呼ぶ（確認のダイアログやシートを、メニューを出したまま開かない）
  */
@@ -81,6 +82,8 @@ export function Menu({ menu, label, items, class: cls = "", onClose }: MenuProps
     anchor.style.left = `${request.x}px`;
     anchor.style.top = `${request.y}px`;
     if (el.matches(":popover-open")) el.hidePopover();
+    // 閉じると beforetoggle で外す。前のメニューを閉じたあとに付ける
+    el.dataset.at = "";
     el.showPopover({ source: anchor });
     opens.settle(request.seq);
   }, [request?.seq]);
@@ -97,6 +100,10 @@ export function Menu({ menu, label, items, class: cls = "", onClose }: MenuProps
         popover="auto"
         aria-label={label}
         onKeyDown={moveInMenu}
+        onBeforeToggle={(e) => {
+          // toggle と違い、閉じるその時に来る（あとから来て、次に右クリックで開いたメニューの data-at を消さない）
+          if (e.newState === "closed") delete e.currentTarget.dataset.at;
+        }}
         onToggle={(e) => {
           // 次の右クリックを待っている間に来た、前のメニューの閉じた知らせでは呼ばない（menu-rules の createOpenCount）
           if (e.newState === "closed" && opens.settled()) onClose?.();

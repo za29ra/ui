@@ -731,6 +731,12 @@
   display: block;
 }
 
+/* 右クリックで開いたメニュー（Menu が data-at を付ける）: 押した位置の右下に開く（端末の標準のメニューと同じ）。収まらなければ上の候補で反転する。
+   上の規則と同じ詳細度（0）なので、後ろに置く */
+:where(dialog.ui-menu[popover][data-at]) {
+  position-area: block-end span-inline-end;
+}
+
 /* 右クリックの位置。left と top は Menu が入れる */
 :where(.ui-menu-anchor) {
   position: fixed;

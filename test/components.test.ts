@@ -159,3 +159,8 @@ test("popover のメニューはアンカーの下に置き、収まらなけれ
 test("popover で開いたメニューは表示される（dialog:not([open]) の display: none を上書きする）", () => {
   assert.match(ruleBody("dialog.ui-menu:popover-open"), /display:\s*block/);
 });
+
+test("右クリックで開いたメニュー（data-at）は押した位置の右下に開き、ボタンのときの規則より後ろにある", () => {
+  assert.match(ruleBody("dialog.ui-menu[popover][data-at]"), /position-area:\s*block-end span-inline-end/);
+  assert.ok(body.indexOf(":where(dialog.ui-menu[popover][data-at])") > body.indexOf(":where(dialog.ui-menu[popover]) {"));
+});
