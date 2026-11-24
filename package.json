@@ -21,6 +21,7 @@
     "./push": { "types": "./dist/push.d.ts", "default": "./dist/push.js" },
     "./use-push": { "types": "./dist/use-push.d.ts", "default": "./dist/use-push.js" },
     "./toast": { "types": "./dist/toast.d.ts", "default": "./dist/toast.js" },
+    "./toast-state": { "types": "./dist/toast-state.d.ts", "default": "./dist/toast-state.js" },
     "./version": { "types": "./dist/version.d.ts", "default": "./dist/version.js" },
     "./update-check": { "types": "./dist/update-check.d.ts", "default": "./dist/update-check.js" },
     "./sw-message": { "types": "./dist/sw-message.d.ts", "default": "./dist/sw-message.js" },
