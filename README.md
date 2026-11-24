@@ -8,15 +8,16 @@
 
 - アプリは git の依存として読む: `"ui": "github:za29ra/ui#v<版>"`。
 - **タグには、ビルドした `dist/`（`.js` と `.d.ts`）をコミットする。** Node は `node_modules` の中の `.ts` の型を除去しない（`ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`）ので、アプリの `node --test` が読めない。pnpm は依存の build スクリプトを既定で走らせないので、`prepare` には頼らない。
-- `package.json` の `exports` で、JS のモジュール（`ui/contrast`・`ui/css-themes`）と CSS（`ui/tokens.css`・`ui/base.css`・`ui/components.css`）・`ui/DESIGN.md` を出す。Preact の部品を足したら（3c 以降）、部品のモジュールもここに足す。
+- `package.json` の `exports` で、JS のモジュール（`ui/contrast`・`ui/css-themes`、共通のロジック `ui/theme`・`ui/push`・`ui/pull-refresh` など。一覧は DESIGN.md 2.6）と CSS（`ui/tokens.css`・`ui/base.css`・`ui/components.css`）・`ui/DESIGN.md` を出す。モジュールを足したら、ここにも足す。
 - `package.json` の `files` に `dist`・CSS・`DESIGN.md` を入れる（pnpm は git の依存を pack してから入れるので、`files` が無いと `.gitignore` に入れたものが落ちる）。
-- 部品（Preact）を足すときは、`preact` を `peerDependencies` にする（`dependencies` にすると Preact が 2 つ読まれ、フックが壊れる）。今はまだ部品が無いので、依存は無い。
+- `preact` は `peerDependencies`（`>=11`）にしている（`dependencies` にすると Preact が 2 つ読まれ、フックが壊れる）。フック（`ui/use-theme`・`ui/use-push` など）と PullRefresh が `preact/hooks` を読むので、アプリは自分の依存に `preact` を入れておく。
 - 値の検査（`bin/check-tokens.js`、DESIGN.md 5.1）は、まだ無い。作ったら、アプリのテストから呼ぶ（呼び方は実装のときに書く）。
 
 ## 版
 
 - `v<major>.<minor>.<patch>`。トークン・部品の名前を変える・消すのは major。足すのは minor。
 - 名前を変えるときは、旧い名前を別名（`--old: var(--new)`）として残し、次の major で消す。
+- v0.3.0: 共通のロジック（DESIGN.md 2.6）と PullRefresh（`ui/pull-refresh`、見た目は `.ui-pull`）。
 
 ## 手元で `ui` とアプリを一緒に変える
 

@@ -274,23 +274,23 @@
 | **Button** | 要素の `button`。種類は `.ui-primary`・`.ui-danger`・`.ui-icon`・`.ui-text` | 操作 1 つ。種類は `primary`（その画面の主な操作。1 つだけ）・既定・`danger`（消す・購読をやめるなどの壊す操作）・`icon`（アイコンだけ。`aria-label` 必須）・`text`（地のない文字だけ） | 移動だけなら `<a>`（Button の見た目にしない） |
 | **Field** | 要素の `input`・`select`・`textarea`（並びは 3d で決める） | 入力欄・`select`・`textarea`・検索欄。ラベル・補足・エラーの並びが共通 | — |
 | **Switch** | `input[type="checkbox"].ui-switch`、行は `.ui-switch-row` | すぐ反映されるオン・オフ（設定） | 保存ボタンのあるフォームの中ではチェックボックス |
-| **Dialog** | `dialog.ui-sheet`（2.2 の `html.dialogs` でダイアログの形）。部品は（3c） | 画面の真ん中に重ねる小さな画面（確認・短い入力） | 長い編集はシート |
-| **Sheet** | `dialog.ui-sheet`（2.2 の `html.dialogs` でダイアログの形）。部品は（3c） | 編集や選択の画面。狭い画面では下から、広い画面（2.2）ではダイアログになる | 選ぶだけの短い一覧は、広い画面では Popup |
-| **ConfirmDialog** | （3c） | 戻せない操作の前の確認（3.3） | 取り消せる操作には使わない（トーストで取り消す） |
+| **Dialog** | `dialog.ui-sheet`（2.2 の `html.dialogs` でダイアログの形）。部品は（3c-2） | 画面の真ん中に重ねる小さな画面（確認・短い入力） | 長い編集はシート |
+| **Sheet** | `dialog.ui-sheet`（2.2 の `html.dialogs` でダイアログの形）。部品は（3c-2） | 編集や選択の画面。狭い画面では下から、広い画面（2.2）ではダイアログになる | 選ぶだけの短い一覧は、広い画面では Popup |
+| **ConfirmDialog** | （3c-2） | 戻せない操作の前の確認（3.3） | 取り消せる操作には使わない（トーストで取り消す） |
 | **Toast** | `.ui-toast-region`（popover）の中に `.ui-toast`。下からの位置は `--toast-offset` | 操作の結果・失敗・取り消し・新しい版の知らせ（3.4） | 入力が要るものは Dialog |
 | **Menu** | `.ui-menu`（面）の中に `.ui-menu-list`、項目は中の `button` | ⋯ やボタンから出す操作の一覧（項目・区切り・危険・アイコン） | 値を 1 つ選ぶなら Popup |
 | **Popup** | `.ui-popup`（面だけ。大きさと位置はアプリ） | 欄やボタンに接して出す選択（日付・候補・行き先など）。中身はアプリ別でよい | — |
 | **Chip** | `.ui-chips` の中に `button.ui-chip` | 絞り込みのオン・オフ、選択肢の並び | 画面の切り替えは Tabs |
 | **Tabs** | `.ui-tabs` の中に `button` | 同じ場所の中身の切り替え（下線のタブ。設定の項目など） | — |
 | **Badge** | `.ui-badge`（`.ui-tab-item` の中では小さく右上に） | 件数（ナビの項目の右・アイコンの上） | — |
-| **Icon** | （3c） | アイコン（2.5） | — |
+| **Icon** | （3c-2） | アイコン（2.5） | — |
 | **NavItem** | `.ui-tab-item`（タブバー）・`.ui-side-item`（サイドナビ） | サイドナビ・タブバー・ドロワーの項目（アイコン・名前・選択中・バッジ） | ナビの構成はアプリ別 |
 | **Skeleton** | `.ui-skeleton`（棒の見た目と動き。並べ方はアプリ） | 読み込み中の形（灰色の棒の見た目と動き）。並べ方はアプリ別 | すぐ出るもの（0.3 秒以内）には出さない |
 | **Empty** | `.ui-empty` | 一覧が空のときの文（中央・`--fg-muted`）。文言はアプリ別 | — |
 | **Banner** | （3d） | 画面の上に出す、操作の付いた知らせ（ほかの端末との食い違いなど。4 章） | 時間で消えてよいものは Toast |
-| **PullRefresh** | （3c） | 下へ引いて読み直す（3.6） | — |
-| **SettingsLayout** | （3c） | 設定の画面の枠（3.8） | — |
-| **ThemeSettings** / **NotifySettings** | （3c） | 設定の「テーマ」「通知」の項目（全アプリ同じ並び・同じ文言） | — |
+| **PullRefresh** | `ui/pull-refresh` の `PullRefresh`。見た目は `.ui-pull`（状態は `data-state`）。引ける幅（`media`）と、引かない状態（`block`）・流れる枠（`scroller`）はアプリが渡す | 下へ引いて読み直す（3.6） | — |
+| **SettingsLayout** | （3c-2） | 設定の画面の枠（3.8） | — |
+| **ThemeSettings** / **NotifySettings** | （3c-2） | 設定の「テーマ」「通知」の項目（全アプリ同じ並び・同じ文言） | — |
 
 アプリにしかない部品（画面の隅の追加ボタン、横から出るドロワーなど）は `ui` に置かない。2 つ目のアプリで要ったら `ui` へ移す。
 
@@ -351,19 +351,28 @@
 
 見た目のない共通の処理も `ui` に置く。アプリはコピーせず、ここから読む。
 
-| モジュール | 中身 |
-|---|---|
-| `theme` | 表示とテーマの選択・保存・`data-theme` の付け替え・`<meta name="theme-color">`。描画の前に `data-theme` を付ける `index.html` の小さなスクリプトも、同じ規則で `ui` が出す |
-| `update-check` / `version` | 新しい版の配信を見つけて、トーストで再読み込みを勧める（4 章） |
-| `register-sw` / `sw-message` | Service Worker の登録と、画面との知らせ |
-| `sw` | Service Worker の共通の部分（Push を受けたら必ず通知を出す・新しい版の知らせ） |
-| `push` | Web Push の購読・鍵の入れ替え。VAPID の公開鍵は引数で受け取る |
-| `badge` | ホーム画面のアイコンのバッジを付ける・消す（数えるものはアプリ別） |
-| `auth` | ログイン切れの検出と、読み込み直し |
-| `pull` | 下へ引く操作の判定 |
-| `dialog-layout` | 2.2 の判定 |
-| `toast` | トーストの状態（文言・操作・sticky・id） |
-| `storage` | 端末に覚える値の読み書き（キーは `<アプリ名>.<キー>`。アプリ名は引数で渡す） |
+| モジュール | export | 中身 |
+|---|---|---|
+| `theme` | `ui/theme`: 型・`MODES`・`LIGHT_THEMES`・`DARK_THEMES`・`DEFAULT_THEME_PREFS`・`DARK_QUERY`・`themeKey(app)`・`resolveTheme`・`loadThemePrefs(app, storage)`・`saveThemePrefs(app, storage, prefs)`・`themeBootScript(app)`。`ui/use-theme`: `useTheme(app, storage)`・`ThemeState` | 表示とテーマの選択・保存・`data-theme` の付け替え・`<meta name="theme-color">`。描画の前に `data-theme` を付ける `index.html` の小さなスクリプトも、同じ規則で `ui` が出す。`themeBootScript(app)` をアプリのビルドで `<head>` に差し込む |
+| `update-check` / `version` | `ui/version`: `VERSION_PATH`・`buildIdOf`・`hasNewVersion`。`ui/update-check`: `useUpdateCheck(buildId, notify)` | 新しい版の配信を見つけて、トーストで再読み込みを勧める（4 章） |
+| `register-sw` / `sw-message` | `ui/register-sw`: `registerServiceWorker(url?)`・`listenNavigate(isAppPath, handler)`。`ui/sw-message`: `navigatePath(data, isAppPath)` | Service Worker の登録と、画面との知らせ |
+| `sw` | `ui/sw`: `ClientLike`・`ClientsLike`・`openOrFocus(clients, path)`・`notificationPath(data, isAppPath)` | Service Worker の共通の部分（通知のタップで開く `openOrFocus`・`notificationPath`）。Push を受けたら必ず通知を出すのはアプリの push の処理で守る |
+| `push` | `ui/push`: `PushStatus`・`PushEnv`・`pushStatus`・`SubscriptionLike`・`PushSubscribeRequest`・`subscribeRequest`・`sameKey`・`b64urlEncode`・`b64urlDecode`。`ui/use-push`: `PushApi`・`PushControl`・`usePush(api, notify)` | Web Push の購読・鍵の入れ替え。VAPID の公開鍵は引数で受け取る |
+| `badge` | `ui/badge`: `BadgeApi`・`setBadge(nav, count)` | ホーム画面のアイコンのバッジを付ける・消す（数えるものはアプリ別） |
+| `auth` | `ui/auth`: `RELOAD_INTERVAL_MS`・`ResponseHead`・`authExpired(res)`・`reloadOnce(app, storage, now, reload)` | ログイン切れの検出（`authExpired`）と、間を空けた読み込み直し（`reloadOnce`） |
+| `pull` | `ui/pull`: 判定の関数と定数（`PULL_TRIGGER`・`pullDistance`・`pullReady`・`pullAxis`・`isScrollContainer`・`refreshDone` など）。`ui/pull-refresh`: `PullRefresh`・`PullRefreshProps`・`DEFAULT_BLOCK`・`blocked(target, block?, scroller?)` | 下へ引く操作の判定と、PullRefresh の部品（2.1） |
+| `dialog-layout` | `ui/dialog-layout`: `SHEET_MAX_PX`・`usesDialog`・`isDialogLayout`・`watchDialogLayout` | 2.2 の判定 |
+| `toast` | `ui/toast`: `ToastAction`・`ToastState`・`Notify`・`useToastState()` | トーストの状態（文言・操作・sticky・id） |
+| `storage` | `ui/storage`: `StorageLike`・`appKey(app, key)` | 端末に覚える値の読み書き（キーは `<アプリ名>.<キー>`。アプリ名は引数で渡す） |
+| `pwa` | `ui/pwa`: `isStandalone()`・`isIos()` | ホーム画面から開いているか・iOS か |
+
+アプリが渡すもの（アプリごとに違うので `ui` は持たない）:
+
+- アプリ名（`theme`・`use-theme`・`auth`・`storage` のキー）
+- パスの検査 `isAppPath`（`listenNavigate`・`navigatePath`・`notificationPath`。アプリの画面のパスだけを通す）
+- ビルドの ID（`useUpdateCheck`）
+- API の呼び出し（`usePush` の `PushApi`）
+- PullRefresh の `media`（アプリの 1 列のレイアウトのメディアクエリ）
 
 ---
 
@@ -515,4 +524,5 @@ UI を変えたらこれで確かめる。
 
 - `package.json` で `ui` をタグで固定して読む（`github:za29ra/ui#v<版>`）。
 - `web/src/styles.css` の先頭で `ui/tokens.css`・`ui/base.css`・`ui/components.css` の順に読み、そのあとにアプリのアクセント・ドメインの色（1.8）・レイアウトを書く。`components.css` はすべて詳細度 0 なので、アプリの規則が必ず勝つ。文脈で使う規則の多いアプリの class（シートの `.sheet` など）は残し、`ui-` の class を足して、重なる宣言だけを消してよい。
+- ロジックは `ui/<モジュール>` から読む。純粋な関数（`theme`・`push`・`pull` など）と、フック・部品（`use-theme`・`use-push`・`update-check`・`toast`・`pull-refresh`）はファイルが別なので、アプリの `node --test` は純粋な関数だけを読める。
 - アプリの `CLAUDE.md` は、**`node_modules/ui/DESIGN.md`**（固定した版と同じ文書）を参照し、「このアプリの例外」（ドメインの色・段階にない大きさ・レイアウトの境目・使わない部品とその理由）を書く。
