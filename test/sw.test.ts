@@ -12,9 +12,9 @@ test("通知の data のパスは、アプリのパスならそれ、違えば /
   assert.equal(notificationPath({ path: 1 }, isAppPath), "/");
 });
 
-function client(visible: boolean, log: string[], name: string, focusFails = false): ClientLike {
+function client(visible: boolean, log: string[], name: string, focusFails = false, focused = false): ClientLike {
   return {
-    focused: false,
+    focused,
     visibilityState: visible ? "visible" : "hidden",
     postMessage: (m: unknown) => void log.push(`${name}:post:${JSON.stringify(m)}`),
     focus: async () => {
@@ -28,6 +28,22 @@ test("開いているウィンドウがあれば、見えているものに遷�
   const log: string[] = [];
   const a = client(false, log, "a");
   const b = client(true, log, "b");
+  await openOrFocus({ matchAll: async () => [a, b], openWindow: async () => void log.push("open") }, "/x");
+  assert.deepEqual(log, ['b:post:{"type":"navigate","path":"/x"}', "b:focus"]);
+});
+
+test("どれも見えず前面でもなければ、先頭のウィンドウに頼む", async () => {
+  const log: string[] = [];
+  const a = client(false, log, "a");
+  const b = client(false, log, "b");
+  await openOrFocus({ matchAll: async () => [a, b], openWindow: async () => void log.push("open") }, "/x");
+  assert.deepEqual(log, ['a:post:{"type":"navigate","path":"/x"}', "a:focus"]);
+});
+
+test("見えていなくても前面のウィンドウは、先にある見えないものより優先する", async () => {
+  const log: string[] = [];
+  const a = client(false, log, "a");
+  const b = client(false, log, "b", false, true);
   await openOrFocus({ matchAll: async () => [a, b], openWindow: async () => void log.push("open") }, "/x");
   assert.deepEqual(log, ['b:post:{"type":"navigate","path":"/x"}', "b:focus"]);
 });

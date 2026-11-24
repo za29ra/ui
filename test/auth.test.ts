@@ -19,6 +19,17 @@ test("reloadOnce は 1 分に 1 回だけ読み込み直す", () => {
   assert.equal(reloads, 2);
 });
 
+test("reloadOnce は壊れた記録・先の時刻の記録を、記録が無いものとして読み込み直す", () => {
+  for (const stored of ["abc", String(5000 + 10_000)]) {
+    const s = memory();
+    s.data.set("demo.reloadedAt", stored);
+    let reloads = 0;
+    assert.equal(reloadOnce("demo", () => s, 5000, () => void reloads++), true);
+    assert.equal(reloads, 1);
+    assert.equal(s.data.get("demo.reloadedAt"), "5000");
+  }
+});
+
 test("reloadOnce は記録できなければ読み込み直さない（繰り返しを止められないため）", () => {
   let reloads = 0;
   const broken = () => {
