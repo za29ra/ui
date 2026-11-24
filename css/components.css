@@ -394,6 +394,11 @@
   }
 }
 
+/* シートが開いている間は、後ろのページをスクロールさせない（Modal の lockPageScroll はこれを前提にする） */
+:where(html:has(dialog.ui-sheet[open])) {
+  overflow: hidden;
+}
+
 /* ---- シートの骨格（SheetFrame: ✕・見出し・本文・下のボタン）。--keyboard-inset・--keyboard-top と ui-keyboard は SheetFrame が dialog に付ける ---- */
 
 /* SheetFrame を載せたシートは、dialog 自身はスクロールさせず、本文だけをスクロールする */
@@ -529,7 +534,17 @@
   margin: calc(-1 * var(--space-1)) 0 0 calc(-1 * var(--space-1));
 }
 
-/* ダイアログの形でキーボードが出ているときは、キーボードの分を高さの上限で空ける（アプリ）ので、シートのように中には空けない */
+/* ダイアログの形でキーボードが出ているときは、上に寄せて、キーボードの上端までに収める（高さの上限でキーボードの分を空ける）。
+   dialog:modal は上下 0 の fixed なので、height は auto でなく fit-content（auto は画面いっぱいに伸びる）。
+   ui のシートは --sheet-max を使わず max-height を直に持つので、上限も max-height に書く */
+:where(html.dialogs dialog.ui-sheet.ui-keyboard) {
+  max-height: min(86dvh, calc(93dvh - var(--keyboard-inset, 0px) - var(--keyboard-top, 0px) - 8px));
+  margin-top: calc(7dvh + var(--keyboard-top, 0px)); /* ui-allow: レイアウト（画面の高さに比例） */
+  margin-bottom: auto;
+  height: fit-content;
+}
+
+/* キーボードの分は高さの上限で空けたので、シートのように中には空けない */
 :where(html.dialogs dialog.ui-sheet.ui-keyboard .ui-sheet-frame) {
   padding-bottom: 0;
 }
@@ -572,9 +587,17 @@
   color: var(--fg-muted);
 }
 
-/* ---- ポップアップ（欄やボタンに接して出す選択。面だけ。大きさと位置はアプリ） ---- */
+/* ---- ポップアップ（欄やボタンに接して出す選択。位置・高さの上限・安全域は ui、幅と中身はアプリ） ---- */
 
+/* Popup（popup.tsx）が left・top と --popup-max を入れ、--safe-top・--safe-bottom を読む。UA の [popover] の中央寄せを外す。
+   popover は最上層に出るので z-index は要らない（DESIGN.md 2.3） */
 :where(.ui-popup) {
+  /* ステータスバー・ホームバーの下に潜らせない */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  position: fixed;
+  inset: auto;
+  max-height: var(--popup-max, calc(100dvh - 16px));
   margin: 0;
   padding: var(--space-2_5);
   border: 1px solid var(--border);
@@ -587,6 +610,10 @@
   font-size: var(--text-base);
   font-weight: 400;
   text-align: left;
+}
+
+:where(.ui-popup:focus) {
+  outline: none;
 }
 
 /* ---- メニュー（⋯ やボタンから出す操作の一覧） ---- */
@@ -717,10 +744,6 @@
   :where(.ui-toast) {
     animation-duration: 1ms;
   }
-}
-
-:where(.ui-toast-close) {
-  color: inherit;
 }
 
 /* ---- PullRefresh（プルダウンで更新。ステータスバーの下に、引いた分だけ降りてくる丸いバッジ）。

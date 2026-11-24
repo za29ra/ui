@@ -279,7 +279,7 @@
 | **ConfirmDialog** | `ui/confirm` の `useConfirm`（`.ui-confirm`・`.ui-confirm-message`。ボタンは `.ui-dialog-actions`）。入力を捨てる確認は `DISCARD_CONFIRM`・`discardGuard` | 戻せない操作の前の確認（3.3） | 取り消せる操作には使わない（トーストで取り消す） |
 | **Toast** | `ui/toast` の `Toast`・`useToastState`。`.ui-toast-region`（popover）の中に `.ui-toast[data-kind="plain" \| "action" \| "sticky"]`、✕ は `.ui-toast-close`。読み上げは外に常に置く `.ui-visually-hidden` の `role="status"`。下からの位置は `--toast-offset` | 操作の結果・失敗・取り消し・新しい版の知らせ（3.4） | 入力が要るものは Dialog |
 | **Menu** | `.ui-menu`（面）の中に `.ui-menu-list`、項目は中の `button`。部品は（3c-3） | ⋯ やボタンから出す操作の一覧（項目・区切り・危険・アイコン） | 値を 1 つ選ぶなら Popup |
-| **Popup** | `ui/popup` の `Popup`（`.ui-popup`。位置は `ui/popup-rules` の `placePopup`。中の大きさはアプリ） | 欄やボタンに接して出す選択（日付・候補・行き先など）。中身はアプリ別でよい | — |
+| **Popup** | `ui/popup` の `Popup`（`.ui-popup`。置き方（位置・高さの上限・安全域）は ui が持つ。位置の計算は `ui/popup-rules` の `placePopup`。幅と中身はアプリ） | 欄やボタンに接して出す選択（日付・候補・行き先など）。中身はアプリ別でよい | — |
 | **Chip** | `.ui-chips` の中に `button.ui-chip` | 絞り込みのオン・オフ、選択肢の並び | 画面の切り替えは Tabs |
 | **Tabs** | `.ui-tabs` の中に `button` | 同じ場所の中身の切り替え（下線のタブ。設定の項目など） | — |
 | **Badge** | `.ui-badge`（`.ui-tab-item` の中では小さく右上に） | 件数（ナビの項目の右・アイコンの上） | — |
