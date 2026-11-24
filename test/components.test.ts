@@ -145,3 +145,17 @@ test("ui の部品が使うアイコンを持つ", () => {
     assert.match(ruleBody(`.ui-ico-${name}`), /--glyph:\s*url\("data:image\/svg\+xml,/, name);
   }
 });
+
+test("popover のメニューはアンカーの下に置き、収まらなければ反転し、高さを画面の半分までにする", () => {
+  const r = ruleBody("dialog.ui-menu[popover]");
+  assert.match(r, /position:\s*fixed/);
+  assert.match(r, /inset:\s*auto/);
+  assert.match(r, /position-area:/);
+  assert.match(r, /position-try-fallbacks:/);
+  assert.match(r, /width:\s*var\(--menu-width,\s*220px\)/);
+  assert.match(r, /max-height:/);
+});
+
+test("popover で開いたメニューは表示される（dialog:not([open]) の display: none を上書きする）", () => {
+  assert.match(ruleBody("dialog.ui-menu:popover-open"), /display:\s*block/);
+});
