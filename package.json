@@ -19,7 +19,10 @@
     "./theme": { "types": "./dist/theme.d.ts", "default": "./dist/theme.js" },
     "./use-theme": { "types": "./dist/use-theme.d.ts", "default": "./dist/use-theme.js" },
     "./push": { "types": "./dist/push.d.ts", "default": "./dist/push.js" },
-    "./use-push": { "types": "./dist/use-push.d.ts", "default": "./dist/use-push.js" }
+    "./use-push": { "types": "./dist/use-push.d.ts", "default": "./dist/use-push.js" },
+    "./toast": { "types": "./dist/toast.d.ts", "default": "./dist/toast.js" },
+    "./version": { "types": "./dist/version.d.ts", "default": "./dist/version.js" },
+    "./update-check": { "types": "./dist/update-check.d.ts", "default": "./dist/update-check.js" }
   },
   "scripts": {
     "test": "node --test \"test/**/*.test.ts\"",
