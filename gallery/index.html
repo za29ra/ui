@@ -26,6 +26,8 @@
       .g-side .ico { width: 20px; height: 20px; }
       .g-side .ui-badge { margin-left: auto; }
       .g-static { position: static; }
+      /* 見本のトーストは消さない（撮るたびに消えないように） */
+      .g-static .ui-toast { animation: none; }
       .g-skeleton-row { display: flex; gap: var(--space-3); align-items: center; }
       .g-surfaces { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: flex-start; }
       .g-surfaces > * { position: static; }
@@ -124,7 +126,13 @@
             </div>
           </div>
           <div class="ui-toast-region g-static">
-            <div class="ui-toast" role="status"><span>「洗濯」を終えました</span><button type="button" class="ui-text">取り消す</button></div>
+            <div class="ui-toast" data-kind="action"><span>「洗濯」を終えました</span><button type="button" class="ui-text">取り消す</button></div>
+          </div>
+          <div class="ui-toast-region g-static">
+            <div class="ui-toast" data-kind="plain">
+              <span>保存できませんでした</span>
+              <button type="button" class="ui-icon ui-toast-close" aria-label="閉じる"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg></button>
+            </div>
           </div>
         </div>
       </section>

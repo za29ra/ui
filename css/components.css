@@ -682,6 +682,47 @@
   overflow-wrap: anywhere;
 }
 
+/* 消えるまでの時間は CSS で数える（DESIGN.md 1.7）。終わったら Toast が popover を閉じる */
+:where(.ui-toast) {
+  animation: ui-toast-out var(--duration-base) var(--toast-duration) forwards;
+}
+
+:where(.ui-toast[data-kind="action"]) {
+  animation-delay: var(--toast-duration-action);
+}
+
+:where(.ui-toast[data-kind="sticky"]) {
+  animation: none;
+}
+
+@keyframes ui-toast-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* マウスを載せている間とフォーカスのある間は止める */
+@media (hover: hover) {
+  :where(.ui-toast-region:hover .ui-toast) {
+    animation-play-state: paused;
+  }
+}
+
+:where(.ui-toast-region:focus-within .ui-toast) {
+  animation-play-state: paused;
+}
+
+/* 動きを減らす設定では、消える動きを止める（時間はそのまま。DESIGN.md 1.7） */
+@media (prefers-reduced-motion: reduce) {
+  :where(.ui-toast) {
+    animation-duration: 1ms;
+  }
+}
+
+:where(.ui-toast-close) {
+  color: inherit;
+}
+
 /* ---- PullRefresh（プルダウンで更新。ステータスバーの下に、引いた分だけ降りてくる丸いバッジ）。
    どのテーマでも読めるよう、トーストと同じ反転色の背景にし、引き切ったら（data-state="ready"）アクセント色にする ---- */
 
