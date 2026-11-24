@@ -23,7 +23,21 @@ export declare function moveInMenu(e: KeyboardEvent): void;
 export declare function opensOnRelease(buttons: number): boolean;
 /**
  * ボタンを離したら（pointerup）、light dismiss が終わってから run する。
- * 離す前に pointercancel・ウィンドウの blur（ウィンドウの外で離したときなど）・次の pointerdown が来たら、開かずに見張りを外す
+ * 離す前に pointercancel・ウィンドウの blur（ウィンドウの外で離したときなど）・次の pointerdown が来たら、開かずに見張りを外し、onCancel を呼ぶ
  * （残すと、あとの左クリックの pointerup で古いメニューが開く）
  */
-export declare function afterRelease(win: EventTarget, run: () => void, defer?: (f: () => void) => void): void;
+export declare function afterRelease(win: EventTarget, run: () => void, defer?: (f: () => void) => void, onCancel?: () => void): void;
+/**
+ * 右クリックで開く要求の数え方。閉じた知らせ（toggle の closed）で onClose を呼ぶかを決める。
+ * 開いているメニューの外を右クリックすると、light dismiss の toggle はあとから（次の要求を受けたあとに）来る。
+ * そこで onClose を呼ぶと、アプリが次の要求のために覚えた対象を消してしまうので、要求がすべて済む（開いたか取りやめた）までは呼ばない
+ */
+export interface OpenCount {
+    /** 要求を 1 つ足し、その番号を返す */
+    request(): number;
+    /** 番号 n の要求が済んだ（開いた・取りやめた） */
+    settle(n: number): void;
+    /** 要求がすべて済んでいるか（閉じた知らせで onClose を呼んでよいか） */
+    settled(): boolean;
+}
+export declare function createOpenCount(): OpenCount;

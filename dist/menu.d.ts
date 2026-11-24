@@ -7,6 +7,7 @@
  * 項目を選ぶと、メニューを閉じてから onSelect を呼ぶ（確認のダイアログやシートを、メニューを出したまま開かない）
  */
 import type { ComponentChildren, RefObject } from "preact";
+import { type OpenCount } from "./menu-rules.ts";
 export type MenuItem = 
 /** checked を渡すとチェックの項目（false でもチェックの分をあける）。icon は ui-ico に足す class（例 "ui-ico-check"・アプリの "ico-defer"） */
 {
@@ -34,12 +35,14 @@ export interface MenuHandle {
     anchorRef: RefObject<HTMLSpanElement | null>;
     /** 右クリック（contextmenu）で、押した位置に開く。preventDefault も行う。押したままなら離してから開く */
     openAt(e: MouseEvent): void;
-    /** 内部: openAt が位置を決めたあと、項目を描いてから開くための合図 */
+    /** 内部: openAt が位置を決めたあと、項目を描いてから開くための合図（seq は opens の要求の番号） */
     request: {
         x: number;
         y: number;
         seq: number;
     } | null;
+    /** 内部: 右クリックで開く要求の数（閉じた知らせで onClose を呼ぶかを決める） */
+    opens: OpenCount;
 }
 /** Menu に渡す handle を作る */
 export declare function useMenu(): MenuHandle;

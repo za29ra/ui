@@ -8,7 +8,7 @@
  */
 import type { ComponentChildren, RefObject } from "preact";
 import { useEffect, useId, useRef, useState } from "preact/hooks";
-import { afterRelease, moveInMenu, opensOnRelease } from "./menu-rules.ts";
+import { afterRelease, createOpenCount, moveInMenu, opensOnRelease, type OpenCount } from "./menu-rules.ts";
 
 export type MenuItem =
   /** checked を渡すとチェックの項目（false でもチェックの分をあける）。icon は ui-ico に足す class（例 "ui-ico-check"・アプリの "ico-defer"） */
@@ -23,8 +23,10 @@ export interface MenuHandle {
   anchorRef: RefObject<HTMLSpanElement | null>;
   /** 右クリック（contextmenu）で、押した位置に開く。preventDefault も行う。押したままなら離してから開く */
   openAt(e: MouseEvent): void;
-  /** 内部: openAt が位置を決めたあと、項目を描いてから開くための合図 */
+  /** 内部: openAt が位置を決めたあと、項目を描いてから開くための合図（seq は opens の要求の番号） */
   request: { x: number; y: number; seq: number } | null;
+  /** 内部: 右クリックで開く要求の数（閉じた知らせで onClose を呼ぶかを決める） */
+  opens: OpenCount;
 }
 
 /** Menu に渡す handle を作る */
@@ -33,16 +35,19 @@ export function useMenu(): MenuHandle {
   const menuRef = useRef<HTMLDialogElement>(null);
   const anchorRef = useRef<HTMLSpanElement>(null);
   const [request, setRequest] = useState<MenuHandle["request"]>(null);
+  const [opens] = useState(createOpenCount);
   const openAt = (e: MouseEvent) => {
     e.preventDefault();
     const x = e.clientX;
     const y = e.clientY;
-    const go = () => setRequest((prev) => ({ x, y, seq: (prev?.seq ?? 0) + 1 }));
+    // 待つかどうかを決める前に数える（離すのを待つ間に、前のメニューの閉じた知らせが来る）
+    const seq = opens.request();
+    const go = () => setRequest({ x, y, seq });
     // buttons の無い作り物のイベント（見本など）は、押していないものとして扱う
-    if (opensOnRelease(e.buttons ?? 0)) afterRelease(window, go);
+    if (opensOnRelease(e.buttons ?? 0)) afterRelease(window, go, undefined, () => opens.settle(seq));
     else go();
   };
-  return { id, menuRef, anchorRef, openAt, request };
+  return { id, menuRef, anchorRef, openAt, request, opens };
 }
 
 /** 開くボタンに広げる props */
@@ -62,17 +67,22 @@ export interface MenuProps {
 }
 
 export function Menu({ menu, label, items, class: cls = "", onClose }: MenuProps) {
-  const { menuRef, anchorRef, request } = menu;
+  const { menuRef, anchorRef, request, opens } = menu;
 
   // 右クリック: 押した位置にアンカーを置いて開く。項目は描いたあとなので、先頭の項目にフォーカスが入る
   useEffect(() => {
     const el = menuRef.current;
     const anchor = anchorRef.current;
-    if (request === null || el === null || anchor === null) return;
+    if (request === null) return;
+    if (el === null || anchor === null) {
+      opens.settle(request.seq);
+      return;
+    }
     anchor.style.left = `${request.x}px`;
     anchor.style.top = `${request.y}px`;
     if (el.matches(":popover-open")) el.hidePopover();
     el.showPopover({ source: anchor });
+    opens.settle(request.seq);
   }, [request?.seq]);
 
   const hide = () => menuRef.current?.hidePopover();
@@ -88,7 +98,8 @@ export function Menu({ menu, label, items, class: cls = "", onClose }: MenuProps
         aria-label={label}
         onKeyDown={moveInMenu}
         onToggle={(e) => {
-          if (e.newState === "closed") onClose?.();
+          // 次の右クリックを待っている間に来た、前のメニューの閉じた知らせでは呼ばない（menu-rules の createOpenCount）
+          if (e.newState === "closed" && opens.settled()) onClose?.();
         }}
       >
         <div class="ui-menu-list">

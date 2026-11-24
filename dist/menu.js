@@ -1,46 +1,55 @@
 import { Fragment as _Fragment, jsx as _jsx, jsxs as _jsxs } from "preact/jsx-runtime";
 import { useEffect, useId, useRef, useState } from "preact/hooks";
-import { afterRelease, moveInMenu, opensOnRelease } from "./menu-rules.js";
+import { afterRelease, createOpenCount, moveInMenu, opensOnRelease } from "./menu-rules.js";
 /** Menu に渡す handle を作る */
 export function useMenu() {
     const id = `ui-menu-${useId()}`;
     const menuRef = useRef(null);
     const anchorRef = useRef(null);
     const [request, setRequest] = useState(null);
+    const [opens] = useState(createOpenCount);
     const openAt = (e) => {
         e.preventDefault();
         const x = e.clientX;
         const y = e.clientY;
-        const go = () => setRequest((prev) => ({ x, y, seq: (prev?.seq ?? 0) + 1 }));
+        // 待つかどうかを決める前に数える（離すのを待つ間に、前のメニューの閉じた知らせが来る）
+        const seq = opens.request();
+        const go = () => setRequest({ x, y, seq });
         // buttons の無い作り物のイベント（見本など）は、押していないものとして扱う
         if (opensOnRelease(e.buttons ?? 0))
-            afterRelease(window, go);
+            afterRelease(window, go, undefined, () => opens.settle(seq));
         else
             go();
     };
-    return { id, menuRef, anchorRef, openAt, request };
+    return { id, menuRef, anchorRef, openAt, request, opens };
 }
 /** 開くボタンに広げる props */
 export function menuTrigger(handle) {
     return { commandfor: handle.id, command: "toggle-popover", "aria-haspopup": "menu" };
 }
 export function Menu({ menu, label, items, class: cls = "", onClose }) {
-    const { menuRef, anchorRef, request } = menu;
+    const { menuRef, anchorRef, request, opens } = menu;
     // 右クリック: 押した位置にアンカーを置いて開く。項目は描いたあとなので、先頭の項目にフォーカスが入る
     useEffect(() => {
         const el = menuRef.current;
         const anchor = anchorRef.current;
-        if (request === null || el === null || anchor === null)
+        if (request === null)
             return;
+        if (el === null || anchor === null) {
+            opens.settle(request.seq);
+            return;
+        }
         anchor.style.left = `${request.x}px`;
         anchor.style.top = `${request.y}px`;
         if (el.matches(":popover-open"))
             el.hidePopover();
         el.showPopover({ source: anchor });
+        opens.settle(request.seq);
     }, [request?.seq]);
     const hide = () => menuRef.current?.hidePopover();
     return (_jsxs(_Fragment, { children: [_jsx("span", { ref: anchorRef, class: "ui-menu-anchor" }), _jsx("dialog", { id: menu.id, ref: menuRef, class: `ui-menu ${cls}`.trim(), popover: "auto", "aria-label": label, onKeyDown: moveInMenu, onToggle: (e) => {
-                    if (e.newState === "closed")
+                    // 次の右クリックを待っている間に来た、前のメニューの閉じた知らせでは呼ばない（menu-rules の createOpenCount）
+                    if (e.newState === "closed" && opens.settled())
                         onClose?.();
                 }, children: _jsx("div", { class: "ui-menu-list", children: items.map((item, i) => {
                         const key = item.key ?? i;

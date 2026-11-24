@@ -47,22 +47,37 @@ export function opensOnRelease(buttons) {
 }
 /**
  * ボタンを離したら（pointerup）、light dismiss が終わってから run する。
- * 離す前に pointercancel・ウィンドウの blur（ウィンドウの外で離したときなど）・次の pointerdown が来たら、開かずに見張りを外す
+ * 離す前に pointercancel・ウィンドウの blur（ウィンドウの外で離したときなど）・次の pointerdown が来たら、開かずに見張りを外し、onCancel を呼ぶ
  * （残すと、あとの左クリックの pointerup で古いメニューが開く）
  */
-export function afterRelease(win, run, defer = (f) => setTimeout(f)) {
+export function afterRelease(win, run, defer = (f) => setTimeout(f), onCancel) {
     const opts = { capture: true };
     const stop = () => {
         win.removeEventListener("pointerup", release, opts);
         for (const type of CANCELS)
-            win.removeEventListener(type, stop, opts);
+            win.removeEventListener(type, cancel, opts);
     };
     function release() {
         stop();
         defer(run);
     }
+    function cancel() {
+        stop();
+        onCancel?.();
+    }
     win.addEventListener("pointerup", release, opts);
     for (const type of CANCELS)
-        win.addEventListener(type, stop, opts);
+        win.addEventListener(type, cancel, opts);
 }
 const CANCELS = ["pointercancel", "blur", "pointerdown"];
+export function createOpenCount() {
+    let requested = 0;
+    let shown = 0;
+    return {
+        request: () => ++requested,
+        settle: (n) => {
+            shown = Math.max(shown, n);
+        },
+        settled: () => requested === shown,
+    };
+}

@@ -49,21 +49,51 @@ export function opensOnRelease(buttons: number): boolean {
 
 /**
  * ボタンを離したら（pointerup）、light dismiss が終わってから run する。
- * 離す前に pointercancel・ウィンドウの blur（ウィンドウの外で離したときなど）・次の pointerdown が来たら、開かずに見張りを外す
+ * 離す前に pointercancel・ウィンドウの blur（ウィンドウの外で離したときなど）・次の pointerdown が来たら、開かずに見張りを外し、onCancel を呼ぶ
  * （残すと、あとの左クリックの pointerup で古いメニューが開く）
  */
-export function afterRelease(win: EventTarget, run: () => void, defer: (f: () => void) => void = (f) => setTimeout(f)): void {
+export function afterRelease(win: EventTarget, run: () => void, defer: (f: () => void) => void = (f) => setTimeout(f), onCancel?: () => void): void {
   const opts = { capture: true };
   const stop = () => {
     win.removeEventListener("pointerup", release, opts);
-    for (const type of CANCELS) win.removeEventListener(type, stop, opts);
+    for (const type of CANCELS) win.removeEventListener(type, cancel, opts);
   };
   function release() {
     stop();
     defer(run);
   }
+  function cancel() {
+    stop();
+    onCancel?.();
+  }
   win.addEventListener("pointerup", release, opts);
-  for (const type of CANCELS) win.addEventListener(type, stop, opts);
+  for (const type of CANCELS) win.addEventListener(type, cancel, opts);
 }
 
 const CANCELS = ["pointercancel", "blur", "pointerdown"];
+
+/**
+ * 右クリックで開く要求の数え方。閉じた知らせ（toggle の closed）で onClose を呼ぶかを決める。
+ * 開いているメニューの外を右クリックすると、light dismiss の toggle はあとから（次の要求を受けたあとに）来る。
+ * そこで onClose を呼ぶと、アプリが次の要求のために覚えた対象を消してしまうので、要求がすべて済む（開いたか取りやめた）までは呼ばない
+ */
+export interface OpenCount {
+  /** 要求を 1 つ足し、その番号を返す */
+  request(): number;
+  /** 番号 n の要求が済んだ（開いた・取りやめた） */
+  settle(n: number): void;
+  /** 要求がすべて済んでいるか（閉じた知らせで onClose を呼んでよいか） */
+  settled(): boolean;
+}
+
+export function createOpenCount(): OpenCount {
+  let requested = 0;
+  let shown = 0;
+  return {
+    request: () => ++requested,
+    settle: (n) => {
+      shown = Math.max(shown, n);
+    },
+    settled: () => requested === shown,
+  };
+}
