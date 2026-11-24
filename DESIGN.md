@@ -274,23 +274,23 @@
 | **Button** | 要素の `button`。種類は `.ui-primary`・`.ui-danger`・`.ui-icon`・`.ui-text` | 操作 1 つ。種類は `primary`（その画面の主な操作。1 つだけ）・既定・`danger`（消す・購読をやめるなどの壊す操作）・`icon`（アイコンだけ。`aria-label` 必須）・`text`（地のない文字だけ） | 移動だけなら `<a>`（Button の見た目にしない） |
 | **Field** | 要素の `input`・`select`・`textarea`（並びは 3d で決める） | 入力欄・`select`・`textarea`・検索欄。ラベル・補足・エラーの並びが共通 | — |
 | **Switch** | `input[type="checkbox"].ui-switch`、行は `.ui-switch-row` | すぐ反映されるオン・オフ（設定） | 保存ボタンのあるフォームの中ではチェックボックス |
-| **Dialog** | `dialog.ui-sheet`（2.2 の `html.dialogs` でダイアログの形）。部品は（3c-2） | 画面の真ん中に重ねる小さな画面（確認・短い入力） | 長い編集はシート |
-| **Sheet** | `dialog.ui-sheet`（2.2 の `html.dialogs` でダイアログの形）。部品は（3c-2） | 編集や選択の画面。狭い画面では下から、広い画面（2.2）ではダイアログになる | 選ぶだけの短い一覧は、広い画面では Popup |
-| **ConfirmDialog** | （3c-2） | 戻せない操作の前の確認（3.3） | 取り消せる操作には使わない（トーストで取り消す） |
-| **Toast** | `.ui-toast-region`（popover）の中に `.ui-toast`。下からの位置は `--toast-offset` | 操作の結果・失敗・取り消し・新しい版の知らせ（3.4） | 入力が要るものは Dialog |
-| **Menu** | `.ui-menu`（面）の中に `.ui-menu-list`、項目は中の `button` | ⋯ やボタンから出す操作の一覧（項目・区切り・危険・アイコン） | 値を 1 つ選ぶなら Popup |
-| **Popup** | `.ui-popup`（面だけ。大きさと位置はアプリ） | 欄やボタンに接して出す選択（日付・候補・行き先など）。中身はアプリ別でよい | — |
+| **Dialog** | `ui/modal` の `Modal`（`dialog.ui-sheet`。2.2 の `html.dialogs` でダイアログの形）。下のボタンは `ui/confirm` の `DialogActions`（`.ui-dialog-actions`） | 画面の真ん中に重ねる小さな画面（確認・短い入力） | 長い編集はシート |
+| **Sheet** | `ui/modal` の `Modal`（`dialog.ui-sheet`。シートの振る舞いは `sheet`、既定 `true`）・`SheetClose`（`button.ui-icon.ui-sheet-close`）。骨格は `ui/sheet-frame` の `SheetFrame`（`.ui-sheet-frame`・`.ui-sheet-head`・`.ui-sheet-title`・`.ui-sheet-sub`・`.ui-sheet-main`・`.ui-sheet-foot`）。閉じる操作の判定は `ui/modal-rules` | 編集や選択の画面。狭い画面では下から、広い画面（2.2）ではダイアログになる | 選ぶだけの短い一覧は、広い画面では Popup |
+| **ConfirmDialog** | `ui/confirm` の `useConfirm`（`.ui-confirm`・`.ui-confirm-message`。ボタンは `.ui-dialog-actions`）。入力を捨てる確認は `DISCARD_CONFIRM`・`discardGuard` | 戻せない操作の前の確認（3.3） | 取り消せる操作には使わない（トーストで取り消す） |
+| **Toast** | `ui/toast` の `Toast`・`useToastState`。`.ui-toast-region`（popover）の中に `.ui-toast[data-kind="plain" \| "action" \| "sticky"]`、✕ は `.ui-toast-close`。読み上げは外に常に置く `.ui-visually-hidden` の `role="status"`。下からの位置は `--toast-offset` | 操作の結果・失敗・取り消し・新しい版の知らせ（3.4） | 入力が要るものは Dialog |
+| **Menu** | `.ui-menu`（面）の中に `.ui-menu-list`、項目は中の `button`。部品は（3c-3） | ⋯ やボタンから出す操作の一覧（項目・区切り・危険・アイコン） | 値を 1 つ選ぶなら Popup |
+| **Popup** | `ui/popup` の `Popup`（`.ui-popup`。位置は `ui/popup-rules` の `placePopup`。中の大きさはアプリ） | 欄やボタンに接して出す選択（日付・候補・行き先など）。中身はアプリ別でよい | — |
 | **Chip** | `.ui-chips` の中に `button.ui-chip` | 絞り込みのオン・オフ、選択肢の並び | 画面の切り替えは Tabs |
 | **Tabs** | `.ui-tabs` の中に `button` | 同じ場所の中身の切り替え（下線のタブ。設定の項目など） | — |
 | **Badge** | `.ui-badge`（`.ui-tab-item` の中では小さく右上に） | 件数（ナビの項目の右・アイコンの上） | — |
-| **Icon** | （3c-2） | アイコン（2.5） | — |
+| **Icon** | （3c-3）。✕ だけ `ui/close-icon` の `CloseIcon` | アイコン（2.5） | — |
 | **NavItem** | `.ui-tab-item`（タブバー）・`.ui-side-item`（サイドナビ） | サイドナビ・タブバー・ドロワーの項目（アイコン・名前・選択中・バッジ） | ナビの構成はアプリ別 |
 | **Skeleton** | `.ui-skeleton`（棒の見た目と動き。並べ方はアプリ） | 読み込み中の形（灰色の棒の見た目と動き）。並べ方はアプリ別 | すぐ出るもの（0.3 秒以内）には出さない |
 | **Empty** | `.ui-empty` | 一覧が空のときの文（中央・`--fg-muted`）。文言はアプリ別 | — |
 | **Banner** | （3d） | 画面の上に出す、操作の付いた知らせ（ほかの端末との食い違いなど。4 章） | 時間で消えてよいものは Toast |
 | **PullRefresh** | `ui/pull-refresh` の `PullRefresh`。見た目は `.ui-pull`（状態は `data-state`）。引ける幅（`media`）と、引かない状態（`block`）・流れる枠（`scroller`）はアプリが渡す | 下へ引いて読み直す（3.6） | — |
-| **SettingsLayout** | （3c-2） | 設定の画面の枠（3.8） | — |
-| **ThemeSettings** / **NotifySettings** | （3c-2） | 設定の「テーマ」「通知」の項目（全アプリ同じ並び・同じ文言） | — |
+| **SettingsLayout** | `ui/settings` の `SettingsLayout`（`.ui-settings`・`.ui-settings-body`。タブは `.ui-tabs`）。開いている項目と URL の結び付けはアプリ | 設定の画面の枠（3.8） | — |
+| **ThemeSettings** / **NotifySettings** | `ui/settings` の `ThemeSettings`（`.ui-settings-group`・`.ui-segmented`・`.ui-theme-grid`・`.ui-theme-card`・`.ui-theme-card-name`・`.ui-theme-card-check`・`.ui-theme-preview`・`.ui-settings-note`。見本の中身はアプリが `preview(id)` で渡す）・`NotifySettings`（`.ui-push-status[data-state]`・`.ui-push-status-icon`・`.ui-push-status-title`・`.ui-push-status-detail`。文言は `ui/settings-text` の `pushStateText`、アプリの表示名 `appName` と受け取っているときの説明 `onDetail` は props） | 設定の「テーマ」「通知」の項目（全アプリ同じ並び・同じ文言） | — |
 
 アプリにしかない部品（画面の隅の追加ボタン、横から出るドロワーなど）は `ui` に置かない。2 つ目のアプリで要ったら `ui` へ移す。
 
@@ -318,7 +318,7 @@
 | 送信中 | ボタンの文言を「〜中…」にして無効にする | 二重に送らない |
 | エラーのある Field | 線と文を `--danger`、欄の下に理由の文 | `aria-invalid`、文は `aria-describedby` |
 
-`ui/base.css` が持つもの: `body` の文字（`--font-sans`・`--text-base`・`--leading-body`）、`touch-action: manipulation`（`html`・`body`・`a`・`button`。ダブルタップの拡大を止める）、`-webkit-tap-highlight-color: transparent`、フォーカスの輪（詳細度 0 なのでアプリの指定が勝つ。入力欄は `outline-offset: 0`）、スクロールバーの色。`box-sizing` と `prefers-reduced-motion` は持たない（アプリ・部品の側で決める）。`components.css` は、`width: 100%` にする入力欄だけ `box-sizing: border-box` にする。
+`ui/base.css` が持つもの: `body` の文字（`--font-sans`・`--text-base`・`--leading-body`）、`touch-action: manipulation`（`html`・`body`・`a`・`button`。ダブルタップの拡大を止める）、`-webkit-tap-highlight-color: transparent`、フォーカスの輪（詳細度 0 なのでアプリの指定が勝つ。入力欄は `outline-offset: 0`）、スクロールバーの色、読み上げだけに残す `.ui-visually-hidden`。`box-sizing` と `prefers-reduced-motion` は持たない（アプリ・部品の側で決める）。`components.css` は、`width: 100%` にする入力欄だけ `box-sizing: border-box` にする。
 
 ### 2.4 ダイアログ・シートの構成と文言
 
@@ -328,6 +328,8 @@
 | 中 | 本文・欄 | 本文・欄（ここだけ流れる） |
 | 下 | 右寄せの横並び: キャンセルの側（「やめる」「続ける」）→ 主の操作（右端） | 主の操作のボタンを下に固定（やめるボタンは置かない。✕ で閉じる） |
 | 最初のフォーカス | 欄があれば最初の欄。`danger` の確認ではキャンセルの側（押し間違いで消さない） | 最初の欄 |
+
+部品が守ること: `DialogActions` は子を渡した順に右寄せの横並びにする（キャンセルの側 → その他 → 主の操作を右端に渡す）。`useConfirm` は `danger` の確認で最初のフォーカスをキャンセルの側に、それ以外では主の操作に置く。
 
 文言:
 
@@ -346,6 +348,7 @@
 - 色は `currentColor`（テーマとボタンの状態に追従する）。SVG を CSS の `mask` で塗る（`--glyph` に SVG の URL を入れる）か、`fill`/`stroke` に `currentColor` を使う。
 - 大きさは 20px（ボタンの中）を基本にし、小さな印は 16px、タブバーは 24px。線の太さは 2（20px のとき）。
 - アイコンだけのボタンは押せる大きさ（2.3）を満たし、`aria-label` を付ける。
+- ✕ は `ui/close-icon` の `CloseIcon`（`SheetClose` と `Toast` が使う。`SheetClose` は `icon` で差し替えられる）。ほかのアイコンの仕組みは 3c-3。
 
 ### 2.6 共通のロジック
 
@@ -362,7 +365,9 @@
 | `auth` | `ui/auth`: `RELOAD_INTERVAL_MS`・`ResponseHead`・`authExpired(res)`・`reloadOnce(app, storage, now, reload)` | ログイン切れの検出（`authExpired`）と、間を空けた読み込み直し（`reloadOnce`） |
 | `pull` | `ui/pull`: 判定の関数と定数（`PULL_TRIGGER`・`pullDistance`・`pullReady`・`pullAxis`・`isScrollContainer`・`refreshDone` など）。`ui/pull-refresh`: `PullRefresh`・`PullRefreshProps`・`DEFAULT_BLOCK`・`blocked(target, block?, scroller?)` | 下へ引く操作の判定と、PullRefresh の部品（2.1） |
 | `dialog-layout` | `ui/dialog-layout`: `SHEET_MAX_PX`・`usesDialog`・`isDialogLayout`・`watchDialogLayout` | 2.2 の判定 |
-| `toast` | `ui/toast`: `ToastAction`・`ToastState`・`Notify`・`useToastState()` | トーストの状態（文言・操作・sticky・id） |
+| `toast` | `ui/toast-state`: `ToastAction`・`ToastState`・`Notify`・`dismissToast`・`toastKind`。`ui/toast`: その再 export と `useToastState()`・`Toast` | トーストの状態（文言・操作・sticky・id）と部品（2.1・3.4） |
+| `modal-rules` / `popup-rules` | `ui/modal-rules`: `isBackdropClick`・`closesOnEscape`・`inSheetTop`・`isDismissSwipe`・`keyboardInset`・`blocksTouchScroll`・`isTextField`・`revealDelta` など。`ui/popup-rules`: `placePopup`・`popupMaxHeight`・`visibleView`・`pickStep`・`pressKind` など | シートを閉じる操作の判定・キーボードの分の高さと、Popup の位置（`ui/modal`・`ui/popup` が使う） |
+| `settings-text` | `ui/settings-text`: `PushIconName`・`PushTextOptions`・`PUSH_STATES`・`pushStateText(status, { appName, onDetail })` | 通知の状態の見出し・説明・アイコンの名前（4 章。`NotifySettings` が使う） |
 | `storage` | `ui/storage`: `StorageLike`・`appKey(app, key)` | 端末に覚えるキーの決まり（`<アプリ名>.<キー>`。アプリ名は英小文字・数字・`-`）と `StorageLike`。読み書きは各モジュール（`theme`・`auth`）が行う |
 | `pwa` | `ui/pwa`: `isStandalone()`・`isIos()` | ホーム画面から開いているか・iOS か |
 
@@ -524,5 +529,6 @@ UI を変えたらこれで確かめる。
 
 - `package.json` で `ui` をタグで固定して読む（`github:za29ra/ui#v<版>`）。
 - `web/src/styles.css` の先頭で `ui/tokens.css`・`ui/base.css`・`ui/components.css` の順に読み、そのあとにアプリのアクセント・ドメインの色（1.8）・レイアウトを書く。`components.css` はすべて詳細度 0 なので、アプリの規則が必ず勝つ。文脈で使う規則の多いアプリの class（シートの `.sheet` など）は残し、`ui-` の class を足して、重なる宣言だけを消してよい。
-- ロジックは `ui/<モジュール>` から読む。純粋な関数（`theme`・`push`・`pull` など）と、フック・部品（`use-theme`・`use-push`・`update-check`・`toast`・`pull-refresh`）はファイルが別なので、アプリの `node --test` は純粋な関数だけを読める。
+- ロジックは `ui/<モジュール>` から読む。純粋な関数（`theme`・`push`・`pull`・`modal-rules`・`popup-rules`・`toast-state`・`settings-text` など）と、フック・部品（`use-theme`・`use-push`・`update-check`・`toast`・`pull-refresh`・`modal`・`popup`・`sheet-frame`・`confirm`・`settings`）はファイルが別なので、アプリの `node --test` は純粋な関数だけを読める。
+- 部品はアプリの class を `class` で受けて、`ui-` の class の後ろに足す。アイコン（✕ 以外）は props で受ける（アイコンの仕組みは 3c-3）。
 - アプリの `CLAUDE.md` は、**`node_modules/ui/DESIGN.md`**（固定した版と同じ文書）を参照し、「このアプリの例外」（ドメインの色・段階にない大きさ・レイアウトの境目・使わない部品とその理由）を書く。
