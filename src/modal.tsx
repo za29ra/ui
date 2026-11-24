@@ -6,7 +6,7 @@
  * - popup（popup.tsx）が開いているあいだは、cancel は popup だけを閉じ、スワイプは始めない
  * - Esc は keydown で止めて、閉じる要求にする（modal-rules.ts の closesOnEscape）。cancel はキー以外の閉じる操作（Android の戻るなど）のために残す
  */
-import { useContext, useEffect, useRef, useState } from "preact/hooks";
+import { useContext, useEffect, useRef } from "preact/hooks";
 import { createContext, type ComponentChildren, type RefObject } from "preact";
 import { blocksTouchScroll, closesOnEscape, inSheetTop, isBackdropClick, isDismissSwipe, isTextField, TAP_SLOP } from "./modal-rules.ts";
 import { isDialogLayout } from "./dialog-layout.ts";
@@ -163,7 +163,7 @@ export function Modal({ open, onClose, dialogRef, sheet = true, class: cls = "",
       // （キーボードが出ていれば、文字の位置を選べるようブラウザに任せる）
       const el = e.target;
       const tap = Math.abs(t.clientX - touch.current.x) <= TAP_SLOP && Math.abs(t.clientY - touch.current.y) <= TAP_SLOP;
-      if (tap && e.cancelable && (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) && isTextField(el.tagName, el.type) && !el.disabled && (document.activeElement !== el || (tapped.current !== el && !d.classList.contains("keyboard")))) {
+      if (tap && e.cancelable && (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) && isTextField(el.tagName, el.type) && !el.disabled && (document.activeElement !== el || (tapped.current !== el && !d.classList.contains("ui-keyboard")))) {
         e.preventDefault();
         if (document.activeElement === el) el.blur();
         el.focus({ preventScroll: true });
@@ -250,7 +250,7 @@ function animateHeight(d: HTMLDialogElement): () => void {
   const ro = new ResizeObserver(() => {
     if (animating) return;
     const h = d.offsetHeight;
-    const kb = d.classList.contains("keyboard");
+    const kb = d.classList.contains("ui-keyboard");
     const from = prev;
     const still = kb !== keyboard;
     prev = h;

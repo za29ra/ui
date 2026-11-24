@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from "node:fs";
 const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")) as { exports: Record<string, string | { types: string; default: string }> };
 
 /** 3c で足すロジックのモジュール（DESIGN.md 2.6）と PullRefresh、3c-2 で足す部品 */
-const MODULES = ["storage", "pwa", "dialog-layout", "theme", "use-theme", "push", "use-push", "toast", "version", "update-check", "sw-message", "register-sw", "badge", "sw", "auth", "pull", "pull-refresh", "modal-rules", "popup-rules", "close-icon", "popup", "modal"];
+const MODULES = ["storage", "pwa", "dialog-layout", "theme", "use-theme", "push", "use-push", "toast", "version", "update-check", "sw-message", "register-sw", "badge", "sw", "auth", "pull", "pull-refresh", "modal-rules", "popup-rules", "close-icon", "popup", "modal", "sheet-frame", "confirm"];
 
 for (const name of MODULES) {
   test(`ui/${name} を exports に出し、dist に .js と .d.ts がある`, () => {
