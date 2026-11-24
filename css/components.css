@@ -1,0 +1,505 @@
+/* 基本コンポーネントの見た目（DESIGN.md 2 章）。tokens.css・base.css のあとに読む。
+   規則はすべて :where() で包む（詳細度 0。アプリの規則が必ず勝つ）。部品の class と @keyframes は ui- で始める */
+
+/* ---- ボタンと入力欄（要素の既定） ---- */
+
+:where(button, input, select, textarea) {
+  font: inherit;
+  color: inherit;
+}
+
+:where(button) {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-raised);
+  cursor: pointer;
+  transition: background-color var(--duration-fast);
+}
+
+:where(button:disabled) {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* hover はマウスのときだけ（タッチで押したあとに色を残さない）。地の無いボタン（アプリが background を決めたもの）には付かない */
+@media (hover: hover) {
+  :where(button:not(:disabled):hover) {
+    background: var(--bg-hover);
+  }
+}
+
+:where(button:not(:disabled):active) {
+  background: var(--bg-selected);
+}
+
+/* 主の操作（その画面に 1 つ） */
+:where(button.ui-primary) {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+@media (hover: hover) {
+  :where(button.ui-primary:not(:disabled):hover) {
+    background: var(--accent);
+    filter: brightness(1.1);
+  }
+}
+
+:where(button.ui-primary:not(:disabled):active) {
+  background: var(--accent);
+  filter: brightness(0.9);
+}
+
+/* 壊す操作 */
+:where(button.ui-danger) {
+  color: var(--danger);
+}
+
+/* アイコンだけ（aria-label 必須）。押せる大きさは 44px */
+:where(button.ui-icon) {
+  display: inline-grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* 地も線も無い文字だけ（トーストの「取り消す」など） */
+:where(button.ui-text) {
+  flex: none;
+  border: 0;
+  background: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+:where(input, select, textarea) {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-raised);
+}
+
+/* iOS は 16px 未満の入力欄に入ると拡大する */
+:where(input:not([type="checkbox"], [type="radio"]), select, textarea) {
+  font-size: var(--text-input);
+}
+
+/* 上の width: 100% はチェックボックスには効かせない（ラベルの文字が端に離れる） */
+:where(input[type="checkbox"], input[type="radio"]) {
+  width: auto;
+  padding: 0;
+}
+
+:where(input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"]) {
+  border-color: var(--danger);
+}
+
+/* ---- スイッチ（すぐ反映されるオン・オフ）: 角の丸い枠の中を丸が動く。オンは --success ---- */
+
+:where(.ui-switch-row) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+  cursor: pointer;
+}
+
+:where(input.ui-switch) {
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 51px;
+  height: 31px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--border);
+  cursor: pointer;
+  transition: background-color var(--duration-base);
+}
+
+:where(input.ui-switch)::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: var(--on-media);
+  box-shadow: var(--shadow-sm);
+  transition: translate var(--duration-base);
+}
+
+:where(input.ui-switch:checked) {
+  background: var(--success);
+}
+
+:where(input.ui-switch:checked)::before {
+  translate: 20px 0;
+}
+
+:where(input.ui-switch:disabled) {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* 欄の輪（base.css の outline-offset: 0）ではなく、ボタンと同じ離した輪 */
+:where(input.ui-switch:focus-visible) {
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(input.ui-switch),
+  :where(input.ui-switch)::before {
+    transition: none;
+  }
+}
+
+/* ---- チップ（絞り込みのオン・オフ、選択肢の並び）---- */
+
+:where(.ui-chips) {
+  display: flex;
+  gap: var(--space-1_5);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+:where(button.ui-chip) {
+  flex: none;
+  padding: var(--space-1) var(--space-2_5);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+:where(button.ui-chip[aria-pressed="true"]) {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+/* 入れ物が横に流れる（overflow）ので、外に出る輪は切れる。輪を内側に描く */
+:where(.ui-chips > button:focus-visible, .ui-tabs > button:focus-visible) {
+  outline-offset: -2px;
+}
+
+/* ---- タブ（同じ場所の中身の切り替え。下線） ---- */
+
+/* 区切り線は影で引く（border だと、選んだタブの下線を重ねたときに縦にはみ出す） */
+:where(.ui-tabs) {
+  display: flex;
+  gap: var(--space-1);
+  box-shadow: inset 0 -1px 0 var(--border);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+:where(.ui-tabs > button) {
+  flex: none;
+  padding: var(--space-2_5) var(--space-3);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: none;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+
+:where(.ui-tabs > button[aria-pressed="true"], .ui-tabs > button[aria-selected="true"]) {
+  border-bottom-color: var(--accent);
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* ---- バッジ（件数） ---- */
+
+:where(.ui-badge) {
+  display: inline-block;
+  min-width: 1.25rem;
+  padding: 0 var(--space-1_5);
+  border-radius: var(--radius-full);
+  background: var(--danger);
+  color: var(--danger-fg);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+
+/* ---- 空の状態（一覧が空のときの文。文言はアプリ） ---- */
+
+:where(.ui-empty) {
+  color: var(--fg-muted);
+  text-align: center;
+}
+
+/* ---- スケルトン（読み込み中の灰色の棒。並べ方はアプリ） ---- */
+
+:where(.ui-skeleton) {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--bg-hover) 25%, var(--border) 50%, var(--bg-hover) 75%);
+  background-size: 200% 100%;
+  animation: ui-skeleton-shimmer 1.4s linear infinite;
+}
+
+@keyframes ui-skeleton-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* 視差効果を減らす設定では、きらめかせずに止める */
+@media (prefers-reduced-motion: reduce) {
+  :where(.ui-skeleton) {
+    animation: none;
+  }
+}
+
+/* ---- ナビの項目（構成はアプリ。項目の見た目だけ） ---- */
+
+/* タブバー: アイコンの下に名前 */
+:where(.ui-tab-item) {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-0_5);
+  padding: var(--space-1_5) var(--space-0_5);
+  border: none;
+  border-radius: var(--radius-full);
+  background: none;
+  color: var(--fg-muted);
+  font-size: 0.625rem; /* ui-allow: タブバーの名前（11px にすると 390px の幅で 6 文字の名前が切れる） */
+  line-height: 1.2;
+}
+
+:where(.ui-tab-item[aria-current]:not([aria-current="false"])) {
+  background: var(--bg-hover);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* タブバーの中のバッジ: アイコンの右上に小さく */
+:where(.ui-tab-item .ui-badge) {
+  position: absolute;
+  top: 2px;
+  left: calc(50% + 4px);
+  min-width: 1.1rem;
+  padding: 0 var(--space-1);
+  font-size: var(--text-2xs);
+  line-height: 1.1rem;
+}
+
+/* サイドナビ: アイコンの右に名前 */
+:where(.ui-side-item) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2_5);
+  min-height: 40px;
+  padding: 0 var(--space-2_5);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  font-size: var(--text-base);
+  text-align: left;
+}
+
+@media (hover: hover) {
+  :where(.ui-side-item:hover) {
+    background: var(--bg-hover);
+  }
+}
+
+:where(.ui-side-item[aria-current]:not([aria-current="false"])) {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---- シート（狭い画面では下から。html.dialogs ではダイアログの形。DESIGN.md 2.2） ---- */
+
+:where(dialog.ui-sheet) {
+  width: 100%;
+  max-width: 560px;
+  max-height: 92dvh;
+  margin: auto auto 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--bg-raised);
+  color: var(--fg);
+  /* 端までスクロールしても、後ろのページに渡さない（iOS では dialog まで一緒に動く） */
+  overscroll-behavior: contain;
+}
+
+:where(dialog.ui-sheet)::backdrop {
+  background: var(--scrim);
+}
+
+/* 開くとき、下から上がってくる（幕は薄く現れる）。閉じるときは動かさない */
+:where(dialog.ui-sheet[open]) {
+  animation: ui-sheet-up var(--duration-slow) var(--ease-out);
+}
+
+:where(dialog.ui-sheet[open])::backdrop {
+  animation: ui-fade-in var(--duration-slow) var(--ease-out);
+}
+
+:where(html.dialogs dialog.ui-sheet) {
+  width: min(480px, calc(100% - 2 * var(--gutter)));
+  max-height: 85dvh;
+  margin: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+:where(html.dialogs dialog.ui-sheet[open]) {
+  animation: ui-dialog-in var(--duration-fast) var(--ease-out);
+}
+
+@keyframes ui-sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes ui-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes ui-dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(dialog.ui-sheet[open]),
+  :where(dialog.ui-sheet[open])::backdrop,
+  :where(html.dialogs dialog.ui-sheet[open]) {
+    animation: none;
+  }
+}
+
+/* ---- ポップアップ（欄やボタンに接して出す選択。面だけ。大きさと位置はアプリ） ---- */
+
+:where(.ui-popup) {
+  margin: 0;
+  padding: var(--space-2_5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  color: var(--fg);
+  box-shadow: var(--shadow-lg);
+  overflow: auto;
+  overscroll-behavior: contain;
+  font-size: var(--text-base);
+  font-weight: 400;
+  text-align: left;
+}
+
+/* ---- メニュー（⋯ やボタンから出す操作の一覧） ---- */
+
+:where(.ui-menu) {
+  margin: 0;
+  padding: var(--space-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  color: var(--fg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* メニューは外を押すと閉じるだけなので、幕は透明 */
+:where(dialog.ui-menu)::backdrop {
+  background: transparent;
+}
+
+:where(.ui-menu-list) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0_5);
+}
+
+:where(.ui-menu-list > button) {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-1_5);
+  min-height: 36px;
+  padding: var(--space-1_5) var(--space-2_5);
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+:where(.ui-menu-list > button:focus-visible) {
+  background: var(--bg-hover);
+}
+
+@media (hover: hover) {
+  :where(.ui-menu-list > button:not(:disabled):hover) {
+    background: var(--bg-hover);
+  }
+}
+
+:where(.ui-menu-list > button.ui-danger) {
+  color: var(--danger);
+}
+
+/* ---- トースト（画面の下に 1 つ。下からの位置は --toast-offset。DESIGN.md 3.4） ---- */
+
+:where(.ui-toast-region) {
+  position: fixed;
+  inset: auto var(--gutter) calc(env(safe-area-inset-bottom) + var(--toast-offset, var(--space-4)));
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+:where(.ui-toast-region[popover]) {
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: none;
+  color: inherit;
+}
+
+:where(.ui-toast-region[popover]:not(:popover-open)) {
+  display: none;
+}
+
+:where(.ui-toast) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 560px;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--toast-bg);
+  color: var(--toast-fg);
+  pointer-events: auto;
+}
+
+:where(.ui-toast > span) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

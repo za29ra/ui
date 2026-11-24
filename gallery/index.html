@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ja" data-theme="default-light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ui の部品</title>
+    <script>
+      // ?theme= でテーマを選ぶ（描画の前に付ける）。?dialogs でシートをダイアログの形にする
+      const q = new URLSearchParams(location.search);
+      document.documentElement.dataset.theme = q.get("theme") ?? "default-light";
+      if (q.has("dialogs")) document.documentElement.classList.add("dialogs");
+    </script>
+    <link rel="stylesheet" href="../css/tokens.css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <style>
+      /* 見本の並べ方だけ（部品の見た目は components.css） */
+      .g-page { display: grid; gap: var(--space-6); max-width: 720px; margin: 0 auto; padding: var(--space-4) var(--gutter); }
+      .g-section { display: grid; gap: var(--space-2); }
+      .g-section > h2 { margin: 0; font-size: var(--text-sm); color: var(--fg-muted); }
+      .g-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+      .g-col { display: grid; gap: var(--space-2); max-width: 360px; }
+      .g-tabbar { display: flex; max-width: 420px; padding: var(--space-1); gap: var(--space-0_5); border: 1px solid var(--border); border-radius: var(--radius-full); background: var(--bg-raised); }
+      .g-tabbar .ico, .g-side .ico { display: block; width: 24px; height: 24px; border-radius: var(--radius-sm); background: currentColor; }
+      .g-side { display: grid; gap: var(--space-0_5); width: 220px; padding: var(--space-2); background: var(--bg-sunken); }
+      .g-side .ico { width: 20px; height: 20px; }
+      .g-side .ui-badge { margin-left: auto; }
+      .g-static { position: static; }
+      .g-skeleton-row { display: flex; gap: var(--space-3); align-items: center; }
+      .g-surfaces { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: flex-start; }
+      .g-surfaces > * { position: static; }
+    </style>
+  </head>
+  <body>
+    <main class="g-page">
+      <section class="g-section">
+        <h2>Button</h2>
+        <div class="g-row">
+          <button type="button">普通</button>
+          <button type="button" class="ui-primary">保存する</button>
+          <button type="button" class="ui-danger">削除する</button>
+          <button type="button" class="ui-text">取り消す</button>
+          <button type="button" class="ui-icon" aria-label="閉じる">✕</button>
+          <button type="button" disabled>無効</button>
+          <button type="button" class="ui-primary" disabled>保存中…</button>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>Field</h2>
+        <div class="g-col">
+          <input type="text" value="買い物リストを見直す" aria-label="名前" />
+          <input type="text" placeholder="メモ" aria-label="メモ" />
+          <input type="text" value="25:00" aria-invalid="true" aria-label="時刻" />
+          <select aria-label="繰り返し"><option>毎週</option></select>
+          <textarea rows="2" aria-label="本文">2 行の本文</textarea>
+          <input type="search" value="図書館" aria-label="検索" />
+          <label><input type="checkbox" checked /> チェックボックス</label>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>Switch</h2>
+        <div class="g-col">
+          <label class="ui-switch-row">通知を受け取る <input type="checkbox" class="ui-switch" checked /></label>
+          <label class="ui-switch-row">朝のまとめ <input type="checkbox" class="ui-switch" /></label>
+          <label class="ui-switch-row">無効 <input type="checkbox" class="ui-switch" disabled /></label>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>Chip</h2>
+        <div class="ui-chips" role="group" aria-label="曜日">
+          <button type="button" class="ui-chip" aria-pressed="true">月</button>
+          <button type="button" class="ui-chip" aria-pressed="false">火</button>
+          <button type="button" class="ui-chip" aria-pressed="true">水</button>
+          <button type="button" class="ui-chip">完了を表示</button>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>Tabs</h2>
+        <div class="ui-tabs" role="group" aria-label="設定の項目">
+          <button type="button" aria-pressed="false">一般</button>
+          <button type="button" aria-pressed="true">テーマ</button>
+          <button type="button" aria-pressed="false">通知</button>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>Badge・Empty・Skeleton</h2>
+        <div class="g-row"><span class="ui-badge">3</span><span class="ui-badge">128</span></div>
+        <p class="ui-empty">まだ何もありません</p>
+        <div class="g-skeleton-row">
+          <span class="ui-skeleton" style="width: 6.5em; height: 14px"></span>
+          <span class="ui-skeleton" style="width: 60%; height: 16px"></span>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>NavItem</h2>
+        <nav class="g-tabbar" aria-label="タブバー">
+          <button type="button" class="ui-tab-item" aria-current="page"><span class="ico"></span>ホーム<span class="ui-badge">2</span></button>
+          <button type="button" class="ui-tab-item"><span class="ico"></span>タイムライン</button>
+          <button type="button" class="ui-tab-item"><span class="ico"></span>一覧</button>
+          <button type="button" class="ui-tab-item"><span class="ico"></span>設定</button>
+        </nav>
+        <nav class="g-side" aria-label="サイドナビ">
+          <button type="button" class="ui-side-item" aria-current="page"><span class="ico"></span>ホーム<span class="ui-badge">12</span></button>
+          <button type="button" class="ui-side-item"><span class="ico"></span>一覧</button>
+          <button type="button" class="ui-side-item"><span class="ico"></span>設定</button>
+        </nav>
+      </section>
+
+      <section class="g-section">
+        <h2>Popup・Menu・Toast</h2>
+        <div class="g-surfaces">
+          <div class="ui-popup" style="width: 240px">ポップアップの面。中身はアプリが決める。</div>
+          <div class="ui-menu" style="width: 220px">
+            <div class="ui-menu-list" role="menu">
+              <button type="button" role="menuitem">名前を変える</button>
+              <button type="button" role="menuitem">複製する</button>
+              <button type="button" role="menuitem" class="ui-danger">削除する</button>
+            </div>
+          </div>
+          <div class="ui-toast-region g-static">
+            <div class="ui-toast" role="status"><span>「洗濯」を終えました</span><button type="button" class="ui-text">取り消す</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>Sheet</h2>
+        <p><button type="button" id="open-sheet">シートを開く</button></p>
+        <dialog class="ui-sheet" id="sheet" aria-label="見本のシート">
+          <div style="padding: var(--space-4); display: grid; gap: var(--space-3)">
+            <strong>見本のシート</strong>
+            <input type="text" value="週末の予定" aria-label="名前" />
+            <button type="button" class="ui-primary" id="close-sheet">保存する</button>
+          </div>
+        </dialog>
+      </section>
+    </main>
+    <script>
+      const sheet = document.getElementById("sheet");
+      document.getElementById("open-sheet").onclick = () => sheet.showModal();
+      document.getElementById("close-sheet").onclick = () => sheet.close();
+      // ?sheet でシートを開いた状態にする（VRT で撮る）
+      if (new URLSearchParams(location.search).has("sheet")) sheet.showModal();
+    </script>
+  </body>
+</html>

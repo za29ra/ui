@@ -1,6 +1,6 @@
 {
   "name": "ui",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "Shared design tokens, components and PWA helpers for personal Preact apps",
@@ -9,6 +9,7 @@
   "exports": {
     "./tokens.css": "./css/tokens.css",
     "./base.css": "./css/base.css",
+    "./components.css": "./css/components.css",
     "./DESIGN.md": "./DESIGN.md",
     "./contrast": { "types": "./dist/contrast.d.ts", "default": "./dist/contrast.js" },
     "./css-themes": { "types": "./dist/css-themes.d.ts", "default": "./dist/css-themes.js" }
@@ -17,7 +18,8 @@
     "test": "node --test \"test/**/*.test.ts\"",
     "typecheck": "tsc --noEmit -p .",
     "build": "tsc -p tsconfig.build.json",
-    "migrate": "node scripts/migrate-literals.ts"
+    "migrate": "node scripts/migrate-literals.ts",
+    "gallery": "node scripts/serve.ts"
   },
   "devDependencies": {
     "@types/node": "26.6.6",
