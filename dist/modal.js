@@ -12,7 +12,6 @@ import { createContext } from "preact";
 import { blocksTouchScroll, closesOnEscape, inSheetTop, isBackdropClick, isDismissSwipe, isTextField, TAP_SLOP } from "./modal-rules.js";
 import { isDialogLayout } from "./dialog-layout.js";
 import { closePopup, hasPopup } from "./popup.js";
-import { CloseIcon } from "./close-icon.js";
 const CloseContext = createContext(null);
 /** 載っている Modal の閉じる要求に、確認を差し込む（Modal の中の部品から。読み込みのある編集など、入力の状態を中で持つもの） */
 export function useCloseGuard(guard) {
@@ -202,10 +201,10 @@ function settle(d, reset = false) {
     d.style.transition = reset ? "none" : "transform 0.2s ease-out";
     d.style.transform = "";
 }
-/** シートの閉じるボタン。左上の ✕ に統一（やめるボタンは置かない）。icon で ✕ のアイコンを差し替えられる */
-export function SheetClose({ dialogRef, icon = _jsx(CloseIcon, {}) }) {
+/** シートの閉じるボタン。左上の ✕ に統一（やめるボタンは置かない）。✕ は ui-ico-close */
+export function SheetClose({ dialogRef }) {
     const control = useContext(CloseContext);
-    return (_jsx("button", { type: "button", class: "ui-icon ui-sheet-close", "aria-label": "\u9589\u3058\u308B", onClick: () => (control === null ? dialogRef.current?.close() : control.request()), children: icon }));
+    return (_jsx("button", { type: "button", class: "ui-icon ui-sheet-close", "aria-label": "\u9589\u3058\u308B", onClick: () => (control === null ? dialogRef.current?.close() : control.request()), children: _jsx("span", { class: "ui-ico ui-ico-close", "aria-hidden": "true" }) }));
 }
 /**
  * シートの高さが中身で変わったとき（選んだ値で欄が増えるなど）、前の高さから新しい高さへ動かす。

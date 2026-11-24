@@ -11,7 +11,6 @@ import { createContext, type ComponentChildren, type RefObject } from "preact";
 import { blocksTouchScroll, closesOnEscape, inSheetTop, isBackdropClick, isDismissSwipe, isTextField, TAP_SLOP } from "./modal-rules.ts";
 import { isDialogLayout } from "./dialog-layout.ts";
 import { closePopup, hasPopup } from "./popup.tsx";
-import { CloseIcon } from "./close-icon.tsx";
 
 export interface ModalProps {
   open: boolean;
@@ -218,12 +217,12 @@ function settle(d: HTMLDialogElement, reset = false) {
   d.style.transform = "";
 }
 
-/** シートの閉じるボタン。左上の ✕ に統一（やめるボタンは置かない）。icon で ✕ のアイコンを差し替えられる */
-export function SheetClose({ dialogRef, icon = <CloseIcon /> }: { dialogRef: RefObject<HTMLDialogElement | null>; icon?: ComponentChildren }) {
+/** シートの閉じるボタン。左上の ✕ に統一（やめるボタンは置かない）。✕ は ui-ico-close */
+export function SheetClose({ dialogRef }: { dialogRef: RefObject<HTMLDialogElement | null> }) {
   const control = useContext(CloseContext);
   return (
     <button type="button" class="ui-icon ui-sheet-close" aria-label="閉じる" onClick={() => (control === null ? dialogRef.current?.close() : control.request())}>
-      {icon}
+      <span class="ui-ico ui-ico-close" aria-hidden="true" />
     </button>
   );
 }

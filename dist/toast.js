@@ -10,7 +10,6 @@ import { Fragment as _Fragment, jsx as _jsx, jsxs as _jsxs } from "preact/jsx-ru
  * 読み上げは popover の外に常に置く role="status" に同じ文言を入れる（閉じている popover は display: none で、読み上げの対象にならないため）
  */
 import { useId, useLayoutEffect, useRef, useState } from "preact/hooks";
-import { CloseIcon } from "./close-icon.js";
 import { dismissToast, toastKind } from "./toast-state.js";
 export * from "./toast-state.js";
 export function useToastState() {
@@ -67,5 +66,5 @@ export function Toast({ toast, onClose }) {
                     }, children: [_jsx("span", { children: toast.text }), toast.action !== undefined ? (_jsx("button", { type: "button", class: "ui-text", commandfor: id, command: "hide-popover", onClick: () => {
                                 toast.action.run();
                                 close();
-                            }, children: toast.action.label })) : (_jsx("button", { type: "button", class: "ui-icon ui-toast-close", commandfor: id, command: "hide-popover", "aria-label": "\u9589\u3058\u308B", onClick: close, children: _jsx(CloseIcon, {}) }))] }, toast.id)) })] }));
+                            }, children: toast.action.label })) : (_jsx("button", { type: "button", class: "ui-icon ui-toast-close", commandfor: id, command: "hide-popover", "aria-label": "\u9589\u3058\u308B", onClick: close, children: _jsx("span", { class: "ui-ico ui-ico-close", "aria-hidden": "true" }) }))] }, toast.id)) })] }));
 }

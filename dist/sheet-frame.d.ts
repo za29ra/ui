@@ -8,8 +8,6 @@ export interface SheetFrameProps {
     footer?: ComponentChildren;
     onSubmit?(): void;
     label?: string;
-    /** ✕ のアイコンを差し替える（SheetClose の icon） */
-    closeIcon?: ComponentChildren;
     children: ComponentChildren;
 }
-export declare function SheetFrame({ dialogRef, title, subtitle, right, footer, onSubmit, label, closeIcon, children }: SheetFrameProps): import("preact").JSX.Element;
+export declare function SheetFrame({ dialogRef, title, subtitle, right, footer, onSubmit, label, children }: SheetFrameProps): import("preact").JSX.Element;

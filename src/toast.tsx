@@ -9,7 +9,6 @@
  * 読み上げは popover の外に常に置く role="status" に同じ文言を入れる（閉じている popover は display: none で、読み上げの対象にならないため）
  */
 import { useId, useLayoutEffect, useRef, useState } from "preact/hooks";
-import { CloseIcon } from "./close-icon.tsx";
 import { dismissToast, toastKind, type Notify, type ToastState } from "./toast-state.ts";
 
 export * from "./toast-state.ts";
@@ -98,7 +97,7 @@ export function Toast({ toast, onClose }: { toast: ToastState | null; onClose(id
               </button>
             ) : (
               <button type="button" class="ui-icon ui-toast-close" commandfor={id} command="hide-popover" aria-label="閉じる" onClick={close}>
-                <CloseIcon />
+                <span class="ui-ico ui-ico-close" aria-hidden="true" />
               </button>
             )}
           </div>

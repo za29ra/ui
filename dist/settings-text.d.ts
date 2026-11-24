@@ -3,7 +3,7 @@
  * アプリ別の部分（denied の説明に出すアプリの表示名、on の説明「何を知らせるか」）は引数で受ける
  */
 import type { PushStatus } from "./push.ts";
-/** 状態のアイコンの名前。アイコンそのものは NotifySettings の icons でアプリが渡す */
+/** 状態のアイコンの名前。NotifySettings は ui-ico-<名前> で描く */
 export type PushIconName = "alert" | "bell" | "bell-off";
 export interface PushTextOptions {
     /** アプリの表示名（iOS の「設定」アプリの通知の一覧に出る名前） */

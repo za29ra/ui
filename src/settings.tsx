@@ -3,13 +3,13 @@
  * - SettingsLayout: 上のタブと本文の枠だけ。開いている項目と URL の結び付け（/settings/<項目>）はアプリが持つ
  * - ThemeSettings: 表示（自動 | ライト | ダーク）と、ライト・ダークのテーマのカード。カードの見本の中身はアプリが preview(id) で渡す
  * - NotifySettings: この端末の通知の状態と、受け取る・やめるのスイッチ。文言は settings-text.ts（アプリ別の部分は props）
- * アイコン（カードのチェック・通知の状態）は props で受ける（アイコンの仕組みは 3c-3）
+ * アイコン（カードのチェック・通知の状態）は ui-ico-*（DESIGN.md 2.5）
  */
 import { useId } from "preact/hooks";
 import type { ComponentChildren } from "preact";
 import { DARK_THEMES, LIGHT_THEMES, MODES, type ThemeId, type ThemePrefs } from "./theme.ts";
 import type { PushControl } from "./use-push.ts";
-import { pushStateText, type PushIconName } from "./settings-text.ts";
+import { pushStateText } from "./settings-text.ts";
 
 export * from "./settings-text.ts";
 
@@ -39,7 +39,7 @@ export function SettingsLayout<T extends string>({ tabs, current, onTab, label =
   );
 }
 
-function ThemeChoices<T extends ThemeId>(p: { legend: string; name: string; themes: Array<{ id: T; name: string }>; value: T; onChange(id: T): void; preview(id: ThemeId): ComponentChildren; checkIcon?: ComponentChildren }) {
+function ThemeChoices<T extends ThemeId>(p: { legend: string; name: string; themes: Array<{ id: T; name: string }>; value: T; onChange(id: T): void; preview(id: ThemeId): ComponentChildren }) {
   return (
     <fieldset class="ui-settings-group">
       <legend>{p.legend}</legend>
@@ -53,11 +53,9 @@ function ThemeChoices<T extends ThemeId>(p: { legend: string; name: string; them
             </span>
             <span class="ui-theme-card-name">
               {t.name}
-              {p.checkIcon !== undefined && (
-                <span class="ui-theme-card-check" aria-hidden="true">
-                  {p.checkIcon}
-                </span>
-              )}
+              <span class="ui-theme-card-check" aria-hidden="true">
+                <span class="ui-ico ui-ico-check" />
+              </span>
             </span>
           </label>
         ))}
@@ -71,11 +69,9 @@ export interface ThemeSettingsProps {
   onTheme(next: ThemePrefs): void;
   /** テーマのカードの見本の中身（ドメインの形を小さく描く）。枠（.ui-theme-preview）は部品が描く */
   preview(id: ThemeId): ComponentChildren;
-  /** 選んだカードの名前の横に出す印（無ければ出さない） */
-  checkIcon?: ComponentChildren;
 }
 
-export function ThemeSettings({ theme, onTheme, preview, checkIcon }: ThemeSettingsProps) {
+export function ThemeSettings({ theme, onTheme, preview }: ThemeSettingsProps) {
   const id = useId();
   return (
     <>
@@ -90,8 +86,8 @@ export function ThemeSettings({ theme, onTheme, preview, checkIcon }: ThemeSetti
         </div>
         <p class="ui-settings-note">「自動」は端末の外観に合わせます。起動中の画面だけは、この設定によらず端末の外観で決まります。</p>
       </div>
-      <ThemeChoices legend="ライトのテーマ" name={`${id}-light`} themes={LIGHT_THEMES} value={theme.light} onChange={(light) => onTheme({ ...theme, light })} preview={preview} checkIcon={checkIcon} />
-      <ThemeChoices legend="ダークのテーマ" name={`${id}-dark`} themes={DARK_THEMES} value={theme.dark} onChange={(dark) => onTheme({ ...theme, dark })} preview={preview} checkIcon={checkIcon} />
+      <ThemeChoices legend="ライトのテーマ" name={`${id}-light`} themes={LIGHT_THEMES} value={theme.light} onChange={(light) => onTheme({ ...theme, light })} preview={preview} />
+      <ThemeChoices legend="ダークのテーマ" name={`${id}-dark`} themes={DARK_THEMES} value={theme.dark} onChange={(dark) => onTheme({ ...theme, dark })} preview={preview} />
     </>
   );
 }
@@ -102,13 +98,10 @@ export interface NotifySettingsProps {
   appName: string;
   /** 通知を受け取っているときの説明（何を知らせるか） */
   onDetail: string;
-  /** 状態のアイコン（無ければ出さない） */
-  icons?: Partial<Record<PushIconName, ComponentChildren>>;
 }
 
-export function NotifySettings({ push, appName, onDetail, icons }: NotifySettingsProps) {
+export function NotifySettings({ push, appName, onDetail }: NotifySettingsProps) {
   const text = push.status === null ? null : pushStateText(push.status, { appName, onDetail });
-  const icon = text === null ? undefined : icons?.[text.icon];
   return (
     <div class="ui-settings-group">
       <span>この端末の通知</span>
@@ -118,11 +111,9 @@ export function NotifySettings({ push, appName, onDetail, icons }: NotifySetting
           <p class="ui-settings-note">確認中…</p>
         ) : (
           <>
-            {icon !== undefined && (
-              <span class="ui-push-status-icon" aria-hidden="true">
-                {icon}
-              </span>
-            )}
+            <span class="ui-push-status-icon" aria-hidden="true">
+              <span class={`ui-ico ui-ico-${text.icon}`} />
+            </span>
             <div>
               <p class="ui-push-status-title">{text.title}</p>
               <p class="ui-push-status-detail">{text.detail}</p>

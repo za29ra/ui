@@ -941,7 +941,7 @@
   font-weight: 600;
 }
 
-/* 選んだ印（アイコンはアプリが渡す）。選んだカードだけ見せる */
+/* 選んだ印（ui-ico-check）。選んだカードだけ見せる */
 :where(.ui-theme-card-check) {
   display: flex;
   color: var(--accent);
@@ -994,7 +994,7 @@
   --state: var(--warning);
 }
 
-/* アイコンはアプリが渡す。行の高さを持たないよう flex にする */
+/* 状態のアイコン（ui-ico-alert・bell・bell-off）。行の高さを持たないよう flex にする */
 :where(.ui-push-status-icon) {
   display: flex;
   margin-top: var(--space-0_5);
