@@ -33,6 +33,7 @@
     "./pull-refresh": { "types": "./dist/pull-refresh.d.ts", "default": "./dist/pull-refresh.js" },
     "./modal-rules": { "types": "./dist/modal-rules.d.ts", "default": "./dist/modal-rules.js" },
     "./popup-rules": { "types": "./dist/popup-rules.d.ts", "default": "./dist/popup-rules.js" },
+    "./menu-rules": { "types": "./dist/menu-rules.d.ts", "default": "./dist/menu-rules.js" },
     "./close-icon": { "types": "./dist/close-icon.d.ts", "default": "./dist/close-icon.js" },
     "./popup": { "types": "./dist/popup.d.ts", "default": "./dist/popup.js" },
     "./modal": { "types": "./dist/modal.d.ts", "default": "./dist/modal.js" },
