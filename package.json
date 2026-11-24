@@ -1,6 +1,6 @@
 {
   "name": "ui",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "description": "Shared design tokens, components and PWA helpers for personal Preact apps",
@@ -12,7 +12,24 @@
     "./components.css": "./css/components.css",
     "./DESIGN.md": "./DESIGN.md",
     "./contrast": { "types": "./dist/contrast.d.ts", "default": "./dist/contrast.js" },
-    "./css-themes": { "types": "./dist/css-themes.d.ts", "default": "./dist/css-themes.js" }
+    "./css-themes": { "types": "./dist/css-themes.d.ts", "default": "./dist/css-themes.js" },
+    "./storage": { "types": "./dist/storage.d.ts", "default": "./dist/storage.js" },
+    "./pwa": { "types": "./dist/pwa.d.ts", "default": "./dist/pwa.js" },
+    "./dialog-layout": { "types": "./dist/dialog-layout.d.ts", "default": "./dist/dialog-layout.js" },
+    "./theme": { "types": "./dist/theme.d.ts", "default": "./dist/theme.js" },
+    "./use-theme": { "types": "./dist/use-theme.d.ts", "default": "./dist/use-theme.js" },
+    "./push": { "types": "./dist/push.d.ts", "default": "./dist/push.js" },
+    "./use-push": { "types": "./dist/use-push.d.ts", "default": "./dist/use-push.js" },
+    "./toast": { "types": "./dist/toast.d.ts", "default": "./dist/toast.js" },
+    "./version": { "types": "./dist/version.d.ts", "default": "./dist/version.js" },
+    "./update-check": { "types": "./dist/update-check.d.ts", "default": "./dist/update-check.js" },
+    "./sw-message": { "types": "./dist/sw-message.d.ts", "default": "./dist/sw-message.js" },
+    "./register-sw": { "types": "./dist/register-sw.d.ts", "default": "./dist/register-sw.js" },
+    "./badge": { "types": "./dist/badge.d.ts", "default": "./dist/badge.js" },
+    "./sw": { "types": "./dist/sw.d.ts", "default": "./dist/sw.js" },
+    "./auth": { "types": "./dist/auth.d.ts", "default": "./dist/auth.js" },
+    "./pull": { "types": "./dist/pull.d.ts", "default": "./dist/pull.js" },
+    "./pull-refresh": { "types": "./dist/pull-refresh.d.ts", "default": "./dist/pull-refresh.js" }
   },
   "scripts": {
     "test": "node --test \"test/**/*.test.ts\"",
@@ -21,8 +38,12 @@
     "migrate": "node scripts/migrate-literals.ts",
     "gallery": "node scripts/serve.ts"
   },
+  "peerDependencies": {
+    "preact": ">=11"
+  },
   "devDependencies": {
     "@types/node": "26.6.6",
+    "preact": "11.2.0",
     "typescript": "7.0.2"
   },
   "engines": {

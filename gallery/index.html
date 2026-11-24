@@ -130,6 +130,27 @@
       </section>
 
       <section class="g-section">
+        <h2>PullRefresh</h2>
+        <div class="g-row">
+          <div class="ui-pull g-static" role="status" aria-label="引いて更新">
+            <span class="ui-pull-circle">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="transform: rotate(90deg)"><path d="M12 5v14M5 12l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </span>
+          </div>
+          <div class="ui-pull g-static" data-state="ready" role="status" aria-label="離すと更新">
+            <span class="ui-pull-circle">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="transform: rotate(180deg)"><path d="M12 5v14M5 12l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </span>
+          </div>
+          <div class="ui-pull g-static" data-state="refreshing" role="status" aria-label="更新しています">
+            <span class="ui-pull-circle">
+              <svg class="ui-pull-spinner" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="40 100" /></svg>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section class="g-section">
         <h2>Sheet</h2>
         <p><button type="button" id="open-sheet">シートを開く</button></p>
         <dialog class="ui-sheet" id="sheet" aria-label="見本のシート">
