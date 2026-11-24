@@ -28,6 +28,10 @@
       .g-static { position: static; }
       /* 見本のトーストは消さない（撮るたびに消えないように） */
       .g-static .ui-toast { animation: none; }
+      /* テーマの見本の中身（アプリが preview で描くもの）の代わり */
+      .g-tp-bar, .g-tp-row { display: block; height: 8px; border-radius: var(--radius-sm); }
+      .g-tp-bar { width: 70%; background: var(--fg); }
+      .g-tp-row { background: var(--bg-hover); }
       .g-skeleton-row { display: flex; gap: var(--space-3); align-items: center; }
       .g-surfaces { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: flex-start; }
       .g-surfaces > * { position: static; }
@@ -154,6 +158,56 @@
             <span class="ui-pull-circle">
               <svg class="ui-pull-spinner" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="40 100" /></svg>
             </span>
+          </div>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>Settings</h2>
+        <div class="ui-settings">
+          <div class="ui-tabs" role="group" aria-label="設定の項目">
+            <button type="button" aria-pressed="true">テーマ</button>
+            <button type="button" aria-pressed="false">通知</button>
+          </div>
+          <div class="ui-settings-body">
+            <div class="ui-settings-group">
+              <span id="g-theme-mode">表示</span>
+              <div class="ui-segmented" role="group" aria-labelledby="g-theme-mode">
+                <button type="button" aria-pressed="true">自動</button>
+                <button type="button" aria-pressed="false">ライト</button>
+                <button type="button" aria-pressed="false">ダーク</button>
+              </div>
+              <p class="ui-settings-note">「自動」は端末の外観に合わせます。起動中の画面だけは、この設定によらず端末の外観で決まります。</p>
+            </div>
+            <fieldset class="ui-settings-group">
+              <legend>ライトのテーマ</legend>
+              <div class="ui-theme-grid">
+                <label class="ui-theme-card">
+                  <input type="radio" name="g-theme-light" checked />
+                  <span class="ui-theme-preview" data-theme="default-light" aria-hidden="true"><span class="g-tp-bar"></span><span class="g-tp-row"></span><span class="g-tp-row"></span></span>
+                  <span class="ui-theme-card-name">標準<span class="ui-theme-card-check" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span></span>
+                </label>
+                <label class="ui-theme-card">
+                  <input type="radio" name="g-theme-light" />
+                  <span class="ui-theme-preview" data-theme="latte" aria-hidden="true"><span class="g-tp-bar"></span><span class="g-tp-row"></span><span class="g-tp-row"></span></span>
+                  <span class="ui-theme-card-name">Catppuccin Latte<span class="ui-theme-card-check" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span></span>
+                </label>
+              </div>
+            </fieldset>
+            <div class="ui-settings-group">
+              <span>この端末の通知</span>
+              <div class="ui-push-status" role="status" data-state="on">
+                <span class="ui-push-status-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+                <div>
+                  <p class="ui-push-status-title">通知を受け取っています</p>
+                  <p class="ui-push-status-detail">毎朝、その日の予定をお知らせします。</p>
+                </div>
+              </div>
+              <label class="ui-switch-row">
+                <span>この端末で通知を受け取る</span>
+                <input type="checkbox" role="switch" class="ui-switch" checked />
+              </label>
+            </div>
           </div>
         </div>
       </section>

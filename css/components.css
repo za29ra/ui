@@ -770,3 +770,184 @@
     animation: none;
   }
 }
+
+/* ---- 設定（SettingsLayout・ThemeSettings・NotifySettings。上のタブと本文。項目の中身の並び） ---- */
+
+:where(.ui-settings > .ui-tabs) {
+  margin: 0 var(--gutter);
+}
+
+:where(.ui-settings-body) {
+  padding: var(--space-6) var(--gutter) 112px; /* ui-allow: レイアウト（下はタブバーの分） */
+}
+
+:where(.ui-settings-group) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  border: 0;
+}
+
+:where(.ui-settings-group legend, .ui-settings-group > span) {
+  margin-bottom: var(--space-1);
+  padding: 0;
+  font-weight: 600;
+}
+
+:where(.ui-settings-group .ui-segmented) {
+  align-self: flex-start;
+}
+
+/* 列の flex（縦）で幅いっぱいに伸びないよう、ボタンは文字の幅にする */
+:where(.ui-settings-group > button) {
+  align-self: flex-start;
+}
+
+/* 設定の説明文。折り返すときは、短い行を残さない・文節の途中で切らない */
+:where(.ui-settings-note) {
+  margin: var(--space-2) 0 0;
+  color: var(--fg-muted);
+  text-wrap: pretty;
+  word-break: auto-phrase;
+}
+
+/* 切り替え（表示: 自動 | ライト | ダーク）。つながった枠の中で、選んだものを塗る */
+:where(.ui-segmented) {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+:where(.ui-segmented button) {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-size: var(--text-sm);
+}
+
+:where(.ui-segmented button[aria-pressed="true"]) {
+  background: var(--bg-hover);
+  font-weight: 600;
+}
+
+/* テーマのカード: 見本を並べて見比べて選ぶ。選んだカードは、アクセントの枠 */
+:where(.ui-theme-grid) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-3);
+}
+
+:where(.ui-theme-card) {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1_5);
+  padding: var(--space-2);
+  background: var(--bg-raised);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+}
+
+:where(.ui-theme-card:has(input:checked)) {
+  border-color: var(--accent);
+}
+
+/* ラジオは見えなくする（カード全体が押せる。キーボードでは見えるよう、フォーカスはカードに出す） */
+:where(.ui-theme-card input) {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:where(.ui-theme-card:has(input:focus-visible)) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+:where(.ui-theme-card-name) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 0 var(--space-1) var(--space-0_5);
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+/* 選んだ印（アイコンはアプリが渡す）。選んだカードだけ見せる */
+:where(.ui-theme-card-check) {
+  display: flex;
+  color: var(--accent);
+  visibility: hidden;
+}
+
+:where(.ui-theme-card:has(input:checked) .ui-theme-card-check) {
+  visibility: visible;
+}
+
+:where(.ui-theme-card:hover) {
+  border-color: var(--fg-muted);
+}
+
+/* 見本の枠: そのテーマの色で描く（data-theme）。中身はアプリ */
+:where(.ui-theme-preview) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* 通知の状態。色とアイコンでも見分けられるようにする */
+:where(.ui-push-status) {
+  --state: var(--fg-muted);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin: var(--space-2) 0 var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: color-mix(in srgb, var(--state) 10%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--state) 45%, var(--border));
+  border-left: 4px solid var(--state);
+  border-radius: var(--radius-md);
+}
+
+:where(.ui-push-status[data-state="on"]) {
+  --state: var(--success);
+}
+
+:where(.ui-push-status[data-state="denied"]) {
+  --state: var(--danger);
+}
+
+/* 注意の色のトークンはまだ無い。アプリが --now（今を示す強い色）を持っていればそれを使い、無ければ地味な色にする */
+:where(.ui-push-status[data-state="unsupported"], .ui-push-status[data-state="needs-install"]) {
+  --state: var(--now, var(--fg-muted));
+}
+
+/* アイコンはアプリが渡す。行の高さを持たないよう flex にする */
+:where(.ui-push-status-icon) {
+  display: flex;
+  margin-top: var(--space-0_5);
+  color: var(--state);
+}
+
+:where(.ui-push-status p) {
+  margin: 0;
+}
+
+:where(.ui-push-status-title) {
+  font-weight: 600;
+}
+
+:where(.ui-push-status-detail) {
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
+}
