@@ -29,16 +29,19 @@ export function menuTrigger(handle) {
 }
 export function Menu({ menu, label, items, class: cls = "", onClose }) {
     const { menuRef, anchorRef, request, opens } = menu;
+    // 描く前に来た要求（あとから Menu を出したとき）では開かない。開いた要求の番号を覚え、それより新しいときだけ開く
+    const handled = useRef(request?.seq ?? 0);
     // 右クリック: 押した位置にアンカーを置いて開く。項目は描いたあとなので、先頭の項目にフォーカスが入る
     useEffect(() => {
         const el = menuRef.current;
         const anchor = anchorRef.current;
         if (request === null)
             return;
-        if (el === null || anchor === null) {
+        if (request.seq <= handled.current || el === null || anchor === null) {
             opens.settle(request.seq);
             return;
         }
+        handled.current = request.seq;
         anchor.style.left = `${request.x}px`;
         anchor.style.top = `${request.y}px`;
         if (el.matches(":popover-open"))
