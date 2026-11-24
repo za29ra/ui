@@ -169,6 +169,9 @@ importers:
       '@types/node':
         specifier: 26.6.6
         version: 26.6.6
+      preact:
+        specifier: 11.2.0
+        version: 11.2.0
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -298,6 +301,14 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  preact@11.2.0:
+    resolution: {integrity: sha512-/HfHI/7N84e6GrWBJ3J280z3mLaRJiDcSvj/A+y/4AbLnND/1UlGHe1sR6oYuTGwId0nP7dqDU9OnLxMPZ7xBg==}
+    peerDependencies:
+      preact-render-to-string: '>=6.7.0'
+    peerDependenciesMeta:
+      preact-render-to-string:
+        optional: true
+
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
     engines: {node: '>=16.20.0'}
@@ -371,6 +382,8 @@ snapshots:
 
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
+
+  preact@11.2.0: {}
 
   typescript@7.0.2:
     optionalDependencies:

@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "target": "es2024",
+    "lib": ["es2024", "dom", "dom.iterable"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "strict": true,

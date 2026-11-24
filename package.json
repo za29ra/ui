@@ -21,8 +21,12 @@
     "migrate": "node scripts/migrate-literals.ts",
     "gallery": "node scripts/serve.ts"
   },
+  "peerDependencies": {
+    "preact": ">=11"
+  },
   "devDependencies": {
     "@types/node": "26.6.6",
+    "preact": "11.2.0",
     "typescript": "7.0.2"
   },
   "engines": {
