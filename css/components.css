@@ -394,9 +394,210 @@
   }
 }
 
-/* ---- ポップアップ（欄やボタンに接して出す選択。面だけ。大きさと位置はアプリ） ---- */
+/* シートが開いている間は、後ろのページをスクロールさせない（Modal の lockPageScroll はこれを前提にする） */
+:where(html:has(dialog.ui-sheet[open])) {
+  overflow: hidden;
+}
 
+/* ---- シートの骨格（SheetFrame: ✕・見出し・本文・下のボタン）。--keyboard-inset・--keyboard-top と ui-keyboard は SheetFrame が dialog に付ける ---- */
+
+/* SheetFrame を載せたシートは、dialog 自身はスクロールさせず、本文だけをスクロールする */
+:where(dialog.ui-sheet[open]:has(> .ui-sheet-frame)) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+:where(.ui-sheet-frame) {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ヘッダー: ✕・見出し・右。上部のスワイプで閉じる帯（SHEET_TOP）はここに重なる */
+:where(.ui-sheet-head) {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, auto) 1fr;
+  align-items: start;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--gutter) var(--space-1);
+}
+
+:where(.ui-sheet-title) {
+  min-width: 0;
+  text-align: center;
+}
+
+/* グリッドの列いっぱいに伸びないよう、✕は左・右の要素は右に寄せる */
+:where(.ui-sheet-head > .ui-sheet-close) {
+  justify-self: start;
+}
+
+:where(.ui-sheet-head > :last-child:not(.ui-sheet-title)) {
+  justify-self: end;
+}
+
+/* ヘッダーのボタン（✕・右の 1 つ）は枠も背景もなし（アイコンだけ） */
+:where(.ui-sheet-head button) {
+  border: 0;
+  background: none;
+}
+
+:where(.ui-sheet-sub) {
+  color: var(--fg-muted);
+  font-size: var(--text-md);
+}
+
+:where(.ui-sheet-frame h2) {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+:where(.ui-sheet-main) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2_5);
+  /* 上を少し空けて、先頭の欄のフォーカスリングがスクロールの縁で欠けないようにする */
+  padding: var(--space-1) var(--gutter) 0;
+}
+
+/* 本文が縦に縮むと、横に流れる並びなどが潰れる */
+:where(.ui-sheet-main > *) {
+  flex-shrink: 0;
+}
+
+/* 本文の下の余白: ホームバー（キーボードが出ているときはその高さ）の分。浮かせた主ボタンがあれば、その下まで流して最後の欄がボタンの上に出るようにする。
+   入力中の欄へのスクロール（scrollIntoView）もボタンの裏で止まらないよう、同じだけ scroll-padding をとる */
+:where(.ui-sheet-main) {
+  --main-bottom: calc(env(safe-area-inset-bottom) + 16px);
+  padding-bottom: var(--main-bottom);
+  scroll-padding-bottom: var(--main-bottom);
+}
+
+:where(dialog.ui-sheet.ui-keyboard .ui-sheet-main) {
+  --main-bottom: calc(var(--keyboard-inset) + 16px);
+}
+
+:where(.ui-sheet-frame:has(> .ui-sheet-foot) .ui-sheet-main) {
+  --main-bottom: calc(env(safe-area-inset-bottom) + 80px);
+}
+
+:where(dialog.ui-sheet.ui-keyboard .ui-sheet-frame:has(> .ui-sheet-foot) .ui-sheet-main) {
+  --main-bottom: calc(var(--keyboard-inset) + 76px);
+}
+
+/* フッター: 主ボタンを本文の上に浮かせる（線で区切らない）。ホームバーやキーボードの上に置く */
+:where(.ui-sheet-foot) {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--gutter) calc(env(safe-area-inset-bottom) + var(--space-3));
+  pointer-events: none;
+}
+
+:where(dialog.ui-sheet.ui-keyboard .ui-sheet-foot) {
+  padding-bottom: calc(var(--keyboard-inset) + var(--space-2_5));
+}
+
+:where(.ui-sheet-foot > *) {
+  pointer-events: auto;
+}
+
+:where(.ui-sheet-foot button) {
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* 開いた直後に dialog 自身へ移すフォーカス（Modal）や、先頭のボタンへ移るフォーカスは、リングを出さない。Tab で移ったとき（:focus-visible）は出す */
+:where(dialog.ui-sheet:focus, dialog.ui-sheet :focus:not(:focus-visible)) {
+  outline: none;
+}
+
+/* 左上の ✕ */
+:where(button.ui-sheet-close) {
+  flex: none;
+  align-self: flex-start;
+  padding: var(--space-1);
+  line-height: 1;
+  margin: calc(-1 * var(--space-1)) 0 0 calc(-1 * var(--space-1));
+}
+
+/* ダイアログの形でキーボードが出ているときは、上に寄せて、キーボードの上端までに収める（高さの上限でキーボードの分を空ける）。
+   dialog:modal は上下 0 の fixed なので、height は auto でなく fit-content（auto は画面いっぱいに伸びる）。
+   ui のシートは --sheet-max を使わず max-height を直に持つので、上限も max-height に書く */
+:where(html.dialogs dialog.ui-sheet.ui-keyboard) {
+  max-height: min(86dvh, calc(93dvh - var(--keyboard-inset, 0px) - var(--keyboard-top, 0px) - 8px));
+  margin-top: calc(7dvh + var(--keyboard-top, 0px)); /* ui-allow: レイアウト（画面の高さに比例） */
+  margin-bottom: auto;
+  height: fit-content;
+}
+
+/* キーボードの分は高さの上限で空けたので、シートのように中には空けない */
+:where(html.dialogs dialog.ui-sheet.ui-keyboard .ui-sheet-frame) {
+  padding-bottom: 0;
+}
+
+:where(html.dialogs dialog.ui-sheet.ui-keyboard .ui-sheet-main) {
+  --main-bottom: 16px;
+}
+
+:where(html.dialogs dialog.ui-sheet.ui-keyboard .ui-sheet-frame:has(> .ui-sheet-foot) .ui-sheet-main) {
+  --main-bottom: 80px;
+}
+
+:where(html.dialogs dialog.ui-sheet.ui-keyboard .ui-sheet-foot) {
+  padding-bottom: var(--space-3);
+}
+
+/* ---- ダイアログの下のボタンと確認のダイアログ（DESIGN.md 2.4） ---- */
+
+/* ダイアログの下のボタン: 右寄せの横並び。キャンセルの側 → 主の操作（右端）。狭くて入らなければ折り返す */
+:where(.ui-dialog-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+/* 狭い画面では下から出るので、下はホームバーの分も空ける */
+:where(.ui-confirm) {
+  padding: var(--space-4) var(--gutter) calc(env(safe-area-inset-bottom) + var(--space-4));
+}
+
+:where(.ui-confirm h2) {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-lg);
+}
+
+:where(.ui-confirm-message) {
+  margin: 0;
+  color: var(--fg-muted);
+}
+
+/* ---- ポップアップ（欄やボタンに接して出す選択。位置・高さの上限・安全域は ui、幅と中身はアプリ） ---- */
+
+/* Popup（popup.tsx）が left・top と --popup-max を入れ、--safe-top・--safe-bottom を読む。UA の [popover] の中央寄せを外す。
+   popover は最上層に出るので z-index は要らない（DESIGN.md 2.3） */
 :where(.ui-popup) {
+  /* ステータスバー・ホームバーの下に潜らせない */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  position: fixed;
+  inset: auto;
+  max-height: var(--popup-max, calc(100dvh - 16px));
   margin: 0;
   padding: var(--space-2_5);
   border: 1px solid var(--border);
@@ -409,6 +610,10 @@
   font-size: var(--text-base);
   font-weight: 400;
   text-align: left;
+}
+
+:where(.ui-popup:focus) {
+  outline: none;
 }
 
 /* ---- メニュー（⋯ やボタンから出す操作の一覧） ---- */
@@ -504,6 +709,43 @@
   overflow-wrap: anywhere;
 }
 
+/* 消えるまでの時間は CSS で数える（DESIGN.md 1.7）。終わったら Toast が popover を閉じる */
+:where(.ui-toast) {
+  animation: ui-toast-out var(--duration-base) var(--toast-duration) forwards;
+}
+
+:where(.ui-toast[data-kind="action"]) {
+  animation-delay: var(--toast-duration-action);
+}
+
+:where(.ui-toast[data-kind="sticky"]) {
+  animation: none;
+}
+
+@keyframes ui-toast-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* マウスを載せている間とフォーカスのある間は止める */
+@media (hover: hover) {
+  :where(.ui-toast-region:hover .ui-toast) {
+    animation-play-state: paused;
+  }
+}
+
+:where(.ui-toast-region:focus-within .ui-toast) {
+  animation-play-state: paused;
+}
+
+/* 動きを減らす設定では、消える動きを止める（時間はそのまま。DESIGN.md 1.7） */
+@media (prefers-reduced-motion: reduce) {
+  :where(.ui-toast) {
+    animation-duration: 1ms;
+  }
+}
+
 /* ---- PullRefresh（プルダウンで更新。ステータスバーの下に、引いた分だけ降りてくる丸いバッジ）。
    どのテーマでも読めるよう、トーストと同じ反転色の背景にし、引き切ったら（data-state="ready"）アクセント色にする ---- */
 
@@ -550,4 +792,184 @@
   :where(.ui-pull-spinner) {
     animation: none;
   }
+}
+
+/* ---- 設定（SettingsLayout・ThemeSettings・NotifySettings。上のタブと本文。項目の中身の並び） ---- */
+
+:where(.ui-settings > .ui-tabs) {
+  margin: 0 var(--gutter);
+}
+
+:where(.ui-settings-body) {
+  padding: var(--space-6) var(--gutter) 112px; /* ui-allow: レイアウト（下はタブバーの分） */
+}
+
+:where(.ui-settings-group) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  border: 0;
+}
+
+:where(.ui-settings-group legend, .ui-settings-group > span) {
+  margin-bottom: var(--space-1);
+  padding: 0;
+  font-weight: 600;
+}
+
+:where(.ui-settings-group .ui-segmented) {
+  align-self: flex-start;
+}
+
+/* 列の flex（縦）で幅いっぱいに伸びないよう、ボタンは文字の幅にする */
+:where(.ui-settings-group > button) {
+  align-self: flex-start;
+}
+
+/* 設定の説明文。折り返すときは、短い行を残さない・文節の途中で切らない */
+:where(.ui-settings-note) {
+  margin: var(--space-2) 0 0;
+  color: var(--fg-muted);
+  text-wrap: pretty;
+  word-break: auto-phrase;
+}
+
+/* 切り替え（表示: 自動 | ライト | ダーク）。つながった枠の中で、選んだものを塗る */
+:where(.ui-segmented) {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+:where(.ui-segmented button) {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-size: var(--text-sm);
+}
+
+:where(.ui-segmented button[aria-pressed="true"]) {
+  background: var(--bg-hover);
+  font-weight: 600;
+}
+
+/* テーマのカード: 見本を並べて見比べて選ぶ。選んだカードは、アクセントの枠 */
+:where(.ui-theme-grid) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-3);
+}
+
+:where(.ui-theme-card) {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1_5);
+  padding: var(--space-2);
+  background: var(--bg-raised);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+}
+
+:where(.ui-theme-card:has(input:checked)) {
+  border-color: var(--accent);
+}
+
+/* ラジオは見えなくする（カード全体が押せる。キーボードでは見えるよう、フォーカスはカードに出す） */
+:where(.ui-theme-card input) {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:where(.ui-theme-card:has(input:focus-visible)) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+:where(.ui-theme-card-name) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 0 var(--space-1) var(--space-0_5);
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+/* 選んだ印（アイコンはアプリが渡す）。選んだカードだけ見せる */
+:where(.ui-theme-card-check) {
+  display: flex;
+  color: var(--accent);
+  visibility: hidden;
+}
+
+:where(.ui-theme-card:has(input:checked) .ui-theme-card-check) {
+  visibility: visible;
+}
+
+:where(.ui-theme-card:hover) {
+  border-color: var(--fg-muted);
+}
+
+/* 見本の枠: そのテーマの色で描く（data-theme）。中身はアプリ */
+:where(.ui-theme-preview) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* 通知の状態。色とアイコンでも見分けられるようにする */
+:where(.ui-push-status) {
+  --state: var(--fg-muted);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin: var(--space-2) 0 var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: color-mix(in srgb, var(--state) 10%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--state) 45%, var(--border));
+  border-left: 4px solid var(--state);
+  border-radius: var(--radius-md);
+}
+
+:where(.ui-push-status[data-state="on"]) {
+  --state: var(--success);
+}
+
+:where(.ui-push-status[data-state="denied"]) {
+  --state: var(--danger);
+}
+
+:where(.ui-push-status[data-state="unsupported"], .ui-push-status[data-state="needs-install"]) {
+  --state: var(--warning);
+}
+
+/* アイコンはアプリが渡す。行の高さを持たないよう flex にする */
+:where(.ui-push-status-icon) {
+  display: flex;
+  margin-top: var(--space-0_5);
+  color: var(--state);
+}
+
+:where(.ui-push-status p) {
+  margin: 0;
+}
+
+:where(.ui-push-status-title) {
+  font-weight: 600;
+}
+
+:where(.ui-push-status-detail) {
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
 }

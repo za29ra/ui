@@ -11,7 +11,7 @@ const THEMES = ["default-light", "default-dark", "latte", "frappe", "macchiato",
 const COLOR_TOKENS = [
   "--bg", "--bg-raised", "--bg-sunken", "--bg-hover", "--bg-selected",
   "--fg", "--fg-muted", "--fg-faint", "--border",
-  "--accent", "--accent-fg", "--danger", "--danger-fg", "--success",
+  "--accent", "--accent-fg", "--danger", "--danger-fg", "--success", "--warning",
   "--toast-bg", "--toast-fg",
   "--scrim", "--shadow-sm", "--shadow-md", "--shadow-lg",
   "--accent-soft", "--on-media",
@@ -35,6 +35,7 @@ const PAIRS: Array<[fg: string, bg: string, min: number]> = [
   ["--danger-fg", "--danger", 4.5],
   ["--accent", "--bg", 3],
   ["--success", "--bg", 3],
+  ["--warning", "--bg", 3],
   ["--toast-fg", "--toast-bg", 4.5],
 ];
 

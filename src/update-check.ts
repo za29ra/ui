@@ -4,7 +4,7 @@
  * 勝手に読み込み直すと読んでいる記事やスクロール位置が消えるので、読み込み直すのは押したときだけ
  */
 import { useEffect } from "preact/hooks";
-import type { Notify } from "./toast.ts";
+import type { Notify } from "./toast-state.ts";
 import { hasNewVersion } from "./version.ts";
 
 /** 前面にある間に確かめる間隔（ミリ秒） */

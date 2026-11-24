@@ -27,6 +27,19 @@ html {
   outline-offset: 2px;
 }
 
+/* 読み上げだけに残す（画面には出さない。トーストの role="status" など） */
+:where(.ui-visually-hidden) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* 欄の輪は欄に付ける（アプリの指定が勝つよう、詳細度は 0 にしてある） */
 :where(input:focus-visible, textarea:focus-visible, select:focus-visible) {
   outline-offset: 0;

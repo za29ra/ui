@@ -26,6 +26,12 @@
       .g-side .ico { width: 20px; height: 20px; }
       .g-side .ui-badge { margin-left: auto; }
       .g-static { position: static; }
+      /* 見本のトーストは消さない（撮るたびに消えないように） */
+      .g-static .ui-toast { animation: none; }
+      /* テーマの見本の中身（アプリが preview で描くもの）の代わり */
+      .g-tp-bar, .g-tp-row { display: block; height: 8px; border-radius: var(--radius-sm); }
+      .g-tp-bar { width: 70%; background: var(--fg); }
+      .g-tp-row { background: var(--bg-hover); }
       .g-skeleton-row { display: flex; gap: var(--space-3); align-items: center; }
       .g-surfaces { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: flex-start; }
       .g-surfaces > * { position: static; }
@@ -115,7 +121,7 @@
       <section class="g-section">
         <h2>Popup・Menu・Toast</h2>
         <div class="g-surfaces">
-          <div class="ui-popup" style="width: 240px">ポップアップの面。中身はアプリが決める。</div>
+          <div class="ui-popup" style="position: static; width: 240px">ポップアップの面。中身はアプリが決める。</div>
           <div class="ui-menu" style="width: 220px">
             <div class="ui-menu-list" role="menu">
               <button type="button" role="menuitem">名前を変える</button>
@@ -124,7 +130,13 @@
             </div>
           </div>
           <div class="ui-toast-region g-static">
-            <div class="ui-toast" role="status"><span>「洗濯」を終えました</span><button type="button" class="ui-text">取り消す</button></div>
+            <div class="ui-toast" data-kind="action"><span>「洗濯」を終えました</span><button type="button" class="ui-text">取り消す</button></div>
+          </div>
+          <div class="ui-toast-region g-static">
+            <div class="ui-toast" data-kind="plain">
+              <span>保存できませんでした</span>
+              <button type="button" class="ui-icon ui-toast-close" aria-label="閉じる"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg></button>
+            </div>
           </div>
         </div>
       </section>
@@ -151,6 +163,56 @@
       </section>
 
       <section class="g-section">
+        <h2>Settings</h2>
+        <div class="ui-settings">
+          <div class="ui-tabs" role="group" aria-label="設定の項目">
+            <button type="button" aria-pressed="true">テーマ</button>
+            <button type="button" aria-pressed="false">通知</button>
+          </div>
+          <div class="ui-settings-body">
+            <div class="ui-settings-group">
+              <span id="g-theme-mode">表示</span>
+              <div class="ui-segmented" role="group" aria-labelledby="g-theme-mode">
+                <button type="button" aria-pressed="true">自動</button>
+                <button type="button" aria-pressed="false">ライト</button>
+                <button type="button" aria-pressed="false">ダーク</button>
+              </div>
+              <p class="ui-settings-note">「自動」は端末の外観に合わせます。起動中の画面だけは、この設定によらず端末の外観で決まります。</p>
+            </div>
+            <fieldset class="ui-settings-group">
+              <legend>ライトのテーマ</legend>
+              <div class="ui-theme-grid">
+                <label class="ui-theme-card">
+                  <input type="radio" name="g-theme-light" checked />
+                  <span class="ui-theme-preview" data-theme="default-light" aria-hidden="true"><span class="g-tp-bar"></span><span class="g-tp-row"></span><span class="g-tp-row"></span></span>
+                  <span class="ui-theme-card-name">標準<span class="ui-theme-card-check" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span></span>
+                </label>
+                <label class="ui-theme-card">
+                  <input type="radio" name="g-theme-light" />
+                  <span class="ui-theme-preview" data-theme="latte" aria-hidden="true"><span class="g-tp-bar"></span><span class="g-tp-row"></span><span class="g-tp-row"></span></span>
+                  <span class="ui-theme-card-name">Catppuccin Latte<span class="ui-theme-card-check" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span></span>
+                </label>
+              </div>
+            </fieldset>
+            <div class="ui-settings-group">
+              <span>この端末の通知</span>
+              <div class="ui-push-status" role="status" data-state="on">
+                <span class="ui-push-status-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+                <div>
+                  <p class="ui-push-status-title">通知を受け取っています</p>
+                  <p class="ui-push-status-detail">毎朝、その日の予定をお知らせします。</p>
+                </div>
+              </div>
+              <label class="ui-switch-row">
+                <span>この端末で通知を受け取る</span>
+                <input type="checkbox" role="switch" class="ui-switch" checked />
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="g-section">
         <h2>Sheet</h2>
         <p><button type="button" id="open-sheet">シートを開く</button></p>
         <dialog class="ui-sheet" id="sheet" aria-label="見本のシート">
@@ -160,14 +222,62 @@
             <button type="button" class="ui-primary" id="close-sheet">保存する</button>
           </div>
         </dialog>
+        <p class="g-row">
+          <button type="button" id="open-frame">骨格のあるシートを開く</button>
+          <button type="button" id="open-confirm">確認を開く</button>
+        </p>
+        <dialog class="ui-sheet" id="frame" tabindex="-1">
+          <form class="ui-sheet-frame" aria-label="予定の編集" method="dialog">
+            <header class="ui-sheet-head">
+              <button type="button" class="ui-icon ui-sheet-close" aria-label="閉じる" data-close>
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+              </button>
+              <div class="ui-sheet-title">
+                <h2>予定を編集</h2>
+                <div class="ui-sheet-sub">土曜 10:00〜12:00</div>
+              </div>
+            </header>
+            <div class="ui-sheet-main">
+              <input type="text" value="週末の買い物" aria-label="名前" />
+              <textarea rows="3" aria-label="メモ">野菜、パン、牛乳</textarea>
+              <button type="button" class="ui-danger">削除する</button>
+            </div>
+            <footer class="ui-sheet-foot">
+              <button type="submit" class="ui-primary">予定を更新</button>
+            </footer>
+          </form>
+        </dialog>
+        <dialog class="ui-sheet" id="confirm">
+          <div class="ui-confirm" role="alertdialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+            <h2 id="confirm-title">変更を破棄しますか？</h2>
+            <p id="confirm-message" class="ui-confirm-message">保存していない入力は消えます。</p>
+            <div class="ui-dialog-actions">
+              <button type="button" autofocus data-close>続ける</button>
+              <button type="button" class="ui-danger" data-close>破棄する</button>
+            </div>
+          </div>
+        </dialog>
       </section>
     </main>
     <script>
       const sheet = document.getElementById("sheet");
       document.getElementById("open-sheet").onclick = () => sheet.showModal();
       document.getElementById("close-sheet").onclick = () => sheet.close();
-      // ?sheet でシートを開いた状態にする（VRT で撮る）
-      if (new URLSearchParams(location.search).has("sheet")) sheet.showModal();
+      const frame = document.getElementById("frame");
+      const confirm = document.getElementById("confirm");
+      // Modal と同じく、先頭の ✕ に落ちたフォーカスは dialog に移す（リングを出さない）
+      const openFrame = () => {
+        frame.showModal();
+        if (document.activeElement?.classList.contains("ui-sheet-close")) frame.focus();
+      };
+      document.getElementById("open-frame").onclick = openFrame;
+      document.getElementById("open-confirm").onclick = () => confirm.showModal();
+      for (const b of document.querySelectorAll("[data-close]")) b.onclick = () => b.closest("dialog").close();
+      // ?sheet・?frame・?confirm でそれぞれのシートを開いた状態にする（VRT で撮る）
+      const params = new URLSearchParams(location.search);
+      if (params.has("sheet")) sheet.showModal();
+      if (params.has("frame")) openFrame();
+      if (params.has("confirm")) confirm.showModal();
     </script>
   </body>
 </html>
