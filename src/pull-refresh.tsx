@@ -1,7 +1,7 @@
 /**
  * プルダウンで読み直す。ホーム画面から開いたスマホの幅（1 列のとき）だけ。
  * standalone にはブラウザの更新ボタンもネイティブのプルダウン更新もないので、ページの先頭で下に引いたら取り直す。
- * 見た目は、背景のある丸いバッジ。引くにつれて矢印が回り、引き切ったら色が変わり、離したら読み込みが終わるまでスピナーを回す
+ * 見た目は、背景のある丸いバッジ。引くにつれて矢印が回り、引き切ったら色が変わり、離したら読み込みが終わるまでスピナーを回す（components.css の .ui-pull。状態は data-state）
  */
 import { useEffect, useRef, useState } from "preact/hooks";
 import { arrowAngle, isScrollContainer, PULL_TRIGGER, pullAxis, pullDistance, pullProgress, pullReady, refreshDone } from "./pull.ts";
@@ -137,15 +137,16 @@ export function PullRefresh(props: PullRefreshProps) {
   const ready = !refreshing && pullReady(distance);
   return (
     <div
-      class={`pull-indicator${ready ? " ready" : ""}${refreshing ? " refreshing" : ""}`}
+      class="ui-pull"
+      data-state={refreshing ? "refreshing" : ready ? "ready" : undefined}
       // 上の見えない位置から降りてくる。丸の大きさ（40px）+ 余白ぶん上に置いておく
       style={{ transform: `translateY(${offset - 52}px)`, opacity: refreshing ? 1 : pullProgress(distance) }}
       role="status"
       aria-label={refreshing ? "更新しています" : ready ? "離すと更新" : "引いて更新"}
     >
-      <span class="pull-circle">
+      <span class="ui-pull-circle">
         {refreshing ? (
-          <svg class="pull-spinner" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <svg class="ui-pull-spinner" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
             <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="40 100" />
           </svg>
         ) : (

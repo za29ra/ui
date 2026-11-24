@@ -2,7 +2,7 @@ import { jsx as _jsx } from "preact/jsx-runtime";
 /**
  * プルダウンで読み直す。ホーム画面から開いたスマホの幅（1 列のとき）だけ。
  * standalone にはブラウザの更新ボタンもネイティブのプルダウン更新もないので、ページの先頭で下に引いたら取り直す。
- * 見た目は、背景のある丸いバッジ。引くにつれて矢印が回り、引き切ったら色が変わり、離したら読み込みが終わるまでスピナーを回す
+ * 見た目は、背景のある丸いバッジ。引くにつれて矢印が回り、引き切ったら色が変わり、離したら読み込みが終わるまでスピナーを回す（components.css の .ui-pull。状態は data-state）
  */
 import { useEffect, useRef, useState } from "preact/hooks";
 import { arrowAngle, isScrollContainer, PULL_TRIGGER, pullAxis, pullDistance, pullProgress, pullReady, refreshDone } from "./pull.js";
@@ -126,7 +126,7 @@ export function PullRefresh(props) {
     // 更新中は、トリガーの位置に止めて回す。引いている間は指に付いてくる
     const offset = refreshing ? PULL_TRIGGER : distance;
     const ready = !refreshing && pullReady(distance);
-    return (_jsx("div", { class: `pull-indicator${ready ? " ready" : ""}${refreshing ? " refreshing" : ""}`, 
+    return (_jsx("div", { class: "ui-pull", "data-state": refreshing ? "refreshing" : ready ? "ready" : undefined, 
         // 上の見えない位置から降りてくる。丸の大きさ（40px）+ 余白ぶん上に置いておく
-        style: { transform: `translateY(${offset - 52}px)`, opacity: refreshing ? 1 : pullProgress(distance) }, role: "status", "aria-label": refreshing ? "更新しています" : ready ? "離すと更新" : "引いて更新", children: _jsx("span", { class: "pull-circle", children: refreshing ? (_jsx("svg", { class: "pull-spinner", viewBox: "0 0 24 24", width: "22", height: "22", "aria-hidden": "true", children: _jsx("circle", { cx: "12", cy: "12", r: "9", fill: "none", stroke: "currentColor", "stroke-width": "2.6", "stroke-linecap": "round", "stroke-dasharray": "40 100" }) })) : (_jsx("svg", { viewBox: "0 0 24 24", width: "22", height: "22", "aria-hidden": "true", style: { transform: `rotate(${arrowAngle(distance)}deg)` }, children: _jsx("path", { d: "M12 5v14M5 12l7 7 7-7", fill: "none", stroke: "currentColor", "stroke-width": "2.6", "stroke-linecap": "round", "stroke-linejoin": "round" }) })) }) }));
+        style: { transform: `translateY(${offset - 52}px)`, opacity: refreshing ? 1 : pullProgress(distance) }, role: "status", "aria-label": refreshing ? "更新しています" : ready ? "離すと更新" : "引いて更新", children: _jsx("span", { class: "ui-pull-circle", children: refreshing ? (_jsx("svg", { class: "ui-pull-spinner", viewBox: "0 0 24 24", width: "22", height: "22", "aria-hidden": "true", children: _jsx("circle", { cx: "12", cy: "12", r: "9", fill: "none", stroke: "currentColor", "stroke-width": "2.6", "stroke-linecap": "round", "stroke-dasharray": "40 100" }) })) : (_jsx("svg", { viewBox: "0 0 24 24", width: "22", height: "22", "aria-hidden": "true", style: { transform: `rotate(${arrowAngle(distance)}deg)` }, children: _jsx("path", { d: "M12 5v14M5 12l7 7 7-7", fill: "none", stroke: "currentColor", "stroke-width": "2.6", "stroke-linecap": "round", "stroke-linejoin": "round" }) })) }) }));
 }

@@ -503,3 +503,51 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
+/* ---- PullRefresh（プルダウンで更新。ステータスバーの下に、引いた分だけ降りてくる丸いバッジ）。
+   どのテーマでも読めるよう、トーストと同じ反転色の背景にし、引き切ったら（data-state="ready"）アクセント色にする ---- */
+
+:where(.ui-pull) {
+  position: fixed;
+  top: env(safe-area-inset-top);
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+:where(.ui-pull-circle) {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--toast-fg);
+  background: var(--toast-bg);
+  box-shadow: var(--shadow-md);
+  transition: background-color var(--duration-fast);
+}
+
+:where(.ui-pull[data-state="ready"] .ui-pull-circle) {
+  color: var(--accent-fg);
+  background: var(--accent);
+}
+
+:where(.ui-pull-spinner) {
+  animation: ui-pull-spin 0.8s linear infinite;
+}
+
+@keyframes ui-pull-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 動きを減らす設定では、回さずに止める（更新中であることは、バッジが出ていることで分かる） */
+@media (prefers-reduced-motion: reduce) {
+  :where(.ui-pull-spinner) {
+    animation: none;
+  }
+}
