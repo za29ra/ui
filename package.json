@@ -37,7 +37,9 @@
     "./popup": { "types": "./dist/popup.d.ts", "default": "./dist/popup.js" },
     "./modal": { "types": "./dist/modal.d.ts", "default": "./dist/modal.js" },
     "./sheet-frame": { "types": "./dist/sheet-frame.d.ts", "default": "./dist/sheet-frame.js" },
-    "./confirm": { "types": "./dist/confirm.d.ts", "default": "./dist/confirm.js" }
+    "./confirm": { "types": "./dist/confirm.d.ts", "default": "./dist/confirm.js" },
+    "./settings-text": { "types": "./dist/settings-text.d.ts", "default": "./dist/settings-text.js" },
+    "./settings": { "types": "./dist/settings.d.ts", "default": "./dist/settings.js" }
   },
   "scripts": {
     "test": "node --test \"test/**/*.test.ts\"",
