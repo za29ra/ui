@@ -21,9 +21,8 @@
       .g-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
       .g-col { display: grid; gap: var(--space-2); max-width: 360px; }
       .g-tabbar { display: flex; max-width: 420px; padding: var(--space-1); gap: var(--space-0_5); border: 1px solid var(--border); border-radius: var(--radius-full); background: var(--bg-raised); }
-      .g-tabbar .ico, .g-side .ico { display: block; width: 24px; height: 24px; border-radius: var(--radius-sm); background: currentColor; }
+      .g-tabbar .ui-ico { width: 24px; height: 24px; }
       .g-side { display: grid; gap: var(--space-0_5); width: 220px; padding: var(--space-2); background: var(--bg-sunken); }
-      .g-side .ico { width: 20px; height: 20px; }
       .g-side .ui-badge { margin-left: auto; }
       .g-static { position: static; }
       /* 見本のトーストは消さない（撮るたびに消えないように） */
@@ -32,6 +31,9 @@
       .g-tp-bar, .g-tp-row { display: block; height: 8px; border-radius: var(--radius-sm); }
       .g-tp-bar { width: 70%; background: var(--fg); }
       .g-tp-row { background: var(--bg-hover); }
+      .g-icons { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+      .g-icons > span { display: inline-flex; align-items: center; gap: var(--space-1_5); font-size: var(--text-sm); color: var(--fg-muted); }
+      .g-icons .ui-ico { color: var(--fg); }
       .g-skeleton-row { display: flex; gap: var(--space-3); align-items: center; }
       .g-surfaces { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: flex-start; }
       .g-surfaces > * { position: static; }
@@ -49,6 +51,19 @@
           <button type="button" class="ui-icon" aria-label="閉じる">✕</button>
           <button type="button" disabled>無効</button>
           <button type="button" class="ui-primary" disabled>保存中…</button>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>Icon</h2>
+        <div class="g-icons">
+          <span><span class="ui-ico ui-ico-close" aria-hidden="true"></span>close</span>
+          <span><span class="ui-ico ui-ico-check" aria-hidden="true"></span>check</span>
+          <span><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>bell</span>
+          <span><span class="ui-ico ui-ico-bell-off" aria-hidden="true"></span>bell-off</span>
+          <span><span class="ui-ico ui-ico-alert" aria-hidden="true"></span>alert</span>
+          <span><span class="ui-ico ui-ico-more" aria-hidden="true"></span>more</span>
+          <button type="button" class="ui-icon" aria-label="その他の操作"><span class="ui-ico ui-ico-more" aria-hidden="true"></span></button>
         </div>
       </section>
 
@@ -106,15 +121,15 @@
       <section class="g-section">
         <h2>NavItem</h2>
         <nav class="g-tabbar" aria-label="タブバー">
-          <button type="button" class="ui-tab-item" aria-current="page"><span class="ico"></span>ホーム<span class="ui-badge">2</span></button>
-          <button type="button" class="ui-tab-item"><span class="ico"></span>タイムライン</button>
-          <button type="button" class="ui-tab-item"><span class="ico"></span>一覧</button>
-          <button type="button" class="ui-tab-item"><span class="ico"></span>設定</button>
+          <button type="button" class="ui-tab-item" aria-current="page"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>ホーム<span class="ui-badge">2</span></button>
+          <button type="button" class="ui-tab-item"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>タイムライン</button>
+          <button type="button" class="ui-tab-item"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>一覧</button>
+          <button type="button" class="ui-tab-item"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>設定</button>
         </nav>
         <nav class="g-side" aria-label="サイドナビ">
-          <button type="button" class="ui-side-item" aria-current="page"><span class="ico"></span>ホーム<span class="ui-badge">12</span></button>
-          <button type="button" class="ui-side-item"><span class="ico"></span>一覧</button>
-          <button type="button" class="ui-side-item"><span class="ico"></span>設定</button>
+          <button type="button" class="ui-side-item" aria-current="page"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>ホーム<span class="ui-badge">12</span></button>
+          <button type="button" class="ui-side-item"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>一覧</button>
+          <button type="button" class="ui-side-item"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>設定</button>
         </nav>
       </section>
 
@@ -135,7 +150,7 @@
           <div class="ui-toast-region g-static">
             <div class="ui-toast" data-kind="plain">
               <span>保存できませんでした</span>
-              <button type="button" class="ui-icon ui-toast-close" aria-label="閉じる"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg></button>
+              <button type="button" class="ui-icon ui-toast-close" aria-label="閉じる"><span class="ui-ico ui-ico-close" aria-hidden="true"></span></button>
             </div>
           </div>
         </div>
@@ -197,7 +212,7 @@
             <div class="ui-settings-group">
               <span>この端末の通知</span>
               <div class="ui-push-status" role="status" data-state="on">
-                <span class="ui-push-status-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+                <span class="ui-push-status-icon" aria-hidden="true"><span class="ui-ico ui-ico-bell"></span></span>
                 <div>
                   <p class="ui-push-status-title">通知を受け取っています</p>
                   <p class="ui-push-status-detail">毎朝、その日の予定をお知らせします。</p>
@@ -230,7 +245,7 @@
           <form class="ui-sheet-frame" aria-label="予定の編集" method="dialog">
             <header class="ui-sheet-head">
               <button type="button" class="ui-icon ui-sheet-close" aria-label="閉じる" data-close>
-                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+                <span class="ui-ico ui-ico-close" aria-hidden="true"></span>
               </button>
               <div class="ui-sheet-title">
                 <h2>予定を編集</h2>

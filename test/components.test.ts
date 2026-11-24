@@ -131,3 +131,17 @@ test("Popup は ui の規則だけで画面に固定され、安全領域と高�
   assert.match(r, /inset:\s*auto/);
   assert.match(r, /max-height:\s*var\(--popup-max/);
 });
+
+test("アイコンの土台は 20px・currentColor・--glyph の mask（DESIGN.md 2.5）", () => {
+  const r = ruleBody(".ui-ico");
+  assert.match(r, /width:\s*20px/);
+  assert.match(r, /height:\s*20px/);
+  assert.match(r, /background-color:\s*currentColor/);
+  assert.match(r, /mask:\s*var\(--glyph\)/);
+});
+
+test("ui の部品が使うアイコンを持つ", () => {
+  for (const name of ["close", "check", "bell", "bell-off", "alert", "more"]) {
+    assert.match(ruleBody(`.ui-ico-${name}`), /--glyph:\s*url\("data:image\/svg\+xml,/, name);
+  }
+});

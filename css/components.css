@@ -1,6 +1,46 @@
 /* 基本コンポーネントの見た目（DESIGN.md 2 章）。tokens.css・base.css のあとに読む。
    規則はすべて :where() で包む（詳細度 0。アプリの規則が必ず勝つ）。部品の class と @keyframes は ui- で始める */
 
+/* ---- アイコン（DESIGN.md 2.5）。<span class="ui-ico ui-ico-名前" aria-hidden="true"></span>。
+   SVG を mask で塗るので、色は currentColor（テーマとボタンの状態に追従する）。アプリのアイコンは同じ土台で --glyph を書く ---- */
+
+:where(.ui-ico) {
+  --glyph: none;
+  display: inline-block;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  background-color: currentColor;
+  -webkit-mask: var(--glyph) center / contain no-repeat;
+  mask: var(--glyph) center / contain no-repeat;
+}
+
+/* ui の部品が使うアイコン（24 の枠・線 2.5 前後。20px で描くと線は約 2px）。data: の中の black は mask の形で、色ではない */
+:where(.ui-ico-close) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E");
+}
+
+:where(.ui-ico-check) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E");
+}
+
+:where(.ui-ico-bell) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4'/%3E%3C/svg%3E");
+}
+
+:where(.ui-ico-bell-off) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 16V11a6 6 0 0 1 9-5.2M18 11v5l2 2H4l2-2M10 21h4M3 3l18 18'/%3E%3C/svg%3E");
+}
+
+:where(.ui-ico-alert) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l10 18H2zM12 10v5M12 18h.01'/%3E%3C/svg%3E");
+}
+
+:where(.ui-ico-more) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h.01M12 12h.01M19 12h.01'/%3E%3C/svg%3E");
+}
+
 /* ---- ボタンと入力欄（要素の既定） ---- */
 
 :where(button, input, select, textarea) {
