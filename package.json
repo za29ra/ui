@@ -29,7 +29,9 @@
     "./sw": { "types": "./dist/sw.d.ts", "default": "./dist/sw.js" },
     "./auth": { "types": "./dist/auth.d.ts", "default": "./dist/auth.js" },
     "./pull": { "types": "./dist/pull.d.ts", "default": "./dist/pull.js" },
-    "./pull-refresh": { "types": "./dist/pull-refresh.d.ts", "default": "./dist/pull-refresh.js" }
+    "./pull-refresh": { "types": "./dist/pull-refresh.d.ts", "default": "./dist/pull-refresh.js" },
+    "./modal-rules": { "types": "./dist/modal-rules.d.ts", "default": "./dist/modal-rules.js" },
+    "./popup-rules": { "types": "./dist/popup-rules.d.ts", "default": "./dist/popup-rules.js" }
   },
   "scripts": {
     "test": "node --test \"test/**/*.test.ts\"",
