@@ -26,7 +26,8 @@
     "./sw-message": { "types": "./dist/sw-message.d.ts", "default": "./dist/sw-message.js" },
     "./register-sw": { "types": "./dist/register-sw.d.ts", "default": "./dist/register-sw.js" },
     "./badge": { "types": "./dist/badge.d.ts", "default": "./dist/badge.js" },
-    "./sw": { "types": "./dist/sw.d.ts", "default": "./dist/sw.js" }
+    "./sw": { "types": "./dist/sw.d.ts", "default": "./dist/sw.js" },
+    "./auth": { "types": "./dist/auth.d.ts", "default": "./dist/auth.js" }
   },
   "scripts": {
     "test": "node --test \"test/**/*.test.ts\"",
