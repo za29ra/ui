@@ -160,14 +160,62 @@
             <button type="button" class="ui-primary" id="close-sheet">保存する</button>
           </div>
         </dialog>
+        <p class="g-row">
+          <button type="button" id="open-frame">骨格のあるシートを開く</button>
+          <button type="button" id="open-confirm">確認を開く</button>
+        </p>
+        <dialog class="ui-sheet" id="frame" tabindex="-1">
+          <form class="ui-sheet-frame" aria-label="予定の編集" method="dialog">
+            <header class="ui-sheet-head">
+              <button type="button" class="ui-icon ui-sheet-close" aria-label="閉じる" data-close>
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+              </button>
+              <div class="ui-sheet-title">
+                <h2>予定を編集</h2>
+                <div class="ui-sheet-sub">土曜 10:00〜12:00</div>
+              </div>
+            </header>
+            <div class="ui-sheet-main">
+              <input type="text" value="週末の買い物" aria-label="名前" />
+              <textarea rows="3" aria-label="メモ">野菜、パン、牛乳</textarea>
+              <button type="button" class="ui-danger">削除する</button>
+            </div>
+            <footer class="ui-sheet-foot">
+              <button type="submit" class="ui-primary">予定を更新</button>
+            </footer>
+          </form>
+        </dialog>
+        <dialog class="ui-sheet" id="confirm">
+          <div class="ui-confirm" role="alertdialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+            <h2 id="confirm-title">変更を破棄しますか？</h2>
+            <p id="confirm-message" class="ui-confirm-message">保存していない入力は消えます。</p>
+            <div class="ui-dialog-actions">
+              <button type="button" autofocus data-close>続ける</button>
+              <button type="button" class="ui-danger" data-close>破棄する</button>
+            </div>
+          </div>
+        </dialog>
       </section>
     </main>
     <script>
       const sheet = document.getElementById("sheet");
       document.getElementById("open-sheet").onclick = () => sheet.showModal();
       document.getElementById("close-sheet").onclick = () => sheet.close();
-      // ?sheet でシートを開いた状態にする（VRT で撮る）
-      if (new URLSearchParams(location.search).has("sheet")) sheet.showModal();
+      const frame = document.getElementById("frame");
+      const confirm = document.getElementById("confirm");
+      // Modal と同じく、先頭の ✕ に落ちたフォーカスは dialog に移す（リングを出さない）
+      const openFrame = () => {
+        frame.showModal();
+        if (document.activeElement?.classList.contains("ui-sheet-close")) frame.focus();
+      };
+      document.getElementById("open-frame").onclick = openFrame;
+      document.getElementById("open-confirm").onclick = () => confirm.showModal();
+      for (const b of document.querySelectorAll("[data-close]")) b.onclick = () => b.closest("dialog").close();
+      // ?sheet・?frame・?confirm でそれぞれのシートを開いた状態にする（VRT で撮る）
+      const params = new URLSearchParams(location.search);
+      if (params.has("sheet")) sheet.showModal();
+      if (params.has("frame")) openFrame();
+      if (params.has("confirm")) confirm.showModal();
     </script>
   </body>
 </html>

@@ -394,6 +394,184 @@
   }
 }
 
+/* ---- シートの骨格（SheetFrame: ✕・見出し・本文・下のボタン）。--keyboard-inset・--keyboard-top と ui-keyboard は SheetFrame が dialog に付ける ---- */
+
+/* SheetFrame を載せたシートは、dialog 自身はスクロールさせず、本文だけをスクロールする */
+:where(dialog.ui-sheet[open]:has(> .ui-sheet-frame)) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+:where(.ui-sheet-frame) {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ヘッダー: ✕・見出し・右。上部のスワイプで閉じる帯（SHEET_TOP）はここに重なる */
+:where(.ui-sheet-head) {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, auto) 1fr;
+  align-items: start;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--gutter) var(--space-1);
+}
+
+:where(.ui-sheet-title) {
+  min-width: 0;
+  text-align: center;
+}
+
+/* グリッドの列いっぱいに伸びないよう、✕は左・右の要素は右に寄せる */
+:where(.ui-sheet-head > .ui-sheet-close) {
+  justify-self: start;
+}
+
+:where(.ui-sheet-head > :last-child:not(.ui-sheet-title)) {
+  justify-self: end;
+}
+
+/* ヘッダーのボタン（✕・右の 1 つ）は枠も背景もなし（アイコンだけ） */
+:where(.ui-sheet-head button) {
+  border: 0;
+  background: none;
+}
+
+:where(.ui-sheet-sub) {
+  color: var(--fg-muted);
+  font-size: var(--text-md);
+}
+
+:where(.ui-sheet-frame h2) {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+:where(.ui-sheet-main) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2_5);
+  /* 上を少し空けて、先頭の欄のフォーカスリングがスクロールの縁で欠けないようにする */
+  padding: var(--space-1) var(--gutter) 0;
+}
+
+/* 本文が縦に縮むと、横に流れる並びなどが潰れる */
+:where(.ui-sheet-main > *) {
+  flex-shrink: 0;
+}
+
+/* 本文の下の余白: ホームバー（キーボードが出ているときはその高さ）の分。浮かせた主ボタンがあれば、その下まで流して最後の欄がボタンの上に出るようにする。
+   入力中の欄へのスクロール（scrollIntoView）もボタンの裏で止まらないよう、同じだけ scroll-padding をとる */
+:where(.ui-sheet-main) {
+  --main-bottom: calc(env(safe-area-inset-bottom) + 16px);
+  padding-bottom: var(--main-bottom);
+  scroll-padding-bottom: var(--main-bottom);
+}
+
+:where(dialog.ui-sheet.ui-keyboard .ui-sheet-main) {
+  --main-bottom: calc(var(--keyboard-inset) + 16px);
+}
+
+:where(.ui-sheet-frame:has(> .ui-sheet-foot) .ui-sheet-main) {
+  --main-bottom: calc(env(safe-area-inset-bottom) + 80px);
+}
+
+:where(dialog.ui-sheet.ui-keyboard .ui-sheet-frame:has(> .ui-sheet-foot) .ui-sheet-main) {
+  --main-bottom: calc(var(--keyboard-inset) + 76px);
+}
+
+/* フッター: 主ボタンを本文の上に浮かせる（線で区切らない）。ホームバーやキーボードの上に置く */
+:where(.ui-sheet-foot) {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--gutter) calc(env(safe-area-inset-bottom) + var(--space-3));
+  pointer-events: none;
+}
+
+:where(dialog.ui-sheet.ui-keyboard .ui-sheet-foot) {
+  padding-bottom: calc(var(--keyboard-inset) + var(--space-2_5));
+}
+
+:where(.ui-sheet-foot > *) {
+  pointer-events: auto;
+}
+
+:where(.ui-sheet-foot button) {
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* 開いた直後に dialog 自身へ移すフォーカス（Modal）や、先頭のボタンへ移るフォーカスは、リングを出さない。Tab で移ったとき（:focus-visible）は出す */
+:where(dialog.ui-sheet:focus, dialog.ui-sheet :focus:not(:focus-visible)) {
+  outline: none;
+}
+
+/* 左上の ✕ */
+:where(button.ui-sheet-close) {
+  flex: none;
+  align-self: flex-start;
+  padding: var(--space-1);
+  line-height: 1;
+  margin: calc(-1 * var(--space-1)) 0 0 calc(-1 * var(--space-1));
+}
+
+/* ダイアログの形でキーボードが出ているときは、キーボードの分を高さの上限で空ける（アプリ）ので、シートのように中には空けない */
+:where(html.dialogs dialog.ui-sheet.ui-keyboard .ui-sheet-frame) {
+  padding-bottom: 0;
+}
+
+:where(html.dialogs dialog.ui-sheet.ui-keyboard .ui-sheet-main) {
+  --main-bottom: 16px;
+}
+
+:where(html.dialogs dialog.ui-sheet.ui-keyboard .ui-sheet-frame:has(> .ui-sheet-foot) .ui-sheet-main) {
+  --main-bottom: 80px;
+}
+
+:where(html.dialogs dialog.ui-sheet.ui-keyboard .ui-sheet-foot) {
+  padding-bottom: var(--space-3);
+}
+
+/* ---- ダイアログの下のボタンと確認のダイアログ（DESIGN.md 2.4） ---- */
+
+/* ダイアログの下のボタン: 右寄せの横並び。キャンセルの側 → 主の操作（右端）。狭くて入らなければ折り返す */
+:where(.ui-dialog-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+/* 狭い画面では下から出るので、下はホームバーの分も空ける */
+:where(.ui-confirm) {
+  padding: var(--space-4) var(--gutter) calc(env(safe-area-inset-bottom) + var(--space-4));
+}
+
+:where(.ui-confirm h2) {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-lg);
+}
+
+:where(.ui-confirm-message) {
+  margin: 0;
+  color: var(--fg-muted);
+}
+
 /* ---- ポップアップ（欄やボタンに接して出す選択。面だけ。大きさと位置はアプリ） ---- */
 
 :where(.ui-popup) {
