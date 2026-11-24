@@ -281,7 +281,7 @@
 | **Sheet** | `ui/modal` の `Modal`（`dialog.ui-sheet`。シートの振る舞いは `sheet`、既定 `true`）・`SheetClose`（`button.ui-icon.ui-sheet-close`）。骨格は `ui/sheet-frame` の `SheetFrame`（`.ui-sheet-frame`・`.ui-sheet-head`・`.ui-sheet-title`・`.ui-sheet-sub`・`.ui-sheet-main`・`.ui-sheet-foot`）。閉じる操作の判定は `ui/modal-rules` | 編集や選択の画面。狭い画面では下から、広い画面（2.2）ではダイアログになる | 選ぶだけの短い一覧は、広い画面では Popup |
 | **ConfirmDialog** | `ui/confirm` の `useConfirm`（`.ui-confirm`・`.ui-confirm-message`。ボタンは `.ui-dialog-actions`）。入力を捨てる確認は `DISCARD_CONFIRM`・`discardGuard` | 戻せない操作の前の確認（3.3） | 取り消せる操作には使わない（トーストで取り消す） |
 | **Toast** | `ui/toast` の `Toast`・`useToastState`。`.ui-toast-region`（popover）の中に `.ui-toast[data-kind="plain" \| "action" \| "sticky"]`、✕ は `.ui-toast-close`。読み上げは外に常に置く `.ui-visually-hidden` の `role="status"`。下からの位置は `--toast-offset` | 操作の結果・失敗・取り消し・新しい版の知らせ（3.4） | 入力が要るものは Dialog |
-| **Menu** | `ui/menu` の `Menu`・`useMenu`・`menuTrigger`（`dialog.ui-menu[popover]` の中に `.ui-menu-list`。項目は `button`・`a`、区切りは `.ui-menu-sep`、チェックは `.ui-menu-check[aria-pressed]`、右クリックの位置は `.ui-menu-anchor`）。項目は操作・リンク・区切りの 3 種類で、操作にはチェック・危険・アイコンを付けられる。ボタンから開く（ボタンに `menuTrigger` を広げる。位置はボタンの下）ときと、右クリックで押した位置に開く（`useMenu` の `openAt`）ときがある。右クリックでボタンを押したままなら、離してから開く（押したまま開くと、離したときに閉じるため）。選ぶと閉じてから項目の操作を行う。幅は部品の変数 `--menu-width`（既定 220px）で替えられる。`role="menu"` は付けず、開くボタンに `aria-haspopup="menu"`、メニューに `aria-label`、チェックは `aria-pressed`。キーの判定は `ui/menu-rules` | ⋯ やボタンから出す操作の一覧・行の右クリック | 値を 1 つ選ぶなら Popup |
+| **Menu** | `ui/menu` の `Menu`・`useMenu`・`menuTrigger`（`dialog.ui-menu[popover]` の中に `.ui-menu-list`。項目は `button`・`a`、区切りは `.ui-menu-sep`、チェックは `.ui-menu-check[aria-pressed]`、右クリックの位置は `.ui-menu-anchor`）。項目は操作・リンク・区切りの 3 種類で、操作にはチェック・危険・アイコンを付けられる。ボタンから開く（ボタンに `menuTrigger` を広げる。位置はボタンの下で、右端をそろえる）ときと、右クリックで押した位置の右下に開く（`useMenu` の `openAt`。開いている間は dialog に `data-at`）ときがある。どちらも収まらなければ反転する。右クリックでボタンを押したままなら、離してから開く（押したまま開くと、離したときに閉じるため）。選ぶと閉じてから項目の操作を行う。幅は部品の変数 `--menu-width`（既定 220px）で替えられる。`role="menu"` は付けず、開くボタンに `aria-haspopup="menu"`、メニューに `aria-label`、チェックは `aria-pressed`。キーの判定は `ui/menu-rules` | ⋯ やボタンから出す操作の一覧・行の右クリック | 値を 1 つ選ぶなら Popup |
 | **Popup** | `ui/popup` の `Popup`（`.ui-popup`。置き方（位置・高さの上限・安全域）は ui が持つ。位置の計算は `ui/popup-rules` の `placePopup`。幅と中身はアプリ） | 欄やボタンに接して出す選択（日付・候補・行き先など）。中身はアプリ別でよい | — |
 | **Chip** | `.ui-chips` の中に `button.ui-chip` | 絞り込みのオン・オフ、選択肢の並び | 画面の切り替えは Tabs |
 | **Tabs** | `.ui-tabs` の中に `button` | 同じ場所の中身の切り替え（下線のタブ。設定の項目など） | — |
@@ -393,7 +393,7 @@
 
 - ✕・背景を押す・Esc・シートの上部を下へスワイプは、**どれも同じ「閉じる要求」**。
 - Esc は**内側から 1 つずつ**閉じる（ポップアップ → 開いた行 → シート）。
-- メニューは、項目を選ぶと閉じる（閉じてから項目の操作を行う。確認のダイアログやシートを、メニューを出したまま開かない）。外側を押す・Esc でも閉じ、開いたボタンにフォーカスが戻る。
+- メニューは、項目を選ぶと閉じる（閉じてから項目の操作を行う。確認のダイアログやシートを、メニューを出したまま開かない）。外側を押す・Esc でも閉じ、開いたボタンにフォーカスが戻る（ボタンから開いたとき）。
 - 入力を自動で残せるもの（下書き）は、確認なしに閉じて残す。残せないものは、**変えた項目があるときだけ**「変更を破棄しますか？」（「破棄する」`danger`／「続ける」）を出す。
 
 ### 3.2 キー
