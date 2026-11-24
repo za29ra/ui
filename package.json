@@ -15,7 +15,8 @@
     "./css-themes": { "types": "./dist/css-themes.d.ts", "default": "./dist/css-themes.js" },
     "./storage": { "types": "./dist/storage.d.ts", "default": "./dist/storage.js" },
     "./pwa": { "types": "./dist/pwa.d.ts", "default": "./dist/pwa.js" },
-    "./dialog-layout": { "types": "./dist/dialog-layout.d.ts", "default": "./dist/dialog-layout.js" }
+    "./dialog-layout": { "types": "./dist/dialog-layout.d.ts", "default": "./dist/dialog-layout.js" },
+    "./theme": { "types": "./dist/theme.d.ts", "default": "./dist/theme.js" }
   },
   "scripts": {
     "test": "node --test \"test/**/*.test.ts\"",
