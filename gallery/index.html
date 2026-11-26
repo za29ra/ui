@@ -71,7 +71,7 @@
       </section>
 
       <section class="g-section">
-        <h2>Field</h2>
+        <h2>Input</h2>
         <div class="g-col">
           <input type="text" value="買い物リストを見直す" aria-label="名前" />
           <input type="text" placeholder="メモ" aria-label="メモ" />
@@ -80,6 +80,39 @@
           <textarea rows="2" aria-label="本文">2 行の本文</textarea>
           <input type="search" value="図書館" aria-label="検索" />
           <label><input type="checkbox" checked /> チェックボックス</label>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>Field</h2>
+        <div class="g-col">
+          <div class="ui-field">
+            <label class="ui-field-label" for="g-field-name">名前</label>
+            <input type="text" id="g-field-name" value="週末の買い物" />
+          </div>
+          <div class="ui-field">
+            <label class="ui-field-label" for="g-field-place">場所</label>
+            <input type="text" id="g-field-place" value="駅前の図書館" aria-describedby="g-field-place-hint" />
+            <p class="ui-field-hint" id="g-field-place-hint">地図で探すときに使います</p>
+          </div>
+          <div class="ui-field">
+            <label class="ui-field-label" for="g-field-time">時刻</label>
+            <input type="text" id="g-field-time" value="25:00" aria-invalid="true" aria-describedby="g-field-time-hint g-field-time-error" />
+            <p class="ui-field-hint" id="g-field-time-hint">24 時間制で書きます</p>
+            <p class="ui-field-error" id="g-field-time-error">0:00〜23:59 で書いてください</p>
+          </div>
+          <div class="ui-field" role="group" aria-labelledby="g-field-days-label">
+            <span class="ui-field-label" id="g-field-days-label">繰り返す曜日</span>
+            <div class="ui-chips">
+              <button type="button" class="ui-chip" aria-pressed="true">月</button>
+              <button type="button" class="ui-chip" aria-pressed="false">火</button>
+              <button type="button" class="ui-chip" aria-pressed="true">水</button>
+            </div>
+          </div>
+          <div class="ui-field">
+            <label class="ui-field-label" for="g-field-note">メモ</label>
+            <textarea id="g-field-note" rows="3">傘を持っていく</textarea>
+          </div>
         </div>
       </section>
 

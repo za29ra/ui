@@ -164,3 +164,13 @@ test("右クリックで開いたメニュー（data-at）は押した位置の�
   assert.match(ruleBody("dialog.ui-menu[popover][data-at]"), /position-area:\s*block-end span-inline-end/);
   assert.ok(body.indexOf(":where(dialog.ui-menu[popover][data-at])") > body.indexOf(":where(dialog.ui-menu[popover]) {"));
 });
+
+test("Field はラベル → 欄 → 補足 → エラーを縦に積む（DESIGN.md 2.1）", () => {
+  assert.match(ruleBody(".ui-field"), /flex-direction:\s*column/);
+  const label = ruleBody(".ui-field-label");
+  assert.match(label, /font-size:\s*var\(--text-xs\)/);
+  assert.match(label, /color:\s*var\(--fg-muted\)/);
+  assert.match(label, /font-weight:\s*600/);
+  assert.match(ruleBody(".ui-field-hint"), /color:\s*var\(--fg-muted\)/);
+  assert.match(ruleBody(".ui-field-error"), /color:\s*var\(--danger\)/);
+});
