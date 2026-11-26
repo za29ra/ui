@@ -275,7 +275,7 @@
 | 部品 | class | 使うとき | 使わないとき |
 |---|---|---|---|
 | **Button** | 要素の `button`。種類は `.ui-primary`・`.ui-danger`・`.ui-icon`・`.ui-text` | 操作 1 つ。種類は `primary`（その画面の主な操作。1 つだけ）・既定・`danger`（消す・購読をやめるなどの壊す操作）・`icon`（アイコンだけ。`aria-label` 必須）・`text`（地のない文字だけ） | 移動だけなら `<a>`（Button の見た目にしない） |
-| **Field** | 要素の `input`・`select`・`textarea`（並びは 3d で決める） | 入力欄・`select`・`textarea`・検索欄。ラベル・補足・エラーの並びが共通 | — |
+| **Field** | 欄は要素の `input`・`select`・`textarea`。ラベルとの組は `ui/field` の `Field`（`.ui-field`・`.ui-field-label`・`.ui-field-hint`・`.ui-field-error`）: ラベル（`--text-xs`・`--fg-muted`・太さ 600）→ 欄 → 補足 → エラーの縦積み。欄は children の関数で受け取り、渡された `id`・`aria-describedby`・`aria-invalid` を付ける。ラベルは `<label for>` で、欄を中に入れない。チップの並びなど欄でないものは `group`（`role="group"` とラベルの名前。補足とエラーは group の `aria-describedby`）。横に並べる形はまだ無い。検索欄は `.ui-search`（虫眼鏡の `ui-ico-search` と線の無い欄。中に消すボタンを置ける。フォーカスの輪は枠の外に出す）で、欄には `ui/field` の `SEARCH_INPUT` を広げる | 入力欄・`select`・`textarea`・検索欄。ラベル・補足・エラーの並びが共通 | — |
 | **Switch** | `input[type="checkbox"].ui-switch`、行は `.ui-switch-row` | すぐ反映されるオン・オフ（設定） | 保存ボタンのあるフォームの中ではチェックボックス |
 | **Dialog** | `ui/modal` の `Modal`（`dialog.ui-sheet`。2.2 の `html.dialogs` でダイアログの形）。下のボタンは `ui/confirm` の `DialogActions`（`.ui-dialog-actions`） | 画面の真ん中に重ねる小さな画面（確認・短い入力） | 長い編集はシート |
 | **Sheet** | `ui/modal` の `Modal`（`dialog.ui-sheet`。シートの振る舞いは `sheet`、既定 `true`）・`SheetClose`（`button.ui-icon.ui-sheet-close`）。骨格は `ui/sheet-frame` の `SheetFrame`（`.ui-sheet-frame`・`.ui-sheet-head`・`.ui-sheet-title`・`.ui-sheet-sub`・`.ui-sheet-main`・`.ui-sheet-foot`）。閉じる操作の判定は `ui/modal-rules` | 編集や選択の画面。狭い画面では下から、広い画面（2.2）ではダイアログになる | 選ぶだけの短い一覧は、広い画面では Popup |
@@ -290,7 +290,7 @@
 | **NavItem** | `.ui-tab-item`（タブバー）・`.ui-side-item`（サイドナビ） | サイドナビ・タブバー・ドロワーの項目（アイコン・名前・選択中・バッジ） | ナビの構成はアプリ別 |
 | **Skeleton** | `.ui-skeleton`（棒の見た目と動き。並べ方はアプリ） | 読み込み中の形（灰色の棒の見た目と動き）。並べ方はアプリ別 | すぐ出るもの（0.3 秒以内）には出さない |
 | **Empty** | `.ui-empty` | 一覧が空のときの文（中央・`--fg-muted`）。文言はアプリ別 | — |
-| **Banner** | （3d） | 画面の上に出す、操作の付いた知らせ（ほかの端末との食い違いなど。4 章） | 時間で消えてよいものは Toast |
+| **Banner** | `ui/banner` の `Banner`（`.ui-banner`・`.ui-banner-text`・`.ui-banner-actions`、赤い枠は `data-kind="danger"`）。文とボタン（既定の見た目）を横に並べ、狭ければボタンを下の行に送る。`role="alert"`。置き場所は画面の上か、食い違った中身の上（置き場所はアプリ。ui は外の余白も位置も決めない） | 選ぶまで消せない、操作の付いた知らせ（ほかの端末との食い違いなど。4 章） | 時間で消えてよいものは Toast |
 | **PullRefresh** | `ui/pull-refresh` の `PullRefresh`。見た目は `.ui-pull`（状態は `data-state`）。引ける幅（`media`）と、引かない状態（`block`）・流れる枠（`scroller`）はアプリが渡す | 下へ引いて読み直す（3.6） | — |
 | **SettingsLayout** | `ui/settings` の `SettingsLayout`（`.ui-settings`・`.ui-settings-body`。タブは `.ui-tabs`）。開いている項目と URL の結び付けはアプリ | 設定の画面の枠（3.8） | — |
 | **ThemeSettings** / **NotifySettings** | `ui/settings` の `ThemeSettings`（`.ui-settings-group`・`.ui-segmented`・`.ui-theme-grid`・`.ui-theme-card`・`.ui-theme-card-name`・`.ui-theme-card-check`・`.ui-theme-preview`・`.ui-settings-note`。見本の中身はアプリが `preview(id)` で渡す）・`NotifySettings`（`.ui-push-status[data-state]`・`.ui-push-status-icon`・`.ui-push-status-title`・`.ui-push-status-detail`。文言は `ui/settings-text` の `pushStateText`、アプリの表示名 `appName` と受け取っているときの説明 `onDetail` は props） | 設定の「テーマ」「通知」の項目（全アプリ同じ並び・同じ文言） | — |
@@ -319,7 +319,7 @@
 | 選んでいる | 地を `--bg-selected`、または印に `--accent` | — |
 | 無効 | 部品ごと `opacity: 0.5`（`primary` の上の文字も同じ割合で薄くなる） | 押せない（`disabled`）。押せない理由が分かりにくいときは、近くに文で書く |
 | 送信中 | ボタンの文言を「〜中…」にして無効にする | 二重に送らない |
-| エラーのある Field | 線と文を `--danger`、欄の下に理由の文 | `aria-invalid`、文は `aria-describedby` |
+| エラーのある Field | 線と文を `--danger`、欄の下（補足の下）に理由の文 | `aria-invalid`、文は `aria-describedby`（`Field` に `error` を渡すと付く） |
 
 `ui/base.css` が持つもの: `body` の文字（`--font-sans`・`--text-base`・`--leading-body`）、`touch-action: manipulation`（`html`・`body`・`a`・`button`。ダブルタップの拡大を止める）、`-webkit-tap-highlight-color: transparent`、フォーカスの輪（詳細度 0 なのでアプリの指定が勝つ。入力欄は `outline-offset: 0`）、スクロールバーの色、読み上げだけに残す `.ui-visually-hidden`。`box-sizing` と `prefers-reduced-motion` は持たない（アプリ・部品の側で決める）。`components.css` は、`width: 100%` にする入力欄だけ `box-sizing: border-box` にする。
 
@@ -352,7 +352,7 @@
 - 大きさは 20px（ボタンの中）を基本にし、小さな印は 16px、タブバーは 24px。線の太さは 2（20px のとき）。
 - アイコンだけのボタンは押せる大きさ（2.3）を満たし、`aria-label` を付ける。
 - 書き方は `<span class="ui-ico ui-ico-名前" aria-hidden="true"></span>`。土台の `.ui-ico` は 20px・`currentColor`・`mask: var(--glyph)`。大きさを変えるときは `width`・`height` を上書きする。
-- `ui` が持つアイコンは、部品が使う `ui-ico-close`・`ui-ico-check`・`ui-ico-bell`・`ui-ico-bell-off`・`ui-ico-alert`・`ui-ico-more`（24 の枠・線 2.5 前後の SVG）。`SheetClose`・`Toast` の ✕、`ThemeSettings` の選んだ印、`NotifySettings` の状態は、これを描く。
+- `ui` が持つアイコンは、部品が使う `ui-ico-close`・`ui-ico-check`・`ui-ico-bell`・`ui-ico-bell-off`・`ui-ico-alert`・`ui-ico-more`・`ui-ico-search`（24 の枠・線 2.5 前後の SVG）。`SheetClose`・`Toast` の ✕、`ThemeSettings` の選んだ印、`NotifySettings` の状態、検索欄の虫眼鏡は、これを描く。
 - アプリのアイコンは、同じ土台（`.ui-ico`）の上で、アプリの class（`ui-` を付けない名前）に `--glyph` を書く。
 
 ### 2.6 共通のロジック
@@ -458,7 +458,7 @@
 
 - どちらも**最後の条件を端末に覚える**（ほかの画面から戻ったとき、開き直したときも残る）。
 - 検索は、URL に条件があれば URL を使い（戻る・共有した URL）、無ければ端末に覚えた条件を使う。
-- 欄は `<input type="search">`、`enterkeyhint="search"`、自動の補完と iOS の連絡先の候補を切る（Field の `search`）。
+- 欄は `<input type="search">`、`enterkeyhint="search"`、自動の補完と iOS の連絡先の候補を切る（検索欄（`.ui-search` と `ui/field` の `SEARCH_INPUT`））。
 - 入口の場所はアプリ別。
 
 ### 3.8 設定
@@ -478,7 +478,7 @@
 | **ログインが切れた** | ページを読み込み直してログインに回す（続けて切れたときに繰り返さないよう、間を空ける） |
 | **オフライン・つながらない** | 常に出す表示は作らない。書き込みが失敗したら 3.5 のとおり。手元に溜めて後で送るもの（送り待ち）は、溜まっているものをその場に `--fg-muted` で出す |
 | **同期中** | 出さない（3.5） |
-| **ほかの端末と食い違った** | Banner。手元の内容を残したまま、「最新を読み込む」と「手元の内容で上書き」を置く。使うかはアプリ別 |
+| **ほかの端末と食い違った** | Banner。手元の内容を残したまま、「最新を読み込む」と「手元の内容で上書き」を置く。画面の上か、食い違った中身の上に出す（置き場所はアプリ）。使うかはアプリ別 |
 | **ホーム画面への追加** | 案内のバナーは出さない（iOS には追加を促す API がない）。ホーム画面のアプリでしか使えない通知の設定の中だけで、見出し「ホーム画面への追加が必要です」、本文「iPhone では、Safari の共有メニューから「ホーム画面に追加」して、そのアイコンから開くと通知を使えます。」を出す |
 | **通知** | 設定の「通知」で、この端末の購読の状態（非対応・許可されていない・受け取っていない・受け取っている・ホーム画面への追加が必要）と操作を出す |
 | **バッジ** | ホーム画面のアイコンに件数を出す。数えるものはアプリ別 |
@@ -536,6 +536,6 @@ UI を変えたらこれで確かめる。
 
 - `package.json` で `ui` をタグで固定して読む（`github:za29ra/ui#v<版>`）。
 - `web/src/styles.css` の先頭で `ui/tokens.css`・`ui/base.css`・`ui/components.css` の順に読み、そのあとにアプリのアクセント・ドメインの色（1.8）・レイアウトを書く。`components.css` はすべて詳細度 0 なので、アプリの規則が必ず勝つ。文脈で使う規則の多いアプリの class（シートの `.sheet` など）は残し、`ui-` の class を足して、重なる宣言だけを消してよい。
-- ロジックは `ui/<モジュール>` から読む。純粋な関数（`theme`・`push`・`pull`・`modal-rules`・`popup-rules`・`menu-rules`・`toast-state`・`settings-text` など）と、フック・部品（`use-theme`・`use-push`・`update-check`・`toast`・`pull-refresh`・`modal`・`popup`・`sheet-frame`・`confirm`・`settings`・`menu`）はファイルが別なので、アプリの `node --test` は純粋な関数だけを読める。
+- ロジックは `ui/<モジュール>` から読む。純粋な関数（`theme`・`push`・`pull`・`modal-rules`・`popup-rules`・`menu-rules`・`toast-state`・`settings-text` など）と、フック・部品（`use-theme`・`use-push`・`update-check`・`toast`・`pull-refresh`・`modal`・`popup`・`sheet-frame`・`confirm`・`settings`・`menu`・`field`・`banner`）はファイルが別なので、アプリの `node --test` は純粋な関数だけを読める。
 - 部品はアプリの class を `class` で受けて、`ui-` の class の後ろに足す。部品のアイコンは `ui-ico-*`（2.5）。
 - アプリの `CLAUDE.md` は、**`node_modules/ui/DESIGN.md`**（固定した版と同じ文書）を参照し、「このアプリの例外」（ドメインの色・段階にない大きさ・レイアウトの境目・使わない部品とその理由）を書く。

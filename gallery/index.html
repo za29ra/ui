@@ -66,12 +66,13 @@
           <span><span class="ui-ico ui-ico-bell-off" aria-hidden="true"></span>bell-off</span>
           <span><span class="ui-ico ui-ico-alert" aria-hidden="true"></span>alert</span>
           <span><span class="ui-ico ui-ico-more" aria-hidden="true"></span>more</span>
+          <span><span class="ui-ico ui-ico-search" aria-hidden="true"></span>search</span>
           <button type="button" class="ui-icon" aria-label="その他の操作"><span class="ui-ico ui-ico-more" aria-hidden="true"></span></button>
         </div>
       </section>
 
       <section class="g-section">
-        <h2>Field</h2>
+        <h2>Input</h2>
         <div class="g-col">
           <input type="text" value="買い物リストを見直す" aria-label="名前" />
           <input type="text" placeholder="メモ" aria-label="メモ" />
@@ -80,6 +81,58 @@
           <textarea rows="2" aria-label="本文">2 行の本文</textarea>
           <input type="search" value="図書館" aria-label="検索" />
           <label><input type="checkbox" checked /> チェックボックス</label>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>Field</h2>
+        <div class="g-col">
+          <div class="ui-field">
+            <label class="ui-field-label" for="g-field-name">名前</label>
+            <input type="text" id="g-field-name" value="週末の買い物" />
+          </div>
+          <div class="ui-field">
+            <label class="ui-field-label" for="g-field-place">場所</label>
+            <input type="text" id="g-field-place" value="駅前の図書館" aria-describedby="g-field-place-hint" />
+            <p class="ui-field-hint" id="g-field-place-hint">地図で探すときに使います</p>
+          </div>
+          <div class="ui-field">
+            <label class="ui-field-label" for="g-field-time">時刻</label>
+            <input type="text" id="g-field-time" value="25:00" aria-invalid="true" aria-describedby="g-field-time-hint g-field-time-error" />
+            <p class="ui-field-hint" id="g-field-time-hint">24 時間制で書きます</p>
+            <p class="ui-field-error" id="g-field-time-error">0:00〜23:59 で書いてください</p>
+          </div>
+          <div class="ui-field" role="group" aria-labelledby="g-field-days-label">
+            <span class="ui-field-label" id="g-field-days-label">繰り返す曜日</span>
+            <div class="ui-chips">
+              <button type="button" class="ui-chip" aria-pressed="true">月</button>
+              <button type="button" class="ui-chip" aria-pressed="false">火</button>
+              <button type="button" class="ui-chip" aria-pressed="true">水</button>
+            </div>
+          </div>
+          <div class="ui-field">
+            <label class="ui-field-label" for="g-field-note">メモ</label>
+            <textarea id="g-field-note" rows="3">傘を持っていく</textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="g-section">
+        <h2>検索欄</h2>
+        <div class="g-col">
+          <label class="ui-search">
+            <span class="ui-ico ui-ico-search" aria-hidden="true"></span>
+            <input type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="メモを探す" aria-label="メモを探す" />
+          </label>
+          <label class="ui-search">
+            <span class="ui-ico ui-ico-search" aria-hidden="true"></span>
+            <input type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="図書館" aria-label="メモを探す" />
+          </label>
+          <label class="ui-search">
+            <span class="ui-ico ui-ico-search" aria-hidden="true"></span>
+            <input type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="週末" aria-label="メモを探す" />
+            <button type="button" class="ui-icon" aria-label="消す"><span class="ui-ico ui-ico-close" aria-hidden="true"></span></button>
+          </label>
         </div>
       </section>
 
@@ -134,6 +187,18 @@
           <button type="button" class="ui-side-item"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>一覧</button>
           <button type="button" class="ui-side-item"><span class="ui-ico ui-ico-bell" aria-hidden="true"></span>設定</button>
         </nav>
+      </section>
+
+      <section class="g-section">
+        <h2>Banner</h2>
+        <div class="ui-banner" role="alert">
+          <p class="ui-banner-text">前に書きかけた下書きが残っています</p>
+          <div class="ui-banner-actions"><button type="button">捨てる</button><button type="button">続きを書く</button></div>
+        </div>
+        <div class="ui-banner" data-kind="danger" role="alert">
+          <p class="ui-banner-text">ほかの端末で変わっています</p>
+          <div class="ui-banner-actions"><button type="button">最新を読み込む</button><button type="button">手元の内容で上書き</button></div>
+        </div>
       </section>
 
       <section class="g-section">
