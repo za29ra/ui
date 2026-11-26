@@ -184,3 +184,12 @@ test("検索欄は枠の中に虫眼鏡と線の無い欄を並べ、高さは 4
   // 欄の既定（:where(input, select, textarea)）より後ろに置いて勝つ
   assert.ok(body.indexOf(":where(.ui-search > input) {") > body.indexOf(":where(input, select, textarea) {"));
 });
+
+test("Banner は文とボタンを折り返して並べ、danger は枠を赤にする（DESIGN.md 2.1・4 章）", () => {
+  const r = ruleBody(".ui-banner");
+  assert.match(r, /display:\s*flex/);
+  assert.match(r, /flex-wrap:\s*wrap/);
+  assert.match(r, /border:\s*1px solid var\(--border\)/);
+  assert.doesNotMatch(r, /margin/);
+  assert.match(ruleBody('.ui-banner[data-kind="danger"]'), /border-color:\s*var\(--danger\)/);
+});

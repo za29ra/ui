@@ -850,6 +850,37 @@
   mask: var(--glyph) center / contain no-repeat;
 }
 
+/* ---- Banner（DESIGN.md 2.1・4 章）。消えずに残る知らせと操作（保存の食い違いなど）。ui/banner の Banner。
+   置き場所（画面の上か、食い違った中身の上）と外の余白はアプリ ---- */
+
+:where(.ui-banner) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-raised);
+  font-size: var(--text-md);
+}
+
+:where(.ui-banner[data-kind="danger"]) {
+  border-color: var(--danger);
+}
+
+/* 文が狭くなりすぎたら、ボタンを下の行に送る */
+:where(.ui-banner-text) {
+  flex: 1;
+  min-width: 12em;
+  margin: 0;
+}
+
+:where(.ui-banner-actions) {
+  display: flex;
+  gap: var(--space-1_5);
+}
+
 /* ---- トースト（画面の下に 1 つ。下からの位置は --toast-offset。DESIGN.md 3.4） ---- */
 
 :where(.ui-toast-region) {

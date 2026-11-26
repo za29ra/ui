@@ -41,7 +41,8 @@
     "./settings-text": { "types": "./dist/settings-text.d.ts", "default": "./dist/settings-text.js" },
     "./settings": { "types": "./dist/settings.d.ts", "default": "./dist/settings.js" },
     "./menu": { "types": "./dist/menu.d.ts", "default": "./dist/menu.js" },
-    "./field": { "types": "./dist/field.d.ts", "default": "./dist/field.js" }
+    "./field": { "types": "./dist/field.d.ts", "default": "./dist/field.js" },
+    "./banner": { "types": "./dist/banner.d.ts", "default": "./dist/banner.js" }
   },
   "scripts": {
     "test": "node --test \"test/**/*.test.ts\"",
