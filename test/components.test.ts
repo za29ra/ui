@@ -141,7 +141,7 @@ test("アイコンの土台は 20px・currentColor・--glyph の mask（DESIGN.m
 });
 
 test("ui の部品が使うアイコンを持つ", () => {
-  for (const name of ["close", "check", "bell", "bell-off", "alert", "more"]) {
+  for (const name of ["close", "check", "bell", "bell-off", "alert", "more", "search"]) {
     assert.match(ruleBody(`.ui-ico-${name}`), /--glyph:\s*url\("data:image\/svg\+xml,/, name);
   }
 });
@@ -173,4 +173,14 @@ test("Field はラベル → 欄 → 補足 → エラーを縦に積む（DESIG
   assert.match(label, /font-weight:\s*600/);
   assert.match(ruleBody(".ui-field-hint"), /color:\s*var\(--fg-muted\)/);
   assert.match(ruleBody(".ui-field-error"), /color:\s*var\(--danger\)/);
+});
+
+test("検索欄は枠の中に虫眼鏡と線の無い欄を並べ、高さは 44px から（DESIGN.md 3.7）", () => {
+  const r = ruleBody(".ui-search");
+  assert.match(r, /display:\s*flex/);
+  assert.match(r, /min-height:\s*44px/);
+  assert.match(r, /border:\s*1px solid var\(--border\)/);
+  assert.match(ruleBody(".ui-search > input"), /border:\s*0/);
+  // 欄の既定（:where(input, select, textarea)）より後ろに置いて勝つ
+  assert.ok(body.indexOf(":where(.ui-search > input) {") > body.indexOf(":where(input, select, textarea) {"));
 });

@@ -41,6 +41,10 @@
   --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h.01M12 12h.01M19 12h.01'/%3E%3C/svg%3E");
 }
 
+:where(.ui-ico-search) {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E");
+}
+
 /* ---- ボタンと入力欄（要素の既定） ---- */
 
 :where(button, input, select, textarea) {
@@ -168,6 +172,55 @@
   margin: 0;
   color: var(--danger);
   font-size: var(--text-xs);
+}
+
+/* ---- 検索欄（DESIGN.md 3.7）。<label class="ui-search"><span class="ui-ico ui-ico-search" aria-hidden="true"></span><input {...SEARCH_INPUT}></label>
+   （中に消すボタンを置ける）。SEARCH_INPUT は ui/field。フォーカスは中の欄でなく枠の外に輪を出す（1.6 と同じ輪） ---- */
+
+:where(.ui-search) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 0 var(--space-1) 0 var(--space-2_5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-raised);
+  color: var(--fg-muted);
+}
+
+:where(.ui-search:focus-within) {
+  border-color: var(--accent);
+}
+
+/* キーボードで入ったときの輪（DESIGN.md 2.3 の :focus-visible の輪）。中の欄の輪は消すので、枠に出す */
+:where(.ui-search:has(> input:focus-visible)) {
+  outline: 2px solid var(--accent);
+  outline-offset: 0;
+}
+
+:where(.ui-search > .ui-ico) {
+  width: 18px;
+  height: 18px;
+}
+
+/* 欄の既定（上の input の規則。詳細度は同じ 0）より後ろに置いて、枠・地・幅を消す。輪は枠の外に出す（上） */
+:where(.ui-search > input) {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--fg);
+  outline: none;
+  appearance: none;
+}
+
+/* ブラウザが付ける消すボタン（使う側が自分の消すボタンを置く） */
+:where(.ui-search > input)::-webkit-search-cancel-button {
+  display: none;
 }
 
 /* ---- スイッチ（すぐ反映されるオン・オフ）: 角の丸い枠の中を丸が動く。オンは --success ---- */
