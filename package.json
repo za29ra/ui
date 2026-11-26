@@ -40,7 +40,8 @@
     "./confirm": { "types": "./dist/confirm.d.ts", "default": "./dist/confirm.js" },
     "./settings-text": { "types": "./dist/settings-text.d.ts", "default": "./dist/settings-text.js" },
     "./settings": { "types": "./dist/settings.d.ts", "default": "./dist/settings.js" },
-    "./menu": { "types": "./dist/menu.d.ts", "default": "./dist/menu.js" }
+    "./menu": { "types": "./dist/menu.d.ts", "default": "./dist/menu.js" },
+    "./field": { "types": "./dist/field.d.ts", "default": "./dist/field.js" }
   },
   "scripts": {
     "test": "node --test \"test/**/*.test.ts\"",
