@@ -20,6 +20,7 @@
 - v0.3.0: 共通のロジック（DESIGN.md 2.6）と PullRefresh（`ui/pull-refresh`、見た目は `.ui-pull`）。
 - v0.4.0: シート・ダイアログ・確認・トースト・Popup・設定の部品。
 - v0.5.0: アイコンの土台とメニュー（`.ui-ico`・`ui-ico-*`、`ui/menu`・`ui/menu-rules`）。破壊的な変更: `ui/close-icon` と、部品のアイコンの props（`SheetClose` の `icon`・`SheetFrame` の `closeIcon`・`ThemeSettings` の `checkIcon`・`NotifySettings` の `icons`）を消した。部品は `ui-ico-*` を描く。
+- v0.6.0: Field・検索欄・Banner（`ui/field`・`.ui-field`、`.ui-search`・`ui-ico-search`、`ui/banner`・`.ui-banner`）。
 
 ## 手元で `ui` とアプリを一緒に変える
 
